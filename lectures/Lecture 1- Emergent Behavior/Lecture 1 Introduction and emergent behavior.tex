@@ -1,0 +1,91 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage{enumitem} % change spacing between lines in lists
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 1: Introduction}
+\maketitle
+
+\section*{Reductionism}
+
+Some terms are defined by their counterpoints. Before systems biology, there was reductionism. Reductionism remains a highly successful and widely employed epistemological tool and all-around life philosophy: the basic premise is that the most expedient way to understand the whole is to individually examine the parts.
+
+
+\subsection*{A few examples of its application in biology}
+Reductionism is a term borrowed from philosophy and, as applied to the sciences, most commonly associated with molecular biology, where it has permeated scientific thought since molecular biology's inception in the 1930s. Whenever we knock out genes -- that is, break them on purpose -- to see what will happen, clone and manipulate single genes, or purify out single molecular species to study in isolation, we are applying reductionism. Obviously this method is very effective.\\
+
+Alan Hodgkin and Andrew Huxley earned the Nobel prize for their seminal work in the 1950s describing how neurons propagate electrical signals. It is difficult to imagine better poster children for reductionism's success. Neurons, like other cells, consist of cytoplasm surrounded by a membrane: for Hodgkin and Huxley, this was as good a starting point as any for reduction of the problem. They dissected out giant axons (a long extension of the neuron towards its downstream target) from squids, then squeezed out the cytoplasm \textit{with a roller}, as you would a tube of toothpaste; the axon could then be rinsed and refilled with an arbitrary solution, just like a sausage casing. They were thus able to quickly recognize that the ability to transmit neural impulses was a property of the membrane and did not require biotic components on the interior of the cell. Certainly the ability to work outside the context of the living animal, to perfuse any salt solution of their choice, shove a capillary electrode in there, etc. was instrumental to their discoveries. (In the 1970s, neuroscience would impress the world still further by managing to isolate single ion channels via the patch clamp.)
+
+\subsection*{Force of habit}
+
+The method only works, of course, if at some point you realize that enough data has been collected and that it is time to interpret the information. In some sciences, the transition from data collection to interpretation is well-defined. Take, for example, astrophysics and ecology. Time on a telescope or doing field work is extremely precious: a multiple-month delay between data collections enforces the very careful analysis of what's already in hand. It is appreciated that the analysis process will be methodical; probably, the method of analysis was decided long before the data was collected.\\
+
+There is no equivalent for molecular and cellular biology. Every morning one faces a choice of spending the day on meta-analysis or starting something new at the bench. Working at the bench uses your hands. You see the progress in piles of tubes and data points. Other people walk by and praise your work ethic because you are not in front of a computer. There is the impression that everything will ``come together" while you're in the shower, or perhaps the answer will be communicated to you through a dream. Once revealed, the truth will be obvious to the naked eye: analysis is for supporting the answer with $p$-values, not for finding the answer in the first place. All of these attitudes drive the scientist back to the bench even when enough information is available.
+
+\subsection*{Defeatism}
+
+The reductionist approach is to dissect to understand further, but what if you are already studying single proteins? In that case the explanation must lie on down the rabbit hole, in chemistry or physics. The physicist Richard Feynman expresses this sentiment very clearly (emphasis mine):
+
+\begin{quote}
+``Everything is made of atoms. That is the key hypothesis. The most important hypothesis in all of biology, for example, is that \textit{everything that animals do, atoms do}. In other words, there is nothing that living things do that cannot be understood from the point of view that they are made of atoms acting according to the laws of physics. This was not known from the beginning: it took some experimenting and theorizing to suggest this hypothesis, but now it is accepted, and it is the most useful theory for producing new ideas in the field of biology."
+\end{quote}
+
+No one can realistically contest that living things are made of atoms acting according to the laws of physics. However, we should carefully weight the claim that perfectly understanding atoms, quarks, and leptons is a fundamental (or even practically useful) approach to understanding how living things work. But before discussing an example on that point, note that regardless of whether Feynman's claim is wrong, it is certainly pernicious, for it provides a convenient excuse to avoid tackling problems. We can always claim that the solution is simply beyond us because we will never calculate the wavefunctions of every particle in the cell, there is too much variability between cells, \&c. while in reality a perfectly sufficient explanation could be had if only we interpret existing data properly.
+
+\section*{Emergence}
+
+I claimed earlier that it is possible that a perfect knowledge of how atoms behave might not provide insight into how living organisms do interesting things. This is partly a claim about what should qualify as a sufficiently satisfying description. But it is also a claim about emergence, another concept borrowed from philosophy and applied often in biology. Emergence occurs whenever a large entity made of smaller parts has a property which is not found in any of the smaller parts. This property clearly must result from the interactions between the parts and not from the parts themselves. You cannot learn about the property by studying each of the parts in isolation as reductionism prescribes.
+
+\subsection*{Conway's Game of Life}
+
+The most convincing way to demonstrate emergence at work is to make up a game. That way, the rules are simpler and we all know them; we can't appeal to a ``missing" rule that explains the behaviors. Another advantage, I hope, is that the game example should be accessible regardless of what classes you've taken so far; for that reason I'll be drawing examples from this game over the next few days. I will pick Conway's Game of Life. [Ask has anyone heard of it, in what context, etc.]\\
+
+Conway's Game of Life is played on an infinitely-large square grid. Each square can be either black or white, corresponding to a ``dead" or ``alive" state for the cell. We can set any initial configuration we wish so long as the number of live cells is finite; we won't push it in these examples. The game has discrete rounds, and going from one round to the next, all squares update their status (i.e. dead vs. alive). The update rules are simple and are based on the number of a cell's neighbors that are alive or dead in the current round. As you can see, the cell can have up to eight neighbors. A dead cell with exactly three live neighbors will be ``born" in the next round due to reproduction. Live cells stay alive if they have exactly two or three live neighbors (more neighbors cause ``overcrowding"; fewer neighbors prevent reproduction). In all other cases, the cell will be dead in the next round. That's it. You know all of the rules.\\
+
+Let's try it with a sample pattern quickly so that you get the idea. Here is a row of three live cells surrounded by dead cells. (Walkthrough showing which cells will be live in the next round, then returning to the original state in the third round.) This shape is called a ``blinker."\\
+
+%There are entire online encyclopedias full of different entities that do neat things. One of these is a ``glider" which slowly moves diagonally through space. Then there is the glider gun, which oscillates back and forth, generating a new glider each time. By setting up an interesting initial pattern you can make machines that do neat things. Here is a machine that prints out the course number, for example.\\
+
+Now, suppose I have a fairly complicated machine like this one, which prints the course number, and I would like to describe how it works. The output text has seven layers and is made of (lightweight) ``spaceships" that travel away from the machine. For each of these seven layers, there is a repeating unit in the machine that determines the timing at which spaceships will be released. At the core of this unit, gliders travel around in a loop by bouncing off reflectors. At the bottom of the loop, each glider is duplicated. The original continues to travel around the loop while the new glider leaves and hits a ``converter" that turns it into a spaceship. Thus the pattern of gliders in the loop determines the timing at which the spaceships will be released\footnote{A more in-depth description by Nilangshu Bidyanta is available \href{http://www.binarydigits10.com/articles/conwaysgameoflife}{here}.}.\\
+
+Ultimately the rules of Life (b3/s23) are responsible for everything about the machine's behavior. It would have been easy to say that we cannot understand the machine because it would require accounting for many individual squares interacting locally over long timescales. If we did not know the rules of Life, it would have been even easier to claim that those rules were ineffably responsible. Instead we found a description for how the machine works by defining a few higher-level entities -- gliders, spaceships, converters, reflectors, duplicators -- and focusing on their interactions with each other. We started by reducing the machine into parts, but we did not study each alone and we did not continue inexorably down the rabbit hole of dissection: instead, we returned quickly to studying them as a group. This is called a system-level approach: when applied in real life, we call it systems biology.\\
+
+This is not the only definition of systems biology and I apologize if you found it unsatisfactory. If the problem is that I have been unclear, I highly recommend a reading that you can find on the course website (under modules) called ``Can a biologist fix a radio?" which does a much more entertaining job of illustrating the potential failures of a reductionist approach. (It may sound more derogatory than it is; as a classically-trained biologist, I think the author nailed it, but you can be the judge.)
+
+\section*{Course logistics}
+
+Systems biology tends to abstract away unnecessary detail: many researchers find they can get by learning just the relevant details of a question that interests them, and do not need extensive coursework in biology to make progress. This makes the field accessible to students from many disciplines and to younger students. MCB 135 requires only AP (or general education) Biology for this reason. On the other hand, biological systems are often changing dynamically and it is helpful to be familiar with differential equations. MCB 135 is designed to be taken after or concurrently with the life science-specific modeling and differential equations course, MA 19a.\\
+
+Since MCB 135 is an upper-division course, there are more expectations that you will seek help from the course staff, each other, the Internet, etc. than you probably encountered elsewhere. For example, in section each week you will discuss a primary research article which will almost certainly introduce new terms that you'll need to look up. That's expected and we are here to help (but do get that sorted out before the discussion meets)! This discussion section will be organized based on your input. Once you've decided to take the class, please fill out the form on the course website indicating your time preferences for this discussion section. You will prepare and lead one of these discussions which you will have the opportunity to choose, based on your preferences for topic and timing, after we have settled the enrollment.\\
+
+The course uses problem sets in place of exams. This is done partly to mimic the real world, where you have time, resources, and colleagues to help you solve problems. We highly encourage collaboration, but expect that your submitted problem sets will be written up independently and that you would be able to replicate your own work. It is also done so we can give problems that require a computer (also a realistic scenario for real-world scientists). Some problems will require setting up simulations. If you haven't done any programming before, we highly recommend MATLAB for several reasons. First, there's lots of help available. Your book (Ingalls) contains a primer on using it for simulations. Adam Cohen and other science faculty, will offer a few evening sessions during the second and third week of term where you can get a crash course in MATLAB programming if you prefer formal instruction. Second, MATLAB makes it fairly easy to visualize results where other programming language require additional work.\\
+
+The final project for MCB 135 is an NSF Graduate Research Fellowship-style research proposal. Through this assignment you will plan a novel project that could be completed by one person in approx. six years, and defend why your project deserves federal funding. (If you're headed to graduate school, you can apply for this fellowship in the fall of your senior year and again once you join the degree program.) While the assignment length is short (two pages, single-spaced), the expectations are high: we hope you will plan on submitting drafts for feedback before the final due date (our final exam day, TBA in May). If you are doing a thesis or summer project, you may find it useful to seek feedback from your research adviser as well. 
+
+\subsection*{Summary of expectatons}
+
+Students in MCB 135 are expected to:
+
+\begin{itemize}
+\item Complete approximately one problem set per week (appropriate collaboration encouraged)
+\item Participate in approximately one paper discussion per week
+\item Lead one of these paper discussions
+\item Prepare a two-page research proposal during reading period (taken seriously; assistance and examples available)
+\end{itemize}
+
+
+\end{document}
