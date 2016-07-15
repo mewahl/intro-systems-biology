@@ -1,0 +1,1 @@
+The first five von Neumann lectures on self-reproducing automata (PDF in directory)
