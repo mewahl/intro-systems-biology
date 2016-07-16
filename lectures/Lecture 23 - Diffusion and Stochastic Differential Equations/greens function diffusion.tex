@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\section*{The probability distribution of a diffusing particle}
+Let  $G(x,t)$ be the probability distribution of a certain particle, created at the origin at time zero, which diffuses in $n$ dimensions. According to Fick's second law of diffusion\footnote{Notice that Fick's second law is intended to describe the change in concentration profile for an ensemble of molecules, but we have applied it to the probability distribution of a single particle.}:
+\[ \frac{\partial G(\mathbf{x},t)}{\partial t} = D \Delta G(\mathbf{x},t) + \delta(x,t) \]
+Rearrange and perform a Fourier transform ($\mathbf{x} \mapsto \mathbf{k}$,t$\mapsto \omega$):
+\begin{eqnarray}
+\mathcal{L}G(\mathbf{x},t) = \left[ \frac{\partial}{\partial t} - D \Delta \right]G(\mathbf{x},t) & = & \delta(\mathbf{x},t) \nonumber \\
+\left(i\omega + D|\mathbf{k}|^2 \right) \tilde{g}(\mathbf{k},\omega) & = & 1 \nonumber \\
+\tilde{g}(\mathbf{k},\omega) & = & \frac{1}{i\omega + D|\mathbf{k}|^2} \nonumber
+\end{eqnarray}
+Now perform an inverse Fourier transform ($\omega \mapsto$t) using a contour integral on the upper half plane to enclose the singularity at $\omega=iD|\mathbf{k}|^2$. We apply the residue theorem to evaluate this integral:
+\begin{eqnarray}
+\tilde{g}(\mathbf{k},t) & = & \frac{1}{2\pi} \int_{-\infty}^{\infty} \frac{e^{it\omega}}{i\omega + D|\mathbf{k}|^2}\,d\omega \nonumber \\
+& = & \frac{1}{2\pi} \oint_{UHP} \frac{e^{it\omega}}{i\omega + D|\mathbf{k}|^2}\,d\omega \nonumber \\
+& = & \frac{2\pi i}{2\pi} \textrm{Res} \left( \frac{\omega - iD|\mathbf{k}|^2}{i\omega + D|\mathbf{k}|^2}e^{it\omega}, iD|\mathbf{k}|^2 \right) \nonumber \\
+& = & \lim_{\omega \to iD|\mathbf{k}|^2} e^{it\omega} \nonumber \\
+& = & e^{-Dt|\mathbf{k}|^2} \nonumber
+\end{eqnarray}
+Now we can perform another set of inverse Fourier transforms, completing the square to make a Gaussian function and shifting horizontally to simplify:
+
+\begin{eqnarray}
+G(\mathbf{x},t) & = & \frac{1}{(2\pi)^n} \int^{\infty}_{-\infty} \cdots \int^{\infty}_{-\infty} e^{i\mathbf{k} \cdot \mathbf{x}}e^{-Dt|\mathbf{k}|^2}\,dk_1 \cdots \,dk_n \nonumber \\
+& = & \frac{e^{-|\mathbf{x}|^2/4Dt}}{(2\pi)^n} \int^{\infty}_{-\infty} \cdots \int^{\infty}_{-\infty} \exp\left(\sum_{j=1}^n -Dtk_j^2 + ik_jx_j +  \frac{x_j^2}{4Dt} \right) \,dk_1 \cdots \,dk_n \nonumber \\
+& = & \frac{e^{\frac{-|\mathbf{x}|^2}{4Dt}}}{(2\pi)^n} \int^{\infty}_{-\infty} \cdots \int^{\infty}_{-\infty} \prod_{j=1}^n \exp \left(-Dtk_j^2 + ik_jx_j + \frac{x_j^2}{4Dt} \right) \,dk_1 \cdots \,dk_n \nonumber \\
+& = & \frac{e^{\frac{-|\mathbf{x}|^2}{4Dt}}}{(2\pi)^n} \prod_{j=1}^n \int^{\infty}_{-\infty} \exp \left(-Dtk_j^2 + ik_jx_j + \frac{x_j^2}{4Dt} \right) \,dk_j \nonumber \\
+& = & \frac{e^{\frac{-|\mathbf{x}|^2}{4Dt}}}{(2\pi)^n} \prod_{j=1}^n \int^{\infty}_{-\infty} \exp \left( \left(ik_j\sqrt{Dt} + \frac{x_j}{2\sqrt{Dt}}\right)^2 \right) \,dk_j \nonumber \\
+& = & \frac{e^{\frac{-|\mathbf{x}|^2}{4Dt}}}{(2\pi)^n} \prod_{j=1}^n \int^{\infty}_{-\infty} e^{-Dtk_j^2} \,dk_j = \frac{e^{\frac{-|\mathbf{x}|^2}{4Dt}}}{(2\pi)^n} \prod_{j=1}^n \sqrt{\frac{\pi}{Dt}} = \left( \frac{\pi}{Dt} \right)^{n/2}{(2\pi)^n} e^{\frac{-|\mathbf{x}|^2}{4Dt}} \nonumber \\
+& = & \frac{1}{\left(4\pi Dt\right)^{n/2}} \exp\left(-|\mathbf{x}|^2/4Dt\right) \nonumber
+\end{eqnarray}
+$G(\mathbf{x},t)$, the Green's function for a diffusing particle whose location at time $t=0$ is known with absolute accuracy, is a Gaussian function with mean zero. Its mean square displacement -- which in this case is also equal to the variance in position -- is:
+\begin{eqnarray*}
+\sigma^2 = \left< |\mathbf{x}|^2 \right> & = & \frac{1}{\left(4\pi Dt\right)^{n/2}} \int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty} |\mathbf{x}|^2 \exp\left(-|\mathbf{x}|^2/4Dt\right) \,dx_1 \cdots \,dx_n \\
+& = & \frac{1}{\left(4\pi Dt\right)^{n/2}} \int_{-\infty}^{\infty} \cdots  \int_{-\infty}^{\infty} \exp\left(- \sum_{i=2}^{n} x_i^2/4Dt\right) \left[ \int_{-\infty}^{\infty} |\mathbf{x}|^2 e^{\frac{-x_1^2}{4Dt}} \,dx_1 \right]\, dx_2 \cdots \,dx_n
+\end{eqnarray*}
+Focus on how to evaluate the innermost interval, using Gaussian integral identities:
+\begin{eqnarray*}
+\int_{-\infty}^{\infty} |\mathbf{x}|^2 \exp \left( \frac{-x_1^2}{4Dt} \right) \,dx_1 & = & \int_{-\infty}^{\infty} x_1^2 \exp \left( \frac{-x_1^2}{4Dt} \right) \,dx_1 + \int_{-\infty}^{\infty} \left(\sum_{i=2}^{n} x_i^2\right) \exp \left( \frac{-x_1^2}{4Dt} \right) \,dx_1 \\
+& = & 2Dt\sqrt{4\pi Dt} + \left(\sum_{i=2}^{n} x_i^2\right) \sqrt{4\pi Dt} \\
+& = & \sqrt{4\pi Dt} \left[ 2Dt + \sum_{i=2}^{n} x_i^2 \right]
+\end{eqnarray*}
+Plugging this result into the calculation for mean square distance, we get:
+\begin{eqnarray*}
+\left< |\mathbf{x}|^2 \right>  & = & \frac{1}{\left(4\pi Dt\right)^{(n-1)/2}} \int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty} \exp\left(- \sum_{i=2}^{n} x_i^2/4Dt\right) \left[ 2Dt + \sum_{i=2}^{n} x_i^2 \right] \,dx_2 \cdots \,dx_n \\
+& = & \frac{1}{\left(4\pi Dt\right)^{(n-2)/2}} \int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty} \exp\left(- \sum_{i=3}^{n} x_i^2/4Dt\right) \left[ 4Dt + \sum_{i=3}^{n} x_i^2 \right] \,dx_3 \cdots \,dx_n \\
+& = & 2nDt
+\end{eqnarray*}
+\end{document}

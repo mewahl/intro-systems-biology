@@ -1,0 +1,91 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+
+\begin{eqnarray*}
+\ce{W + K <=>[a_k][d_k] WK ->[c_k] W^* + K }\\
+\ce{W^* + P <=>[a_p][d_p] W^*P ->[c_p] W + P }
+\end{eqnarray*}
+
+Based on these expressions, we can apply the law of mass action to find the concentration of each complex.
+\begin{eqnarray*}
+\frac{d \left[ WK \right]}{dt} & = & a_k \left[ W \right]\left[ K \right] - \left(  d_k + c_k \right) \left[ WK \right]\\
+\\
+& = & a_k \left[ W \right] \left( \left[ K_{\textrm{tot}} \right] - \left[ WK \right] \right) - \left(  d_k + c_k \right) \left[ WK \right]\\
+\\
+& = & a_k \left[ W \right]  \left[ K_{\textrm{tot}} \right] - \left(  d_k + c_k + a_k \left[ W \right] \right) \left[ WK \right]\\
+\\
+\frac{d \left[ W^*P \right]}{dt} & = & a_p \left[ W^* \right]  \left[ P_{\textrm{tot}} \right] - \left(  d_p + c_p + a_p \left[ W^* \right] \right) \left[ W^*P \right]\\
+\end{eqnarray*}
+Assume that both complexes are at steady-state to find expressions for their concentrations:
+\begin{eqnarray*}
+\frac{d \left[ WK \right]}{dt}  & = & a_k \left[ W \right]  \left[ K_{\textrm{tot}} \right] - \left(  d_k + c_k + a_k \left[ W \right] \right) \left[ WK \right] = 0 \\
+\\
+\left[ WK \right] & = & \frac{a_k \left[ W \right]  \left[ K_{\textrm{tot}} \right]}{ d_k + c_k + a_k \left[ W \right]} = \frac{\left[ W \right]  \left[ K_{\textrm{tot}} \right]}{ K_k +  \left[ W \right]}, \hspace{1 cm} K_k = \frac{d_k + c_k}{a_k}\\
+\\
+\left[ W^*P \right] & = & \frac{\left[ W^* \right]  \left[ P_{\textrm{tot}} \right]}{ K_p +  \left[ W^* \right]}, \hspace{4.2 cm} K_p = \frac{d_p + c_p}{a_p}
+\end{eqnarray*}
+
+\[ \left[ WK \right] = \frac{\left[ W \right]  \left[ K_{\textrm{tot}} \right]}{ K_k +  \left[ W \right]} \]
+\[ \left[ W^*P \right] = \frac{\left[ W^* \right]  \left[ P_{\textrm{tot}} \right]}{ K_p +  \left[ W^* \right]} \]
+
+At steady-state, the kinase and phosphatase reactions must be occurring at the same rate:
+\begin{eqnarray*}
+c_k \left[ WK \right] & = & c_p \left[ W^*P \right]\\
+\frac{ c_k \left[ K_{\textrm{tot}} \right] }{ c_p \left[ P_{\textrm{tot}} \right]} & = & \frac{\left[ W^* \right] \left(   K_k + \left[ W \right] \right)}{\left[ W \right] \left( K_p + \left[ W^* \right] \right)}
+\end{eqnarray*}
+
+We will make a simplifying assumption that there is much more of the protein $W$ than of $K$ or $P$, so that most of it is not in complex form:
+
+\[ \left[ W_{\textrm{tot}} \right] \approx \left[ W \right] + \left[ W^* \right] \]
+
+Then we can define $f = \left[ W^* \right] /\left[ W_{\textrm{tot}} \right]$ to be approximately the fraction of all $W$ in the modified state, and $1-f$ to be the fraction of all $W$ in the unmodified state. Thus, dividing both numerator and denominator by $\left[ W_{\textrm{tot}} \right] $,
+
+\begin{eqnarray*}
+\frac{ c_k \left[ K_{\textrm{tot}} \right] }{ c_p \left[ P_{\textrm{tot}} \right]} & = & \frac{\left[ W^* \right] \left(   K_k + \left[ W \right] \right)}{\left[ W \right] \left( K_p + \left[ W^* \right] \right)} = \frac{f \left(   K_1 + 1 - f \right)}{\left( 1 - f \right)   \left( K_2 + f \right)}
+\end{eqnarray*}
+
+The prime indicates that the value has been scaled by the total concentration of $W$.
+
+\[ K_1 = \frac{d_k + c_k}{\left[ W_{\textrm{tot}} \right] a_k} \]
+\[ K_2 = \frac{d_p + c_p}{\left[ W_{\textrm{tot}} \right] a_p} \]
+
+\begin{eqnarray*}
+\frac{ c_k \left[ K_{\textrm{tot}} \right] }{ c_p \left[ P_{\textrm{tot}} \right]} = A & = & \frac{f \left(   \delta + 1 - f \right)}{\left( 1 - f \right)   \left( \delta + f \right)}\\
+\left( 1- A \right)f^2 + \left(A - \delta A - \delta -1 \right)f + \delta A & = & 0\\
+\left( 1- A \right)f^2 + \left(A -1 \right)f & \approx & 0\\
+f \left(1 - f \right) \left(1 - A \right) & \approx & 0
+\end{eqnarray*}
+
+\[ \frac{d}{dx} f_3 \left( f_2 \left( f_1 \left( x \right) \right) \right) = f'_3 \left( f_2 \left( f_1 \left( x \right) \right) \right) \cdot f'_2 \left( f_1 \left( x \right) \right) \cdot f'_1 \left( x \right) \]
+
+\begin{eqnarray*}
+\frac{d \left[ W^* \right] }{dt} & = &  c_k  \left[ WK \right] - c_p \left[ W^*P \right]\\
+& = & \frac{c_k{ \color{red} \left[ W \right]}  \left[ K_{\textrm{tot}} \right]}{ K_k +  {\color{red} \left[ W \right]}} - \frac{c_p {\color{blue} \left[ W^* \right]}  \left[ P_{\textrm{tot}} \right]}{ K_p + {\color{blue} \left[ W^* \right]} }\\
+& = & \frac{c_k {\color{red} \left( 1 - f \right) \left[ W_{\textrm{tot}} \right]}  \left[ K_{\textrm{tot}} \right]}{ K_k + {\color{red} \left( 1 - f \right) \left[ W_{\textrm{tot}} \right]}} - \frac{c_p {\color{blue}f \left[ W_{\textrm{tot}} \right]}  \left[ P_{\textrm{tot}} \right]}{ K_p + {\color{blue} f \left[ W_{\textrm{tot}} \right]}}\\
+\frac{d f}{dt} & = & \frac{c_k  \left[ K_{\textrm{tot}} \right] \left( 1 - f \right)}{ K_k +   \left( 1 - f \right) \left[ W_{\textrm{tot}} \right]} - \frac{c_p f \left[ P_{\textrm{tot}} \right]}{ K_p +  f \left[ W_{\textrm{tot}} \right]}
+\end{eqnarray*}
+
+
+\end{document}

@@ -1,0 +1,126 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage{enumitem} % change spacing between lines in lists
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 3: Computability continued; the definition of life}
+\maketitle
+
+\section*{Computability in real life (start of third lecture?)}
+
+Yesterday, we used some of the machinery we'd encountered in the first lecture to build a NAND gate and thus show that any computable function can be computed in Conway's Game of Life. Today, we will demonstrate the same thing for organic systems.
+
+\section*{Neuronal networks}
+
+\subsection*{Crash course in neurobiology}
+
+As you might imagine, some of the cells best adapted for logic processing are neurons, the business end of your brain. Your standard-issue neuron works as follows: a chemical signal is received from another cell at a \textit{synapse}, which is a highly localized site on a \textit{dendrite}, one of many long extensions on the neuron's ``input" end. The chemical signal at a synapse can be either excitatory or inhibitory. An excitatory signal will cause positively-charged ions to enter the dendrite at the synapse, while an inhibitory signal will cause positively-charged ions to exit the cell there. Excitatory signals thus cause the voltage difference across the membrane to go up, and vice versa. If the membrane voltage goes up, then nearby parts of the cell will also start to let in positively-charged ions, and the higher membrane voltage will spread.\\
+
+Membrane voltage changes from each of the dendrites eventually converge at the base of the \textit{axon}, the output end of the cell, where they are effectively ``summed." If the total sum is above a threshold, then a high membrane voltage travels down the axon and ultimately causes the neuron to release chemical signals that affect downstream cells. The amount of chemical signal released is quite consistent, so we say that the output of the neuron is a Boolean variable. Since the neuron's inputs are usually chemical signals released by other neurons, we can consider the neuron's inputs to be Boolean as well. However, some synapses can cause larger membrane voltage changes than others based of their position and size.
+
+\subsection*{Artificial neurons}
+
+We can simplify our understanding of the biology into a very simple model called an \textit{artifical neuron}. For Boolean input values $x_i$ with weights $w_i$ and activation threshold $\theta$
+\begin{eqnarray*}
+ f \left(x_1, \ldots, x_n\right) = \left\{
+     \begin{array}{ll}
+       1, &  \theta \leq \sum_{i=1}^n w_i x_i \\
+       0, & \textrm{ otherwise}
+     \end{array}
+   \right.
+\end{eqnarray*}
+
+By choosing the parameters $w_i$ and $\theta$ we can cause this artificial neuron to behave like a logic gate. What parameters could we choose to make an AND gate? A NOT gate? Can we use a single neuron as a NAND gate? [Audience response including specification of weights that would achieve this.] It is indeed possible for the threshold to be negative: an example are the photoreceptors in the eye, which fire continuously in the dark but stop firing when a photon is detected. So neuronal networks are also Turing complete.\\
+
+It probably does not surprise you that neurons are very flexible tools for computation. But
+many organisms lack neurons, and still respond to complex combinations of factors in their environment. Is biology Turing complete in a more general way? In a way that is shared by all forms of life?
+
+\section*{Fundamental characteristics of life}
+
+I'm interested to hear your opinions on what qualifies something as ``alive." What are some traits you think all (biological) living things share? [Audience response typically including some of the following from wikipedia:]
+
+\begin{itemize}[itemsep=0pt]
+\item Homeostasis
+\item Organization
+\item Metabolism
+\item Growth
+\item Adaptation
+\item Response to stimuli
+\item Reproduction
+\end{itemize}
+
+$\ldots$ and which of these things do you think are fundamental for \textit{anything} to be considered alive? [Audience response] I would make an argument that at the very least adaptation and self-replication are crucial, and that's where I'll be focusing for the remainder of this lecture.
+
+\section*{Adaptation and self-replication}
+
+John von Neumann was a famous academic and war hero similar in many respects to Alan Turing. Like Turing, he began his career in pure mathematics and transitioned to stuyding issues of computation, flirting briefly with biology during the last few years before his untimely death. Johnny had been instrumental in the significant advances needed to construct wartime computers for atomic (and later hydrogen) bomb design. Turing machines (and indeed the electronic computers) were known to be computationally boundless, but it was unclear whether and how they might be made to self-replicate (given appropriate starting materials). This became one of Johnny's untold dozens of research directions in the 1950s.\\
+
+von Neumann appreciated that if self-replication could be implemented, then adaptation would be possible. Accurate self-replication is easily made into somewhat-accurate self-replication, generating variation on which selection can act: R. A. Fisher had already shown in his classic 1930 paper that the rate of increase in fitness is proportional to the genetic variance of the population. (Were von Neumann's thoughts of mutability inspired by his daily frustrations with unreliable parts?) Of course an ideal form of self-replication would create a high ratio of beneficial to neutral/deleterious mutations (for reference, this ratio has been estimated to be $5 \times 10^{-4}$ in yeast).\\
+
+One of Johnny's greatest insights on this point undoubtedly was inspired by the concept of the universal Turing machine and by the design of real living systems. In a compilation of lectures which you can read if interested on the course website, he considers how a ``universal replicator" -- a machine that can replicate anything it is given -- might efficiently approach its job.\\
+
+Suppose that such a universal replicator exists and that we give it a copy of itself. The universal replicator follows whatever algorithm it has developed for properly inspecting itself, measuring each piece with a pair of calipers and performing elemental analyses and so forth...this takes at least a week. Finally the replicator collects the needed parts and makes the copy of itself. We may then find it amusing to give the universal replicator another copy of itself to see it waste another week performing an identical analysis with the same results.\\
+
+Suppose instead that the universal replicator worked from written instructions. Then it would not need to waste time on examining the object being replciated. Once the written instructions and the physical copy of a universal replicator both exist, the replicator can make more of itself and more of its own description. This two-component system can be replicated much more efficiently than the replicator described above. [Makerbot as an example: the software contains the instruction set.] Written instructions are easily copied with great accuracy, but lower accuracy can result in novel, beneficial ``mistakes" in copying the instructions are inherited by all descendants. \\
+
+You may recognize that as the basic idea underlying how a cell works. Let's divide the cell into two parts: the genome, which is made of DNA, and everything else. The genome is the instruction manual and on its own has no function of interest. The rest of the cell is a machine designed to read DNA and carry out the instructions coded therein, which happen to be the instructions for copying both the DNA and the rest of the cell. von Neumann demonstrated that you can get the same behavior from a simple cellular automaton similar to Conway's Game of Life. (The GoL, by the way, is quite close to achieving geometric reproduction -- an achievement that will have taken at least 45 years and many people.) Since every cell shares this life strategy, if we can co-opt it to make a NAND gate, we'll be pleased with ourselves for demonstrating that all biological organisms are Turing complete.
+
+\section*{Review of Gene Expression Regulation}
+
+``Reading the instructions" from DNA in almost all cases requires transcribing a portion of the genome into RNA. This RNA molecule may be directly functional, but in many cases the RNA is translated to produce a protein (which in that case is the functional entity). As the cell grows and divides, RNA and protein are lost by dilution; RNAs and proteins can also undergo degradation. Although there are many interesting counterexamples, it's not a bad initial guess that the rates of translation and protein loss remain constant for a given gene so long as the cell isn't starving to death. On the other hand, the rate of transcription is very often variable. When we speak of gene expression regulation, we almost always mean transcriptional regulation, unless we state otherwise.\\
+
+The RNA molecule is produced from a DNA template by a protein complex called RNA polymerase. RNA polymerase needs help to decide where it should bind to DNA and start transcribing. Helpful cues are often sent by special proteins called transcription factors that bind to a specific DNA sequence [Show PyMOL structure]; they can then help recruit RNA polymerase to start transcription nearby (in which case we call them ``activators") or prevent RNA polymerase from approaching or proceeding down the template (in which case we call them ``inhibitors" or ``repressors"). The rate of a gene's production could go up as more transcriptional activators bind nearby and down as repressors bind nearby. In prokaryotes, ``nearby" is typically within a few hundred base pairs of the transcription start site: this region is called the gene's ``promoter." In eukaryotes, transcription factors could be binding at the promoter or in regions much further away along the DNA (but presumably close to the transcription start site geometrically, when accounting for things like DNA looping) called \textit{cis}-regulatory elements.\\
+
+The ``logic" underlying when a given gene will be expressed is complex and depends on things like the strength of interactions between transcription factors and RNA polymerase, as well as the placement of the transcription factors' binding sites. It is possible to have fairly complex requirements at a single promoter/\textit{cis}-regulatory element for the activity of RNA polymerase (e.g. at least one of these two activators must be present, and neither one of these repressors can be present). Also fortunately for evolution and for engineering, the transcription factor binding sites in a promoter can be added or removed without changing anything about how the gene's encoded protein will act when translated. Considering that each transcription factor is itself a gene, you'll appreciate that we could make an arbitrarily complex logic function using just by engineering a set of transcription factors and promoters. But of course all we really need to show is that we can make a NAND gate. How might we do this? [Audience activity.]
+
+\section*{New issues introduced by gene regulation}
+
+The examples we treated earlier (the Game of Life, neurons) have a few properties which, for better or worse, gene regulatory networks do not share.
+
+\subsection*{Probabilistic outcomes}
+
+We have assumed in the above that a transcription factor's binding site will be occupied  if the transcription factor is being produced at a high enough level. In reality, the transcription factor must find its binding site through a random walk, and once it is bound, will occasionally be displaced or even simply fall off by chance. The initial binding of RNA polymerase and its interactions with transcription factors are similarly probabilistic events. The undesired variation that results is often referred to as \textit{noise}.\\
+
+The situation is not dire, especially if we are willing to consider extreme limits (very high or very low transcription factor concentration) and averages of the gene regulatory network's behavior over long times. However, many biological systems are remarkable because they function reliably even when those assumptions cannot be made. We chose not to make probability and statistics a pre-requisite for this course, opting for differential equations instead, but it could easily have been the other way around without losing any excitement.
+
+\subsection*{Near-continuous vs. Boolean inputs/outputs}
+
+A related problem when trying to use Boolean logic to model an organic system is that it is not obvious where the cutoff between ``ON" and ``OFF" should fall. If the inputs and outputs are concentrations, as they were for the transcription factors in the gene regulatory network example, then we can easily imagine that ``intermediate" levels might not just be possible but also relevant for the system's behavior. Making biological systems behave in a reasonably switch-like manner is one of the first few problems we will tackle in the course.\\
+
+You may know that bits (binary 0s and 1s) in electronic systems are often encoded as high and low voltages, and that voltages change continuously. It stands to reason that when an input changes from a high to a low voltage, it must pass through every value in between. I have claimed that this could be problematic for implementing Boolean logic in biological systems, but computers seem to be getting on okay. What do computers have that biological systems lack? [Audience response; if unsure, try asking what it means when we say a processor is e.g. 2 GHz.]
+
+\subsection*{Role of the clock}
+
+The clock in the upper (or lower) right-hand corner of your computer screen has a period of twenty-four hours (including the AM/PM designation). This is not the interesting clock. Your computer also has a clock with a period less than one billionth of a second. The signal from this clock oscillates between a high and low voltage, and a given process can be set to occur at a specific ``time." At one phase of the clock, the values stored in memory may be updated; at another, the values stored in memory may be read. In between the voltage can go from low to high, or high to low, without any confusion because the computer does not try to interpret the value in between.\\
+
+Conway's Game of Life is organized into discrete ``rounds" when all updates occur simultaneously. (The biological properties of the neuron prevent it from firing too frequently: after the neuron fires, it takes time to recover, during which any new inputs are effectively ignored since no additional firing can occur.) With gene regulatory networks and many other biological systems, however, the output is being ``computed"  continuously. There is no synchronizing clock to prevent the system from responding while the concentrations of transcription factors are still updating.\\
+
+One solution to this problem that we will see described frequently in this class is to arrange for the system's input to change on a faster timescale than the output. A good example of this would be the way a cathode ray tube (CRT) screen updates. You may have noticed that these screens appear to flicker wildly when videotaped but look just fine to the naked eye. The screen is changing faster than the human eye can perceive it.\\
+
+Gene regulatory networks where concentrations change only due to transcription and degradation are not good candidates for this timescale separation. However, borrowing another real-world trick, we can implement it easily. Suppose that our input transcription factors are always present but can be modified by quickly adding or removing a functional group that changes the transcription factor's activity. A common example is a phosphate group, which special proteins called \textit{kinases} can remove from the end of ATP and stick onto a particular protein target; other proteins, called \textit{phosphatases}, can take the phosphate group back off. Now since the chemical reactions that add and remove phosphates from an existing transcription factor are much faster than the transcription/translation cycle required to make the output transcription factor, the inputs change faster than the outputs. A separation of timescales has been implemented.
+
+\subsection*{Can't reuse parts}
+
+A much more challenging problem to overcome is that components cannot always be reused without interfering with one another. Suppose we were to make a NAND gate in the Game of Life (or out of electronic parts). We can make as many copies of that NAND gate as we want, and hook them all together. As long as we arrange everything properly, none of the glider beams (or conductor lines) will cross and interfere with each other. Neurons are also physically separate from each other and can be hooked up essentially as we see fit.\\
+
+What if we tried to copy the gene regulatory network NAND gate in the same way? [Audience answer. Draw up two copies of whatever solution the class converged on.] When transcription factor proteins have just been translated, they are floating around in the cell and looking through a random walk for their DNA binding site. They will bind to any binding site they encounter; they cannot ``know" that they should be the input for one gate or another. We could solve this problem by using a different type of transcription factor protein, with a different type of binding site, for every NAND gate. But this would become absurd to engineer, let alone to evolve and maintain.
+
+
+%Adleman (1994) also solved the 7-point Hamiltonian path problem with DNA. Ribozymes that function only for the satisfying combination of input small molecules. Wasn't solved faster or first this way; but then again quantum computing is also playing catch-up.
+
+
+\end{document}

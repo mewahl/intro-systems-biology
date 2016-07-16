@@ -1,0 +1,71 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage{enumitem} % change spacing between lines in lists
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 4: Constraints of biological systems}
+\maketitle
+
+This course assumes that students have taken a general course in biology such as AP Biology, SLS 11, LS 1a, etc. We will do our very best to introduce terms the first time they are used, but if we fail, please just ask. (Also, remember that your classmates would be thrilled to share their knowledge with you -- and likely flattered to be asked!)\\
+
+We have seen in the first few lectures that organic parts are sufficient to compute any algorithm. They use an easily-copied instruction``tape" for self-replication.
+
+%\section*{The major organic macromolecules}
+%
+%For each, a reminder of what these molecules look like and what their scales are.
+%
+%\subsection*{Nucleic acids}
+%
+%Can catalyze reactions as well as store information. RNA world hypothesis and its basis in ribosome structure. Difference in capabilities between DNA and RNA.
+%
+%\subsection*{Proteins}
+%
+%By contrast there is no replication by templating. However more diverse chemistry mediated by the range of side chains available. Post-translational modification is used extensively to influence activity.
+%
+%\subsection*{Lipids}
+%
+%Compartmentalization is extremely important because it allows the local concentration of molecules to grow substantially and limits parasitism.
+%
+%\section*{Levels of systems}
+%
+%\subsection*{Chemical reaction networks and catalysis}
+%
+%\subsection*{Domains within proteins/nucleic acids and post-translational modifications}
+%
+%\subsection*{Gene regulation}
+%
+%Time scale compared to chemical reactions. A review of the Central Dogma and some PyMOL representations of translational regulation. Don't forget methylation and histone modifications.
+%
+%\subsection*{Intercellular signaling}
+%
+%Emphasis on development, responsiveness, and homeostasis. Chemical signals including neurotransmitters, quorum sensing paracrine signals, hormones, pheromones.
+%
+%\subsection*{Social systems}
+%
+%Drive home the point that although the phenomena may now be macroscopically observable, at some point there will be a return
+%
+%\section*{Constraints on computation}
+%
+%\subsection*{Noise}
+%
+%Show flow cytometry plot to indicate the variation in expression inherent in ``on" vs. ``off." Wherever single molecule processes are 
+%
+%\subsection*{Time to equilibrium}
+%
+%\subsection*{Energetic costs}
+
+\end{document}

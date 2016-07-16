@@ -1,0 +1,137 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\begin{eqnarray*}
+\ce{A + B <=>[k_1][k_{-1}]  AB }\\
+\textrm{Fraction of B bound to A: } \frac{\left[AB\right]}{\left[B\right] + \left[AB\right]} = \frac{\left[A\right]}{K + \left[A\right]}, K=\frac{k_{-1}}{k_1}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+0.9 = \frac{\left[A\right]}{K + \left[A\right]} \implies \left[A \right] = 9 K\\
+0.1 = \frac{\left[A\right]}{K + \left[A\right]} \implies \left[A \right] = \frac{K}{9}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+0.9 = \frac{\left[A\right]^4}{K + \left[A\right]^4} \implies \left[A \right] = \sqrt[4]{9 K}\\
+0.1 = \frac{\left[A\right]^4}{K + \left[A\right]^4} \implies \left[A \right] = \sqrt[4]{\frac{K}{9}}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+P {\color{white} X_0} + X & \ce{<=>[4k_{\textrm{on}}][k_{\textrm{off}}] }& PX\\
+PX {\color{white} _0} + X &  \ce{<=>[3k_{\textrm{on}}][2k_{\textrm{off}}]} & PX_2 \\
+PX_2 + X & \ce{<=>[2k_{\textrm{on}}][3k_{\textrm{off}}] } & PX_3 \\
+PX_3 + X & \ce{ <=>[k_{\textrm{on}}][4k_{\textrm{off}}] } & PX_4\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+4 \left[P_{\textrm{tot}} \right] = 4 \left( \left[P \right] + \left[PX \right] + \left[PX_2 \right] + \left[PX_3 \right] + \left[PX_4 \right] \right)\\
+\left[PX \right] + 2 \left[PX_2 \right] + 3 \left[PX_3 \right] + 4 \left[PX_4 \right]\\
+\bar{\nu} = \frac{\left[PX \right] + 2 \left[PX_2 \right] + 3 \left[PX_3 \right] + 4 \left[PX_4 \right]}{4 \left( \left[P \right] + \left[PX \right] + \left[PX_2 \right] + \left[PX_3 \right] + \left[PX_4 \right] \right)}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+4k_{\textrm{on}} \left[ P \right]  \left[ X \right] = k_{\textrm{off}}  \left[ PX \right] \implies \left[ PX \right] = \frac{4k_{\textrm{on}}  \left[ X \right]}{k_{\textrm{off}} } \left[ P \right] = 4 K \left[ X \right] \left[ P \right]\\
+3k_{\textrm{on}} \left[ PX \right]  \left[ X \right] = 2 k_{\textrm{off}}  \left[ PX_2 \right]\\
+\left[ PX_2 \right] = \frac{3k_{\textrm{on}}  \left[ X \right]}{2k_{\textrm{off}} } \left[ PX \right] = 6 K^2 \left[ X \right]^2 \left[ P \right]  \\
+\left[ PX \right] = 4 K  \left[ X \right] \left[ P \right] & \hspace{1 cm} & \left[ PX_3 \right] = 4 K^3  \left[ X \right]^3 \left[ P \right]\\
+\left[ PX_2 \right]  = 6K^2  \left[ X \right]^2 \left[ P \right]  & \hspace{1 cm} & \left[ PX_4 \right]  = K^4 \left[ X \right]^4 \left[ P \right]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\bar{\nu} & = & \frac{4 K \left[ X \right]  \left[ P \right] \left( 1 + 3 K  \left[X\right] + 3 K^2  \left[X \right]^2 + K^3  \left[X \right]^3 \right)}{4 \left[ P \right] \left( 1 + 4 K \left[X \right] + 6 K^2 \left[X \right]^2 + 4 K^3 \left[X \right]^3 + K^4 \left[X \right]^4 \right)}\\
+& = & \frac{K \left[ X \right] \left( 1 + K  \left[X\right] \right)^3}{ \left( 1 + K \left[X \right] \right)^4} = \frac{K \left[ X \right]}{1 + K \left[ X \right]} = \frac{\left[ X \right]}{K' +  \left[ X \right]} 
+\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\ce{P{\color{white} X_1} + X <=>[4k_1][k_{-1}] PX{\color{white} _0}}\\
+\ce{PX{\color{white} _0} + X <=>[3k_2][2k_{-2}] PX_2}\\
+\ce{PX_2 + X <=>[2k_3][3k_{-3}] PX_3}\\
+\ce{PX_3 + X <=>[k_4][4k_{-4}] PX_4}\\
+K_i = \frac{k_i}{k_{-1}}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\left[ \textrm{PX} \right] = 4K_1 \left[ \textrm{P} \right]\left[ \textrm{X} \right] & \hspace{1 cm} & \left[ \textrm{PX}_3 \right] =4K_1K_2K_3 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^3\\
+ \left[ \textrm{PX}_2 \right] = 6K_1K_2 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^2 & \hspace{1 cm} & \left[ \textrm{PX}_4 \right] =K_1K_2K_3K_4 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^4
+\end{eqnarray*}
+
+\begin{eqnarray}
+\bar{\nu} & = & \frac{K_1 \left[ X \right] + 3K_1K_2 \left[ X \right]^2 + 3K_1K_2K_3 \left[ X \right]^3 + K_1K_2K_3K_4 \left[ X \right]^4}{1 + 4K_1 \left[ X \right] + 6K_1K_2 \left[ X \right]^2 + 4K_1K_2K_3 \left[ X \right]^3 + K_1K_2K_3K_4 \left[ X \right]^4 \label{adair}}\\
+\bar{\nu} & \approx & \frac{ K_1K_2K_3K_4 \left[ X \right]^4}{1 + K_1K_2K_3K_4 \left[ X \right]^4} =  \frac{ \left[ X \right]^4}{K +  \left[ X \right]^4} \label{hill}\\
+\end{eqnarray}
+
+\begin{eqnarray*}
+\bar{\nu} & = &  \frac{ \left[ X \right]^n}{K^n +  \left[ X \right]^n}\\
+\frac{d \bar{\nu}}{d\left[ X \right]} & = & \frac{nK^n \left[X \right]^{n-1}}{\left(\left[X\right]^n + K^n\right)^2} \\
+\left. \frac{d \bar{\nu}}{d\left[ X \right]} \right|_{[X] = K} & = &   \frac{n}{4K}
+\end{eqnarray*}
+
+\[ \frac{dY}{d\left[X\right]} = \frac{n[X]^{n-1}\left(K^n + [X]^n\right) - [X]^n \cdot -n [X]^{n-1}}{\left([X]^n + K^n\right)^2} = \frac{nK^n [X]^{n-1}}{\left([X]^n + K^n\right)^2} \]
+
+
+\begin{eqnarray*}
+\left[ \textrm{PX} \right] & = & \frac{4k_1}{k_{-1}} \left[ \textrm{P} \right]\left[ \textrm{X} \right] = 4K_1 \left[ \textrm{P} \right]\left[ \textrm{X} \right]\\
+\left[ \textrm{PX}_2 \right] & = &  \frac{3k_2}{2k_{-2}} \left[ \textrm{PX} \right]\left[ \textrm{X} \right] =  6K_1K_2 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^2\\
+\left[ \textrm{PX}_3 \right] & = &  \frac{2k_3}{3k_{-3}} \left[ \textrm{PX}_2 \right]\left[ \textrm{X} \right] = 4K_1K_2K_3 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^3\\
+\left[ \textrm{PX}_4 \right] & = &  \frac{k_4}{4k_{-4}} \left[ \textrm{PX}_3 \right]\left[ \textrm{X} \right]  = K_1K_2K_3K_4 \left[ \textrm{P} \right]\left[ \textrm{X} \right]^4
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+\textrm{Expression rate } & = &  c \cdot \textrm{Fraction of time a transcriptional activator is bound at its site}\\
+& = & \frac{c \left[ \textrm{TF} \right]^n}{K + \left[ \textrm{TF} \right]^n}\\
+\textrm{Expression rate } & = &  c \cdot \textrm{Fraction of time a transcriptional repressor is }\textit{not}\textrm{ bound at its site}\\
+& = & c \left(1 - \frac{\left[ \textrm{TF} \right]^n}{K + \left[ \textrm{TF} \right]^n} \right) = \frac{c K}{K + \left[ \textrm{TF} \right]^n}
+\end{eqnarray*}
+
+
+\[ \left[ \textrm{HbO$_2$}\right] = \frac{K_1 \left[ \textrm{O}_2 \right] \left[ \textrm{Hb}_{\textrm{tot}} \right] }{1 + K_1 \left[ \textrm{O}_2 \right] + K_2 \left[ \textrm{CO} \right] } \]
+
+\[\frac{d\left[ P \right]}{dt} = \frac{V_{\textrm{max}} \left[ S \right]}{\left[ S \right] + K_M \left( 1 + \frac{\left[ I \right]}{K_I} \right)} \]
+
+\[ \ce{\textrm{CO}_2 + \textrm{H$_2$O} <=> \textrm{H$_2$CO}_3 <=> \textrm{H}^+ + \textrm{HCO}_3^-} \]
+
+\[\frac{d\left[ P \right]}{dt} = \left( \frac{V_{\textrm{max}}}{1 + \frac{\left[ I \right]}{K_I}} \right) \frac{\left[ S \right]}{\left[ S \right] + K_M } \]
+
+\[ \theta(t) = \left\{
+     \begin{array}{lr}
+       1 & : t > 0\\
+       0 & : t \leq 0
+     \end{array}
+   \right.
+   \]
+   
+   \[ \theta(\textrm{condition}) = \left\{
+     \begin{array}{lr}
+       1 & : t > 0\\
+       0 & : t \leq 0
+     \end{array}
+   \right.
+   \]
+   
+   \[ \frac{dP}{dt} = \alpha \theta \left( \left[ \textrm{Activating TF} \right] > K \right) - \beta P \]
+
+
+\end{document}

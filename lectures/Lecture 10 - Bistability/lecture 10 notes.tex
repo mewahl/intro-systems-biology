@@ -1,0 +1,247 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\section*{2-D example: mutual repression}
+
+A suitable place to begin is with the mutual repression example introduced in lecture 9. In this model, X and Y are transcriptional repressors that each bind to each other's promoter. Therefore, the production rate of each protein is a decreasing function $h$ of the other's concentration. Each protein also undergoes normal dilution/degradation, so that overall the model is:
+
+\begin{eqnarray*}
+\frac{dx}{dt} = f(x,y)  & =  & \alpha h(y)  -  \beta x\\
+\frac{dy}{dt} = g(x,y) &=  &  \alpha h(x) - \beta y
+\end{eqnarray*}
+
+In particular, we chose $h$ to be the probability that the repressor was \textit{not} bound to the promoter, and assumed that the repressor bound the promoter according to a Hill equation:
+
+\[ h(x) = 1 - \frac{x^n}{K + x^n} = \frac{K}{K+ x^n} \]
+
+Notice that if we choose to measure $x$ and $y$ in appropriate units, that we can simplify this expression to:
+
+\[ h(x) = \frac{1}{1+ x^n} \]
+
+We will assume the units of [X] and [Y] are chosen appropriately so that no K is needed. The rate laws for this simplified system are:
+
+\begin{eqnarray*}
+\frac{dx}{dt} = f(x,y)  & =  & \frac{\alpha }{1+ y^n}  -  \beta x\\
+\frac{dy}{dt} = g(x,y) &=  &  \frac{\alpha }{1+ x^n} - \beta y
+\end{eqnarray*}
+
+We remained agnostic about what the value of $n$ would need to be. We had just been reminded that changing parameter values could have qualitative effects on the number and types of fixed points. Would we be able to get bistability if the transcription factor's binding curve were hyperbolic, i.e.,$n=1$? Or would we require cooperativity in transcription factor binding, i.e., $n>1$? Is the Hill coefficient $n$ the only important parameter for determining whether bistability will occur?\\
+
+The last time we faced these questions, plotting was the only tool available to us. We found ourselves needing to choose a particular set of parameter values before the direction field and trajectories could be determined at all. Now that we have a better understanding of stability, we can improve on that attempt.
+
+\section*{How many fixed points are there?}
+
+To have bistability, we must have at least two fixed points (we will worry about their stability afterward). We now take a more careful look at how many fixed points are present to begin with.
+
+\subsection*{Simple hyperbolic binding}
+
+Consider first the case where $n=1$: this corresponds to a simple hyperbolic binding curve. A fixed point $(x^*, y^*)$ would need to satisfy:
+
+\begin{eqnarray*}
+g(x^*, y^*) = 0 & \implies & y^* = \frac{\alpha/\beta}{1 + x^*}\\
+f(x^*, y^*) = 0 & \implies & x^* = \frac{\alpha/\beta}{1 + y^*} = \frac{\alpha /\beta}{ + \left( \frac{\alpha/\beta}{1 + x^*} \right)} = \frac{1 + x^*}{\frac{\beta}{\alpha}\left(1 + x^*\right) + 1 }\\
+\end{eqnarray*}
+
+How many points $x^*$ are there that satisfy the latter equality? To determine this, we need to know how often the following two curves intersect:
+
+\begin{eqnarray*}
+y_1 = x  \hspace{1 cm} \textrm{ and } \hspace{1 cm}  y_2 = \frac{1 + x}{\frac{\beta}{\alpha}\left(1 + x\right) + 1 }
+\end{eqnarray*}
+
+The first is simply a straight line beginning at zero. The second curve begins at a positive value. Its first two derivatives are
+
+\begin{eqnarray*}
+\frac{dy_2}{dx} & = &\frac{\frac{\beta}{\alpha}\left(1 + x\right) + 1 - \frac{\beta}{\alpha} \left(1+x \right)}{\left( \frac{\beta}{\alpha}\left(1 + x\right) + 1 \right)^2} = \frac{1}{\left( \frac{\beta}{\alpha}\left(1 + x\right) + 1 \right)^2} > 0 \hspace{1 cm} \forall \, x\\
+\frac{d^2y_2}{dx^2} & = & \frac{-2 \frac{\beta}{\alpha}}{\left( \frac{\beta}{\alpha}\left(1 + x\right) + 1 \right)^3}  < 0 \hspace{ 1 cm} \forall x
+\end{eqnarray*}
+
+These properties of $y_2$, combined with the fact that $y_2 > y_1$ when $x=0$, imply that $y_1$ and $y_2$ will intersect exactly once. Therefore, there is only one value for $x^*$ when $n=1$. In other words, it is impossible for the system to be bistable when the Hill coefficient $n=1$ because there simply aren't two fixed points to rub together.
+
+\subsection*{Cooperativity ($n>1$)}
+
+Will we be guaranteed to have more than one fixed point if $n>1$, i.e., the transcription factors bind cooperatively? To address this question, we return to the simplified form of our system:
+
+\begin{eqnarray*}
+\frac{dx}{dt} & =  & \alpha h(y)  -  \beta x\\
+\frac{dy}{dt} & =  &  \alpha h(x) - \beta y
+\end{eqnarray*}
+
+At fixed points $(x^*, y^*)$, both of these time derivatives will be zero, so:
+
+\begin{eqnarray}
+\begin{aligned}
+x^* & =  & \frac{\alpha}{\beta} h(y^*)\\
+y^* & =  & \frac{\alpha}{\beta} h(x^*) \label{eqn:abstractedfixedpointsmr}
+\end{aligned}
+\end{eqnarray}
+
+These curves are called the \textit{nullclines} of the system. (The $x$ nullcline is the set of points along which $\dot{x}=0$, and so forth.)  Our fixed points are at the intersection of the nullclines, so we need to determine how often the two lines intersect to find the number of fixed points. To illustrate our approach, consider the three plots in Figure \ref{fig:tangent} of the nullclines as the parameter $\frac{\alpha}{\beta}$ is changing (for fixed $n=2$):\\
+
+\begin{figure}[htp] \centering{
+\includegraphics[width=1 \textwidth]{tangent.pdf}}
+\caption{Plots of the $x$ and $y$ nullclines before, at, and after a bifurcation. Hill coefficient $n=2$.} \label{fig:tangent}
+\end{figure}
+
+There are two important take-home messages here. The first is that the number of fixed points depends not just on $n$, but also on $\frac{\beta}{\alpha}$. (Recall that such changes in the number of fixed points as parameters are varied are called bifurcations.) Second, as will hopefully be clear from this illustration, bifurcations occur when the two nullclines become tangent to one another, i.e., when their slopes are equal at a point of intersection (a fixed point). Nullcline equations \ref{eqn:abstractedfixedpointsmr} both hold at fixed points, and we can find an expression for when their slopes are equal as follows:
+
+\begin{eqnarray}
+\frac{d}{dx} \left[ y \right] & = & \frac{d}{dx} \left[ \frac{\alpha}{\beta} h(x) \right] = \frac{\alpha}{\beta} \frac{dh(x)}{dx} \label{eqn:fromynullcline}\\
+\frac{d}{dx} \left[ x \right] & = & \frac{d}{dx} \left[ \frac{\alpha}{\beta} h(y) \right] \nonumber \\
+\frac{\beta}{\alpha}  & = & \frac{dh(y)}{dy} \frac{dy}{dx} \hspace{1 cm} \textrm{Since the slopes must be equal, plug in $dy/dx$ from equation \ref{eqn:fromynullcline}:} \nonumber\\
+\left( \frac{\beta}{\alpha} \right)^2& = & \frac{dh(y)}{dy} \frac{dh(x)}{dx} = h'(y) \, h'(x) \label{eqn:expressionfortangent}
+\end{eqnarray}
+
+We can take the derivative of $h(x)$:
+
+\[ \frac{dh(x)}{dx} = \frac{d}{dx} \left[ \frac{1 }{1 + x^n} \right] = \frac{- n x^{n-1}}{\left( 1 + x^n \right)^2}  \]
+
+And plug this into expression \ref{eqn:expressionfortangent} (recalling that we are at a fixed point so equations \ref{eqn:abstractedfixedpointsmr} hold):
+
+\begin{eqnarray*}
+\left( \frac{\beta}{\alpha} \right)^2& = & \left[ \frac{- n   x^{n-1}}{\left( 1 + x^n \right)^2} \right] \left[ \frac{- n y^{n-1}}{\left( 1 + y^n \right)^2} \right]\\
+\left( \frac{\alpha}{\beta n} \right)^2& = & x^{n-1} y^{n-1} 
+\left( \frac{\alpha/\beta}{ 1 + x^n} \right)^2 \left( \frac{\alpha/\beta}{1 + y^n} \right)^2 = x^{n+1} y^{n+1} = \left( \frac{\alpha}{\beta} \right)^{n+1} \left( \frac{x}{1+x^n} \right)^{n+1}\\
+\left( \frac{1}{x} + x^{n-1} \right)^{n+1} & = & n^2 \left( \frac{\alpha}{\beta} \right)^{n-1}
+\end{eqnarray*}
+
+For all values of $n>1$ and $x^*>0$, it is possible to find $\alpha/\beta$ to meet this equality. Any value of $\alpha/\beta$ larger than that threshold will result in more than one fixed point. Although we will not show it, the fact that the two nullclines are sigmoidal (i.e. there is one inflection point) will imply that there can never be more than three fixed points.
+
+\section*{Stability of the fixed points}
+
+We have shown that for all $n>1$, it is possible to choose $\alpha/\beta$ so that we have three fixed points. Now we linearize the system around these fixed points in order to determine their stability. First, we will briefly review that method.
+
+\subsection*{Recap of last time}
+
+ At the end of lecture 9, we had just learned that for a linear system:
+
+\begin{eqnarray}
+\frac{d}{dt} \begin{pmatrix} x_1 \\ \vdots \\ x_n \end{pmatrix} & = & \mathcal{A} \begin{pmatrix} x_1 \\ \vdots \\ x_n \end{pmatrix} \label{eqn:generallinearsystem}
+\end{eqnarray}
+
+when $\mathcal{A}$ has $n$ distinct eigenvectors $\mathbf{v}_i$ with corresponding eigenvalues $\lambda_i$, the general solution is:
+
+\begin{eqnarray}
+\begin{pmatrix} x_1 \\ \vdots \\ x_n \end{pmatrix} & = & \sum_{i=1}^n c_i \mathbf{v}_i e^{\lambda_i t} \label{eqn:generallinearsolution}
+\end{eqnarray}
+
+We had also learned that if the real parts of all eigenvalues are negative, then $(0,0)$ is a stable fixed point. If the real part of any eigenvalue is positive, the origin is not a stable fixed point. \\
+
+We were about to practice applying this approach to study the stability of fixed points of non-linear systems of the form:
+
+\begin{eqnarray*}
+\frac{dx_1}{dt}& = & f_1(x_1, \ldots, x_n) = f_1(\mathbf{x})\\
+& \vdots & \\
+\frac{dx_n}{dt}& = & f_n(x_1, \ldots, x_n) = f_n(\mathbf{x})
+\end{eqnarray*}
+
+Recall that a fixed point $\mathbf{x^*}=(x_1^*, \ldots, x_n^*)$ has the property that
+
+\[ f_i(\mathbf{x^*}) = 0 \hspace{1 cm} \forall i \]
+
+We had shown that near a fixed point $\mathbf{x^*}$, a non-linear system can be \textit{linearized} (a process that involves a change of coordinates) by calculating a matrix called the Jacobian, $\mathbf{J}$:
+
+\begin{eqnarray}
+\frac{d}{dt} \begin{pmatrix} y_1 \\ \vdots \\ y_n \end{pmatrix} & = &  \mathbf{J}_{\mathbf{x^*}} \begin{pmatrix} y_1 \\ \vdots \\ y_n \end{pmatrix} = \begin{pmatrix} \frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_n}\\ \vdots & \ddots & \vdots \\ \frac{\partial f_n}{\partial x_1} & \cdots & \frac{\partial f_n}{\partial x_n} \end{pmatrix}_{\mathbf{x^*}} \begin{pmatrix} y_1 \\ \vdots \\ y_n \end{pmatrix} \label{eqn:generallinearizedsystem}
+\end{eqnarray}
+
+The stability of this linearized system at the origin is the same as the stability of the non-linear system at the point $\mathbf{x^*}$.
+
+\subsection*{Application to the 2-D mutual repression system}
+
+Recall that the mutual repression system is two-dimensional and can be written as:
+
+\begin{eqnarray*}
+\frac{dx}{dt} = f(x,y)  & =  & \frac{\alpha }{1+ y^n}  -  \beta x\\
+\frac{dy}{dt} = g(x,y) &=  &  \frac{\alpha }{1+ x^n} - \beta y
+\end{eqnarray*}
+
+To linearize around a fixed point $(x^*,y^*)$, we must calculate:
+
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} a \\ b \end{pmatrix} & = &  \begin{pmatrix} \frac{\partial f}{\partial x} & \frac{\partial f}{\partial y}\\  \frac{\partial g}{\partial x} & \frac{\partial g}{\partial y} \end{pmatrix}_{(x^*, y^*)} \begin{pmatrix} a \\ b \end{pmatrix}\\
+& = & \begin{pmatrix} - \beta  &  \frac{-\alpha ny^{n-1}}{(1+y^n)^2} \\   \frac{- \alpha nx^{n-1}}{(1+x^n)^2} & -\beta  \end{pmatrix}_{(x^*, y^*)} \begin{pmatrix} a \\ b \end{pmatrix}\\
+\end{eqnarray*}
+
+How will we try this out? Once we are certain that we have chosen $\alpha/\beta$ so that we have three fixed points ($n>1$), we numerically solve to find the location of the fixed points; for example:
+
+\[f(x^*,y^*) = g(x^*, y^*) = 0 \implies x^* = \frac{\alpha/\beta}{1 + \left( \frac{\alpha/\beta}{1 + x^{*n}} \right)^n} \]
+
+\begin{lstlisting}
+syms x;
+n = 3;
+c = 2;
+vpasolve(x == c/(1 + (c/(1+x^n))^n),x)
+\end{lstlisting}
+
+In this example, where $n=3$ and $\alpha/\beta = 2$, the three fixed points are $(1.98, 0.23)$, $(1,1)$, and $(0.23, 1.98)$. Let's try evaluating our Jacobian at the first point:
+
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} a \\ b \end{pmatrix} & = & \begin{pmatrix} -1 & \frac{- 6 y^{2}}{(1+y^{3})^2} \\ \frac{- 6 x^{2}}{(1+x^{3})^2} & -1  \end{pmatrix}_{(1.98, 0.23)} \begin{pmatrix} a \\ b \end{pmatrix} = \begin{pmatrix} -1 & -0.31 \\ -0.31 & -1 \end{pmatrix} \begin{pmatrix} a \\ b \end{pmatrix}\\
+\end{eqnarray*}
+
+We now calculate the eigenvalues and eigenvectors of this matrix in MATLAB:
+\begin{lstlisting}
+j = [-1, -0.31; -0.31, -1];
+[v, l] = eig(j);
+disp(sprintf('The first eigenvector is (%0.4f,%0.4f) with eigenvalue %s', v(1,1), v(2,1), num2str(l(1,1))));
+disp(sprintf('The second eigenvector is (%0.4f,%0.4f) with eigenvalue %s', v(1,2), v(2,2), num2str(l(2,2))));
+\end{lstlisting}
+
+The results are:
+
+\[ \mathbf{v}_1 = \begin{pmatrix} \frac{1}{\sqrt{2}}\\ \frac{1}{\sqrt{2}} \end{pmatrix} \textrm{ and } \lambda_1 = -1.31 \hspace{1 cm} \mathbf{v}_2 = \begin{pmatrix} \frac{-1}{\sqrt{2}}\\ \frac{1}{\sqrt{2}} \end{pmatrix} \textrm{ and } \lambda_2 = -0.69 \]
+
+The fact that the eigenvalues are both real and negative tells us that this is a stable fixed point! We will have noted that the Jacobian would be the same at the point $(0.23, 1.98)$, so both points are stable!.\\
+
+What about the third fixed point, $(1,1)$?
+
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} a \\ b \end{pmatrix} & = & \begin{pmatrix} -1 & \frac{- 6 y^{2}}{(1+y^{3})^2} \\ \frac{- 6 x^{2}}{(1+x^{3})^2} & -1  \end{pmatrix}_{(1,1)} \begin{pmatrix} a \\ b \end{pmatrix} = \begin{pmatrix} -1 & -1.5 \\ -1.5 & -1 \end{pmatrix} \begin{pmatrix} a \\ b \end{pmatrix}\\
+\end{eqnarray*}
+
+\begin{lstlisting}
+j = [-1, -1.5; -1.5, -1];
+[v, l] = eig(j);
+disp(sprintf('The first eigenvector is (%0.4f,%0.4f) with eigenvalue %s', v(1,1), v(2,1), num2str(l(1,1))));
+disp(sprintf('The second eigenvector is (%0.4f,%0.4f) with eigenvalue %s', v(1,2), v(2,2), num2str(l(2,2))));
+\end{lstlisting}
+
+\[ \mathbf{v}_1 = \begin{pmatrix} \frac{1}{\sqrt{2}}\\ \frac{1}{\sqrt{2}} \end{pmatrix} \textrm{ and } \lambda_1 = -2.5 \hspace{1 cm} \mathbf{v}_2 = \begin{pmatrix} \frac{-1}{\sqrt{2}}\\ \frac{1}{\sqrt{2}} \end{pmatrix} \textrm{ and } \lambda_2 = 0.5 \]
+
+Since one eigenvalue is positive and one is negative, this is a \textit{saddle} point. Trajectories will approach this fixed point along the first eigenvector but all trajectories not lying precisely on this line will ultimately veer off towards one of the two stable fixed points.\\
+
+How do we know that two of the fixed points will \textit{always} be stable? The answer lies in the type of bifurcation that has occurred. If we make a plot of $x^*$ vs. $\alpha/\beta$, indicating stable nodes by solid lines and unstable nodes by dotted lines, we get something that looks like a pitchfork. In our case, we have a \textit{supercritical pitchfork} bifurcation: a single stable fixed point converts to an unstable fixed point as two new stable fixed points arise. Pitchfork bifurcations are often seen in symmetrical systems.\\
+
+In the real world, noise will occasionally perturb the system from its normal trajectory. If such noise is able to push the system from one basin of attraction to the other, then the system is not functionally bistable. The likelihood of this occurring depends on how far separated each fixed point is from the \textit{separatrix} that forms the boundary between the two basins of attraction. We have seen that this distance increases with $\alpha/\beta$ -- that is, approximately with the steady-state expression level of the more highly-expressed protein, as well as with $n$.
+
+\section*{Summary of mutual repression and motivation for discussion paper}
+
+We have shown that cooperativity ($n>1$) is necessary for bistability in this system. This is unfortunate because there are many transcription factors that undergo simple binding, which we might like to use to build bistable circuits. For example, we could use pairs of repressors to make ``bits" of memory in a biological system. However, as you saw in the first discussion paper, the biological repertoire of non-conflicting parts is inherently limited so we would like to be able to use all of the transcription factors available to us, even those that bind simply. \\
+
+In particular, we'd like to be able to use the types of transcription factors that we can \textit{design} to bind to a DNA sequence of our choosing. One such type of transcription factor is called a TAL effector or TALE. We will see that their system explicitly adds positive feedback; in their case, transcription factors bind to their own promoters to increase their own rate of expression.\\
+
+The general idea used in this discussion paper is inspired by real biological systems like \textit{B. subtilis} competence mediation by \textit{comK} and \textit{rok}. A similar scheme is used in the phage lambda lysis/lysogeny cycle: cI and cro as a modified version of this mutual repression system with added competition for binding sites $O_R1$ through $O_R3$.
+
+\end{document}

@@ -1,0 +1,237 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+Here is another trick to identify moieties within a chemical reaction network. We'll use the five-species system mentioned in class (and in Gunawardena's chemical reaction network theory PDF, available on the course website) as our example. We'll  label our four reactions:
+
+\begin{eqnarray*}
+r_1: & &  \ce{A <=>  2B }\\
+r_2: & &  \ce{D <=>  A + C }\\
+r_3: & &  \ce{D ->  B + E }\\
+r_4: & &  \ce{B + E ->  A + C }\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+v_1 & = & k_1 A - k_{-1} B^2\\
+v_2 & = & k_2 D - k_{-2} A C\\
+v_3 & = & k_3 D\\
+v_4 & = & k_4 B E
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} & = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} k_1 A - k_{-1} B^2 \\ k_2 D - k_{-2} A C  \\ k_3 D \\ k_4 B E \end{pmatrix}
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} & = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+
+
+
+At a given time, each of these reactions has a net forward rate $v_i$. Note that the $v_i$ are not mass action rate constants: for example, $v_1 = k_1 A - k_{-1} B^2$, where the $k_i$ are the mass action rate constants for the forward and reverse directions of reaction 1.\\
+
+We construct a stoichiometry matrix with as many rows as there are molecular species, and as many columns as there are reactions. The entries are the coefficients of each species in each reaction. If a species is not mentioned in a certain reaction, then its entry is zero. If the species is a reactant (i.e. on the left-hand side of the arrows), then its entry will be negative; otherwise, the entry will be positive.
+
+\begin{eqnarray*}
+&  & \hspace{0.25cm}
+\begin{array}{ccccc}
+       r_1 & r_2 & r_3 & r_4
+     \end{array}\\
+\textrm{stoichiometry matrix } S & = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} 
+\hspace{0.2 cm}
+\begin{array}{l}
+       A\\
+      B\\
+      C\\
+      D\\
+      E
+     \end{array}
+\end{eqnarray*}
+
+This matrix has rank three (which we can determine using MATLAB's rank() function), while there are five chemical species. This implies that we can apply row reduction to eliminate two rows. I hope you'll excuse the steps being written out here explicitly: you could also use a MATLAB function like rref(), but I want to make it clear what's happening.\\
+
+To begin, we describe how the concentrations are changing with time as:
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} = 
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &0\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 0 & 0 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Now, we add the fifth row to the second row (on both sides of the equation):
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 0 & 0 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Now we add rows three and four to the fifth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Next, we multiple the fourth row by 2:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 2 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -2 & -2 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Then we add two times the first row to the fourth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 2 & 0 & 0& 2 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+-2 & 0 & -2 & 2\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Finally, we add the second row to the fourth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 2 & 1 & 0& 2 & 1\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+As expected, we were able to eliminate two rows of the matrix. Notice that the last row implies that:
+
+\[ \frac{dC}{dt} + \frac{dD}{dt} + \frac{dE}{dt} = 0 \]
+
+or, taking the integral with respect to time,
+
+\[ \left[ C \right] + \left[ D \right] + \left[ E \right] = \textrm{ constant} \]
+
+Similarly, the fourth row implies that:
+
+\[ 2 \frac{dA}{dt} + 2 \frac{dD}{dt} + \frac{dB}{dt} + \frac{dE}{dt} = 0 \]
+
+or, in other words,
+
+\[ 2 \left[ A \right] + 2 \left[ D \right]+ \left[ B \right]  + \left[ E \right] = \textrm{ constant} \]
+
+These are our two moiety conservation relations. Feel free to try it out this method on the homework problem!\\
+
+\begin{eqnarray*}
+\frac{dS}{dt} & = & k_{-1} C - k_1 S E\\
+\frac{dE}{dt} & = & k_{-1} C + k_2 C - k_1 S E\\
+\frac{dC}{dt} & = & k_1 S E - k_{-1} C - k_2 C\\
+\frac{dP}{dt} & = & k_2 C\\
+\frac{d}{dt} \begin{pmatrix} S\\ E\\ C\\ P \end{pmatrix} & = & \begin{pmatrix} -1 & 0\\ -1 & 1\\ 1 & -1\\ 0 & 1 \end{pmatrix}\begin{pmatrix} k_1 S E - k_{-1} C\\k_2C\end{pmatrix}\\
+\left[ S \right] + \left[ C \right] + \left[ P \right] = \textrm{constant}\\
+\left[ C \right] + \left[ E \right] = \textrm{constant}\\
+ \left[ E \right] =   \left[ E \right]_{\textrm{tot}} - \left[ C \right] \\
+ \frac{dS}{dt} & = & k_{-1} C - k_1 S \left[ E_{\textrm{tot}} - C \right]\\
+\frac{dC}{dt} & = & k_1 S \left[ E_{\textrm{tot}} - C \right] - k_{-1} C - k_2 C\\
+\frac{dP}{dt} & = & k_2 C\\
+ \frac{dS}{dt} & = & - k_1 S E_{\textrm{tot}} + C \left[k_{-1} + k_1 S \right]\\
+\frac{dC}{dt} & = & k_1 S E_{\textrm{tot}}  - C \left[ k_{-1} + k_2 + k_1 S \right] = 0 \\
+\frac{dP}{dt} & = & k_2 C\\
+C & = & \frac{k_1 S E_{\textrm{tot}}}{k_{-1} + k_2 + k_1 S} = \frac{S E_{\textrm{tot}}}{K_m + S}, \hspace{ 1 cm} K_m = \frac{k_{-1} + k_2}{k_1}\\
+C & = & \frac{S E_{\textrm{tot}}}{K_m + S}, \hspace{ 1 cm} K_m = \frac{k_{-1} + k_2}{k_1}\\
+\frac{dP}{dt} & = & k_2 C = \frac{V_{\textrm{max}} S}{K_m + S}, \hspace{1 cm} V_{\textrm{max}} = k_2 E_{\textrm{tot}}\\
+\frac{d\left[ P \right]}{dt} & = &  \frac{V_{\textrm{max}} \left[S\right]}{K_m + \left[S \right]}\\
+\lim_{[S] \to \infty} \frac{d\left[ P \right]}{dt} & = & V_{\textrm{max}}\\
+\left. \frac{d\left[ P \right]}{dt} \right|_{[S] = K_m} & = & \frac{V_{\textrm{max}}}{2}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\left[ \textrm{DNA}_{\textrm{tot}} \right] = \left[ \textrm{DNA} \right] + \left[ \textrm{Complex} \right]\\
+\ce{\textrm{TF} + \textrm{DNA} <=>[k_1][k_{-1}]  \textrm{Complex} }\\
+\textrm{What is the fraction of bound DNA, } \frac{ \left[ \textrm{Complex} \right]}{\left[ \textrm{DNA} \right] + \left[ \textrm{Complex} \right]} \textrm{, at equilibrium?}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\textrm{At equilibrium, } k_1 \left[ \textrm{TF} \right] \left[ \textrm{DNA} \right] = k_{-1} \left[ \textrm{Complex} \right]\\ \implies \left[ \textrm{DNA} \right] = \frac{k_{-1} \left[ \textrm{Complex} \right]}{k_{1} \left[ \textrm{TF} \right]} 
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{ \left[ \textrm{Complex} \right]}{ \left[ \textrm{DNA} \right] + \left[ \textrm{Complex} \right]}  = \frac{ \left[ \textrm{Complex} \right]}{ \frac{k_{-1} \left[ \textrm{Complex} \right]}{k_{1} \left[ \textrm{TF} \right]} + \left[ \textrm{Complex} \right]} = \frac{ \left[ \textrm{TF} \right]}{ K + \left[ \textrm{TF} \right]} \\
+\textrm{Fraction of DNA bound } = \frac{ \left[ \textrm{TF} \right]}{ K + \left[ \textrm{TF} \right]} 
+\end{eqnarray*}
+
+\begin{eqnarray*}
+{\color{red} a x + by}  & = & {\color{red} c }\\
+{\color{blue} d x + ey} & = & {\color{blue} f}\\
+\implies 2 \left( {\color{red} a x + by} \right) + {\color{blue} d x + ey} & = & 2{\color{red} c } + {\color{blue} f}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+-5x -5 y & = & -10\\
+5x - 7 y & = & 34\\
+-12 y & = & 24 \implies y = -2, x=4
+\end{eqnarray*}
+
+\end{document}

@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+These derivations follow van Kampen (3rd ed.) but summarize only points related to the description of Poisson processes.
+
+\section*{Characteristic functions}
+The characteristic function for a random variable $X$ on the reals is defined as:
+\[ G(k) =\left< e^{ikX} \right> = \int_{-\infty}^{\infty} e^{ikx} P(x)\, dx \]
+Its Taylor expansion is:
+\[ G(k) =  \int_{-\infty}^{\infty} \left[ \sum_{\ell=0}^{\infty} \frac{\left(ik \right)^{\ell}x^{\ell}}{\ell!} \right] P(x)\, dx = \sum_{\ell=0}^{\infty} \frac{\left(ik \right)^{\ell}}{\ell!}  \int_{-\infty}^{\infty} x^{\ell} P(x)\, dx =  \sum_{\ell=0}^{\infty} \frac{\left(ik \right)^{\ell}}{\ell!} \mu_{\ell}\]
+where $\mu_{\ell}$ is the $\ell$th moment of $X$. The characteristic function is therefore also the moment generating function.\\
+
+For a random variable $X$ defined only on the integers,
+\begin{eqnarray*}
+ P(X=n) = \sum_{n \in \mathbb{Z}} p_n \delta(x-n) \implies G(k) = \sum_{n \in \mathbb{Z}} p_n e^{ikn} \label{eqn:discretechar}
+ \end{eqnarray*}
+
+\section*{Point processes}
+A \textit{point process} is a ``random set of points": for example, it might be the set of times at which a chemical reaction (or any other event) occurs. A sample is described by the ordered set of $\sigma$ real numbers (times) $\tau_1, \tau_2, \ldots$. The first $s$ events in this series are represented by $\tau_1,\ldots, \tau_s$. The normalized probability distribution is expressed in terms of functions $P_s(\tau_1,\ldots,\tau_s)$:
+\[ P_0 + \int_{-\infty}^{\infty} P_1(\tau_1) \, d\tau_1 + \int_{\tau_1}^{\infty}\left[  \int_{-\infty}^{\infty}  P_2(\tau_1,\tau_2) \, d\tau_1 \right] \, d\tau_2 + \ldots = 1 \]
+If we restrict the requirement that the $\tau_i$ are in chronological order, then noting that there are $s!$ permutations of the set ${\tau_1,\ldots,\tau_s}$ and requiring that $P_s$ is symmetric in all its variables (i.e. one event is not more likely to occur at a certain time than any other), then we can rewrite the above normalization as:
+\begin{eqnarray}
+P_0 + \sum_{s=1}^{\infty} \frac{1}{s!} \int_{\mathbb{R}^{s}} P_s(\tau_1,\ldots,\tau_s) \, d\tau_1 \, \ldots d\tau_s = 1 \label{eqn:normpoint}
+\end{eqnarray}
+Suppose we would like to know the average number of events occurring within an interval $(t_a,t_b)$. We introduce the indicator function $f(t)=1 \, \forall\,  t \in (t_a,t_b)$, and zero otherwise. Then of $s$ events, the number that occur within this interval is $N = \sum_{k=1}^s f(\tau_k)$, and
+\begin{eqnarray*}
+\left< N \right> & = & \left< \sum_{k=1}^{s} f(\tau_k) \right>\\
+& = & \sum_{s=1}^{\infty} \int_{\mathbb{R}^{s}} \left( \sum_{k=1}^{s} f(\tau_k) \right) P_s(\tau_1,\ldots,\tau_s) \, d\tau_1 \, \cdots d\tau_s\\
+& = & \sum_{s=1}^{\infty} \frac{1}{s!}  \int_{-\infty}^{\infty} s f(\tau_1) \left[  \int_{\mathbb{R}^{s-1}}  P_s(\tau_1,\ldots,\tau_s) \, d\tau_2 \, \cdots d\tau_s \right] \, d \tau_1\\
+& = & \sum_{s=1}^{\infty} \frac{1}{(s-1)!}  \int_{t_a}^{t_b}  \left[  \int_{\mathbb{R}^{s-1}}  P_s(\tau_1,\ldots,\tau_s) \, d\tau_2 \, \cdots d\tau_s \right] \, d \tau_1\\
+\end{eqnarray*}
+
+\section*{Poisson processes}
+For a process in which all of the $\tau_i$ are independent and identically distributed, the $P_s$ can be factorized in the form
+\[ P_s(\tau_1,\ldots, \tau_s) = e^{-v} P(\tau_1) \cdots P(\tau_s), \hspace{2 cm} \textrm{ where } v = \int_{-\infty}^{\infty} P(\tau) \, d\tau \]
+is a normalization constant which follows from equation \ref{eqn:normpoint}. The formula for the average number of events in an interval can now be simplified:
+\begin{eqnarray}
+\left< N \right> & = & e^{-v} \int_{t_a}^{t_b} P(\tau) \, d \tau \left( \sum_{s=1}^{\infty} \frac{1}{(s-1)!}   \left[  \int_{-\infty}^{\infty} P(\tau) \, d\tau \right]^{s-1} \right) \nonumber \\
+& = &  \int_{t_a}^{t_b} P(\tau) \, d \tau \label{eqn:avgpoisson}
+\end{eqnarray}
+It is no harder to show that for this type of process,
+\[ \sigma_N^2 = \left< N^2 \right> - \left< N \right>^2 = \left< N \right> \]
+To learn more about the probability distribution of $N$, we find its characteristic function:
+\begin{eqnarray*}
+\left< e^{ikN} \right> & = & \sum_{s=0}^{\infty} \frac{1}{s!} \int_{\mathbb{R}^{s}} e^{ikN} P_s(\tau_1,\ldots,\tau_s) \, d\tau_1 \, \ldots d\tau_s  \\
+& = & e^{-v} \sum_{s=0}^{\infty} \frac{1}{s!} \left[ \int_{-\infty}^{\infty} e^{ikf(\tau)} P(\tau) \, d\tau \right]^s\\
+& = & \exp \left[\int_{-\infty}^{\infty} e^{ikf(\tau)} P(\tau) \, d\tau  - \int_{-\infty}^{\infty} P(\tau) \, d\tau \right]\\
+& = & \exp \left[  \left( e^{ik} - 1 \right) \int_{t_a}^{t_b} P(\tau) \, d\tau \right] \hspace{ 1 cm} \textrm{which by equation \ref{eqn:avgpoisson} is}\\
+& = & \exp \left[  \left( e^{ik} - 1 \right)  \left< N \right> \right] = e^{-\left< N \right>} \sum_{k=0}^{\infty} \frac{\left< N \right>^k e^{ikN}}{k!}\\
+\end{eqnarray*}
+But as we also know from equation \ref{eqn:discretechar} that $G(k) = \sum_{n \in \mathbb{Z}} p_n e^{ikn}$ since $N$ can take on only integral values, then by comparing terms:
+\[ p(N=k) =   \sum_{k=0}^{\infty} \frac{\left< N \right>^k e^{-\left< N \right>}}{k!}, \hspace{2cm} \textrm{ which is the Poisson pdf with } \lambda = \left< N \right>\]
+It is hopefully now clear why processes with events that are independent and identically distributed are called Poisson processes.\\
+
+When $P(\tau)=v/(t_b-t_a)$ is constant on the interval, as $v,t_b-t_a \to \infty$ with $P(\tau)$ fixed, the distribution of $\tau_i$ approaches a stationary distribution called \textit{shot noise}.
+\end{document}

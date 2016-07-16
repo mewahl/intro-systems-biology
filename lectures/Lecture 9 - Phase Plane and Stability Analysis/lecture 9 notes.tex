@@ -1,0 +1,580 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\section*{Introduction}
+
+\subsection*{What is bistability?}
+
+\begin{itemize}
+\item We have seen several examples of ultrasensitivity so far: Hill curves, the MWC model, Goldbeter and Koshland's zero-order ultrasensitivity.
+\item All of these examples produce curves that change more sharply than Michaelis-Menten kinetics. (We used a specific measure called EC$_{90}$/EC$_{10}$: the concentration required for 90\% activity divided by the concentration required for 10\% activity.)
+\item The rapid change between two distinct regimes in these examples mimics the binary nature of states for switches/latches.
+\item However, the notion of memory is missing. We expect a switch/latch to stay in the state that we last put it in, even when we take our hand away.
+\item As an example, consider the Hill curve
+
+\[ \textrm{Steady-state fraction bound } = f = \frac{x^n}{K+x^n} , \hspace{1cm} n > 1\]
+
+The steady-state fraction bound depends only on $x$; it does not depend at all on the most recent state of the system.
+
+\item By contrast, some systems show hysteresis: a dependence on the history of the input. Hysteresis can manifest as a tendency for the system to remain in its current state (drawing at board).
+
+\item Systems that have two stable states, requiring large perturbations to switch from one to the other, are called \textit{bistable} systems.
+
+\item They are often used in biology to establish cell fate and commit to long-term decisions like sporulation, apoptosis, cell cycle progression, etc.
+
+\item How can we identify how many stable states a system has? Can we find a way to do this will scale easily with the number of parameters?
+ 
+\end{itemize}
+
+\section*{Systems as $n$-dimensional spaces}
+
+\begin{itemize}
+
+\item The current state of an $n$-dimensional system can be thought of as a point in $n$-dimensional space (\textit{phase space}). (Each variable represents an axis in this space.)
+
+\item In practice only a subset of this space may be accessible, since concentrations cannot be negative and moiety conservation places constraints on possible combinations of variable values.
+
+\item Consider a two-dimensional system because it is easiest to visualize on the board. If we plot all of the points a system occupies as time elapses, i.e. all points $(x(t),y(t))$ for $t>0$, then we get a contour that represents the system's \textit{trajectory}. (Board drawing.) If we don't have explicit equations for $x(t)$ and $y(t)$, we could determine the trajectory through integration of the time derivatives $\dot{x}$ and $\dot{y}$.
+
+\item There may be some points where all of the time derivatives are zero: these are called \textit{fixed points} (or \textit{nodes}, or steady states). If a system reaches a fixed point (e.g., if it is there initially), then it will never leave unless the system is perturbed.
+
+\item In these notes I will denote a fixed point as $\mathbf{x}^* = (x^*, y^*)$. The condition for a fixed point in a two-dimensional system is that:
+
+\[ \left. \frac{dx}{dt} \right|_{(x^*, y^*)} =  \left. \frac{dy}{dt} \right|_{(x^*, y^*)} = 0 \]
+
+\item It may be necessary to identify fixed points numerically, though in some cases the algebra is not too complex to solve for them.
+
+\item Notice that it is possible for a system to have more than one fixed point. (Up until today, most of our examples have had only one fixed point/steady state.)
+
+\end{itemize}
+
+
+\subsection*{Definition of stability}
+
+\begin{itemize}
+
+\item Some fixed points have the special property that if a system gets within some radius $r$ of the fixed point, it will be ``drawn in," approaching the fixed point as $t \to \infty$. These fixed points are said to be \textit{(asymptotically) stable}.
+
+\item The set of points whose trajectories lead to a certain stable fixed point is called its \textit{basin of attraction}.
+
+\item Stable fixed points interest systems biologists because a system will tend to remain near a fixed point once it has approached, and any disturbance (e.g. noise) that shifts the system less than $r$ will eventually dampen out: such constancy is the basis for homeostasis and memory.
+
+\item Example: $\dot{x} = x^2 - c$, $c>0$. This system has two fixed points, $x^*=\pm \sqrt{c}$. Trajectories from all points in $(-\infty, \sqrt{c})$ lead to $x^*=-\sqrt{c}$ as $t \to \infty$: the fixed point is therefore stable ($r=2\sqrt{c}$) and the interval $(-\infty, \sqrt{c})$ is its basin of attraction.
+
+\item A bistable system has two stable fixed points.
+
+\item Finding fixed points and determining their stability will be the focus of this lecture.
+
+\end{itemize}
+
+\subsection*{Other long-term behaviors}
+
+\begin{itemize}
+
+\item Approaching a stable fixed point is not the only possible long-term behavior of a trajectory.
+
+\item The system could \textit{diverge}: one or more variables could go off to infinity at long times. This is not a realistic property of a biological system (something always becomes limiting), though it sometimes appears in simplified models.
+
+\item Systems with three or more variables could show chaotic behaviors, as we saw in a clip of the Lorenz system. In practice chaos is rare in models of biological systems.
+
+\item The system could enter an infinite loop when a trajectory is closed: this is called a \textit{limit cycle}. Limit cycles can also be stable/unstable/half-stable. Limit cycles are observed in oscillating systems, and we will discuss in more detail how to detect them in the section of this course on biological clocks.
+
+\end{itemize}
+
+\subsection*{Bifurcations}
+
+\begin{itemize}
+\item One challenge in identifying and characterizing systems is that the number of fixed points/limit cycles and their stability can change as we vary parameters. (cf. the common misconception that parameters only change a model quantitatively.)
+\item Example: $\dot{x} = x^2 - c$, with $c \in \mathbb{R}$. We saw above that this system has two fixed points when $c$ is positive, one of which is stable. When $c$ is negative, there are no fixed points at all. At the boundary, when $c=0$, there is one fixed point which is \textit{half-stable} (trajectories approach it, but only from negative values of $x$).
+\item Such qualitative changes to the number and types of fixed points/limit cycles are called bifurcations.
+\end{itemize}
+
+\section*{Finding fixed points and determining their stability through plotting}
+
+\subsection*{Plotting}
+
+\begin{itemize}
+
+\item In some cases, the easiest way to identify whether a fixed point is stable is to plot sample trajectories and/or the system's \textit{direction field}.
+
+\item A direction plot shows which way the system would be going if it were currently at certain points (usually chosen along a grid). The direction of the arrows is determined from  $\dot{x}$ and  $\dot{y}$.
+
+\item In principle we could sketch in many trajectories just by smoothly connecting one arrow to the next. (We have already covered how to use numerical integration to get $x(t)$ and $y(t)$ from $\dot{x}$ and $\dot{y}$ in a previous lecture and on problem set one, so this is also a convenient method. )
+
+\item This approach works well for systems with one or two variables, but plots in higher dimensions quickly become unwieldy to the human eye.
+
+\end{itemize}
+
+\subsubsection*{2-D example: mutual repression}
+
+\begin{itemize}
+
+\item Suppose an organism has two transcriptional repressors, X and Y, that ``antagonize" one another: X binds to the promoter of the Y gene to prevent its expression, and vice versa.
+\item Like most proteins, X and Y are naturally degraded/diluted at a rate proportional to their current concentration.
+\item Intuitively, we imagine that this system will wind up in one of two states: either [X] will be high and [Y] low, or vice versa. But are these states stable (giving us a bistable system)? How easy would it be to jump from one state to another? Are there other fixed points?
+
+\item To answer these questions, we must produce a model. Last week we learned that many transcription factors bind cooperatively to their recognition sites: we will assume this is true for our two repressors so that:
+
+\[ \textrm{Probability X is bound to its site } = \frac{\left[ X \right]^{n}}{K + \left[ X \right]^{n}} \]
+
+where $K$ is an (apparent) dissociation constant and $n$ is a Hill coefficient.
+
+\item When X is bound to its site, Y is not expressed.Therefore the rate at which Y is produced ought to be:
+
+\[ \textrm{Rate of Y expression } \propto 1 - \frac{\left[ X \right]^{n}}{K + \left[ X \right]^{n}} =  \frac{K}{K + \left[ X \right]^{n}}\]
+
+\item Assuming the same is true for Y, and letting $x$=[X] and $y$=[Y], we arrive at the model:
+
+\begin{eqnarray*}
+\frac{dx}{dt} & = & \frac{\alpha K}{K + y^{n}} -  \beta x\\
+\frac{dy}{dt} & = & \frac{\alpha K}{K + x^{n}} - \beta y
+\end{eqnarray*}
+
+\item One disadvantage of the numerical integration/direction field method is that we need to plug in values for parameters in order to produce plots. This means that if the behavior depends qualitatively on a parameter (e.g. $n$), we stand to miss that trend unless we draw many plots with different parameter values.
+
+\item  Suppose we choose $K=0.5$ and $n=3$, and $\alpha=\beta=1$ for simplicity. Our simplified model is:
+
+\begin{eqnarray*}
+\frac{dx}{dt} & = & \frac{0.5}{0.5 + y^3} - x\\
+\frac{dy}{dt} & = & \frac{0.5}{0.5 + x^3} - y
+\end{eqnarray*}
+
+\item Finding the fixed points algebraically is a rather unpleasant experience. Noting that since $\dot{y}=0$ at a fixed point, $y^* = 0.5/(0.5 + x^{*3})$, and plugging this expression into $\dot{x}=0$, we get that:
+
+\[ \frac{1}{0.5 + \left( \frac{0.5}{0.5+ x^{*3}} \right)^3} = x^* \]
+
+\item Rearranging gives a high-order polynomial in $x^*$. We would have an unpleasant time even finding the fixed points analytically, but MATLAB is happy to oblige:
+
+\begin{lstlisting}
+vpasolve(2*x == 1/(0.5 + (0.5/(0.5+x^3))^3),x)
+\end{lstlisting}
+
+\item The three positive solutions are: $x^* = 0.46, 0.64, 0.84$.
+
+\item Plotting in MATLAB quickly confirms the presence of two stable fixed points. (We can ``see" that these two points are stable by looking at the direction field around them: all arrows point inwards.)
+
+\begin{lstlisting}
+function []  = mutualrepression()
+    % Pick some parameter values for plotting
+    global k n
+    k = 0.5; n=3;
+    
+    [x, y] = meshgrid(0:0.05:1.5, 0:0.05:1.5);
+    dx = k ./(k+y.^n) - x;
+    dy = k ./(k+x.^n) - y;
+    r = (dx.^2 + dy.^2).^0.5;
+    dx = dx ./ r;
+    dy = dy ./ r;
+    
+    quiver(x,y,dx,dy); hold on;
+    xlabel('[X]')
+    ylabel('[Y]')
+    axis([0,1.5,0,1.5])
+    [t, c] = ode45(@updater, [0 50], [0.7, 0.8]);
+    plot(c(:,1),c(:,2),'-r', 'LineWidth', 3)
+    plot(0.7, 0.8, 'or');
+    [t, c] = ode45(@updater, [0 50], [0.6,0.5]);
+    plot(c(:,1),c(:,2),'-g', 'LineWidth', 3);
+    plot(0.6, 0.5, 'og');
+    [t, c] = ode45(@updater, [0 50], [1.4,0.2]);
+    plot(c(:,1),c(:,2),'-b', 'LineWidth', 3);
+    plot(1.4, 0.2, 'ob');
+    [t, c] = ode45(@updater, [0 50], [0.3,1.2]);
+    plot(c(:,1),c(:,2),'-k', 'LineWidth', 3);
+    plot(0.3, 1.2, 'ok');
+    [t, c] = ode45(@updater, [0 50], [0.3,0.3]);
+    plot(c(:,1),c(:,2),'-m', 'LineWidth', 3);
+    plot(0.3, 0.3, 'om');
+      
+end
+
+function dc = updater(t, c)
+    x = c(1);
+    y = c(2);
+    global k n
+    dx = k/(k+y^n) - x;
+    dy = k/(k+x^n) - y;
+    dc = [dx; dy];
+end
+\end{lstlisting}
+\end{itemize}
+\begin{itemize}
+
+\begin{figure}[htp] \centering{
+\includegraphics[width=0.5 \textwidth]{mutualrepression.pdf}}
+\caption{Direction field and five sample trajectories for the mutual repression model.} \label{fig:mr}
+\end{figure}  
+
+\item The third fixed point attracts trajectories that lie along a single line. This type of fixed point is called a \textit{saddle}. (Drawing at board; explain analogy.) It is hard to get a good direction field near that fixed point.
+
+\item A sketch of the 2-D system's \textit{phase plane} (i.e., the value of one variable on each axis) showing major features like fixed points and limit cycles, with a few sample trajectories, is sometimes called a \textit{phase portrait}.
+
+\end{itemize}
+
+\section*{Stability analysis for linear systems}
+
+\begin{itemize}
+
+\item As mentioned, the plotting method will not scale when we have three or more dimensions in our system. We will introduce a more general method based on analysis of the stability of fixed points of linear systems.
+
+\item In two dimensions, a linear system has the form:
+
+\begin{eqnarray*}
+\frac{dx}{dt} & = & ax + by\\
+\frac{dy}{dt} & = & cx + dy
+\end{eqnarray*}
+
+\item Notice that system has a fixed point at $x=y=0$ (it may have others, depending on the values of $a$ through $d$).
+
+\item We can rewrite this system in matrix form as:
+
+\[ \frac{d}{dt} \begin{pmatrix} x\\y \end{pmatrix} = \begin{pmatrix} a & b\\ c & d\end{pmatrix} \begin{pmatrix} x\\ y \end{pmatrix} = \mathbf{A} \begin{pmatrix} x\\ y \end{pmatrix} \]
+
+\item Rates of change in biological systems often contain non-linear terms like Hill equations, hyperbolic terms from Michaelis-Menten kinetics, etc. However, all of these systems can be \textit{linearized} near a fixed point in order to study the fixed point's stability.
+
+\item Will now show how this is done; afterwards, we'll return to learn how to determine the fixed points of linear systems.
+
+\end{itemize}
+
+\section*{Linear approximations}
+
+\begin{itemize}
+
+\item Suppose we are given the value of a function $f$ and its time derivative at some point $x^*$, and we would like to estimate the value of $f$ at a nearby point $x$.
+
+\item As long as $x$ and $x^*$ are sufficiently close, we can estimate that:
+
+\[ f(x) \approx f(x^*) + \left( x - x^* \right) \left. \frac{df}{dx} \right|_{x^*} \]
+
+\item The last symbol denotes the time derivative of $f$ evaluated at a specific point $x^*$: it will  just be some constant number.
+
+\item Notice that this by rearrangement we can show that this is just the equation for a line (slope in red, y-intercept in blue):
+
+\[ f(x) = {\color{red} \left. \frac{df}{dt} \right|_{x^*}} x + {\color{blue} f(x^*) - x^* \left. \frac{df}{dt} \right|_{x^*} } \]
+
+That is why call this approximation linearization.
+
+\item For a two-dimensional system, the approximation would be slightly more complicated but of a similar spirit:
+
+\[ f(x,y) \approx f(x^*,y^*) + \left( x - x^* \right) \left. \frac{df}{dx} \right|_{(x^*,y*)} + \left( y - y^* \right) \left. \frac{df}{dy} \right|_{(x^*,y*)}  \]
+
+\end{itemize}
+
+\section*{Linearization of non-linear systems near fixed points}
+
+\begin{itemize}
+
+\item Suppose we define a two-variable system in terms of non-linear functions $f$ and $g$:
+
+\begin{eqnarray*}
+\frac{dx}{dt} & = & f(x,y)\\
+\frac{dy}{dt} & = & g(x,y)
+\end{eqnarray*}
+
+\item If $(x^*, y^*)$ is a fixed point of the system, i.e.
+
+\[ f \left( x^*,y^* \right) = g \left( x^*,y^* \right)  = 0, \]
+
+then applying the linearization approximation above, at some point $(x,y)$ near this fixed point:
+
+\begin{eqnarray*}
+f \left( x,y \right) & \approx & \left( x - x^* \right) \left. \frac{\partial f}{\partial x} \right|_{(x^*,y^*)} + \left( y - y^* \right) \left.  \frac{\partial f}{\partial y} \right|_{(x^*,y^*)}\\
+g \left( x,y \right) & \approx & \left( x - x^* \right) \left. \frac{\partial g}{\partial x} \right|_{(x^*,y^*)} + \left( y - y^* \right) \left.  \frac{\partial g}{\partial y} \right|_{(x^*,y^*)}\\
+\end{eqnarray*}
+
+\item This is still not a linear system because some terms (e.g. $-x^* df/dx |_{(x^*,y^*)}$) are constants, which never appear in linear systems.
+
+\item To get rid of the constant terms, we introduce two new variables $a=x-x^*$ and $b=y-y^*$ and note that:
+
+\begin{eqnarray*}
+\frac{dx}{dt} = \frac{da}{dt} & \approx & a \left. \frac{\partial f}{\partial x} \right|_{(x^*,y^*)} + b \left.  \frac{\partial f}{\partial y} \right|_{(x^*,y^*)}\\
+\frac{dy}{dt} = \frac{db}{dt} & \approx & a \left. \frac{\partial g}{\partial x} \right|_{(x^*,y^*)} + b \left.  \frac{\partial g}{\partial y} \right|_{(x^*,y^*)}
+\end{eqnarray*}
+
+\item Equivalently, in matrix form,
+
+\[ \frac{d}{dt} \begin{pmatrix} a \\ b \end{pmatrix} =  \begin{pmatrix} \frac{\partial f}{\partial x}  & \frac{\partial f}{\partial y}  \\ \frac{\partial g}{\partial x}  & \frac{\partial g}{\partial y}  \end{pmatrix}_{(x^*,y^*)} \begin{pmatrix} a \\ b \end{pmatrix} = \mathbf{J} \begin{pmatrix} a \\ b \end{pmatrix} \]
+
+\item The matrix $\mathbf{J}$ is the \textit{Jacobian} of the non-linear system. Note that after we have evaluated the Jacobian at a point, all of its values are just scalars. We have converted to a linear system!
+
+\item Note that the fixed point $(x,y)=(x^*,y^*)$ is equivalent to $(a,b)=(0,0)$. Therefore, to assess the stability of the fixed point $(x^*,y^*)$ in the non-linear system, we examine the stability of the fixed point $(0,0)$ in the linearized system.
+
+\end{itemize}
+
+\section*{Determining stability of fixed points in linear systems}
+
+\begin{itemize}
+
+\item Recall our general form for a linear system:
+
+\[ \frac{d}{dt} \begin{pmatrix} x\\y \end{pmatrix} = \begin{pmatrix} a & b\\ c & d\end{pmatrix} \begin{pmatrix} x\\ y \end{pmatrix} = \mathbf{A} \begin{pmatrix} x\\ y \end{pmatrix} \]
+
+\item The matrix $\mathbf{A}$ contains everything that makes this system's behavior unique from other linear systems, including whether or not $(0,0)$ is a stable fixed point.
+
+\item One way of characterizing $\mathbf{A}$ is by determining its \textit{eigenvalues} and \textit{eigenvectors}.
+
+\item Eigenvectors are column vectors which I'll denote by $\mathbf{v} = (v_x, v_y)^T$. Eigenvectors have the special property that when multiplied by $\mathbf{A}$, the result is a complex multiple of the original eigenvector:
+
+\begin{eqnarray*}
+\begin{pmatrix} a & b\\ c & d\end{pmatrix} \begin{pmatrix} v_x\\ v_y \end{pmatrix} & = & \lambda \begin{pmatrix} v_x\\ v_y \end{pmatrix}\\
+\mathbf{A} \mathbf{v} & = & \lambda \mathbf{v}
+\end{eqnarray*}
+
+\item Notice that any multiple of $\mathbf{v}$ is also an eigenvector.
+
+\item The multiplier $\lambda$ is the corresponding eigenvalue.
+
+\item We can find distinct eigenvectors -- that is, ones which are not just multiples of each other -- and their corresponding eigenvalues by hand, but in practice it is much handier to make MATLAB do it. The command that we need is called \mcode{eig()}:
+
+\begin{lstlisting}
+a = [1, 2; 3, 4];
+[v, l] = eig(A);
+ disp(sprintf('The first eigenvector is (%0.4f,%0.4f) with eigenvalue %0.4f', v(1,1), v(2,1), l(1,1)));
+disp(sprintf('The second eigenvector is (%0.4f,%0.4f) with eigenvalue %0.4f', v(1,2), v(2,2), l(2,2)));
+\end{lstlisting}
+
+\item Notice that the eigenvectors are columns of the output variable \texttt{v}, and the eigenvalues are along the diagonal of the output variable \texttt{l}.
+
+\item Executing this code tells us that for the matrix
+
+\[ \mathbf{A} = \begin{pmatrix} 1 & 2\\ 3 & 4 \end{pmatrix}: \hspace{1 cm} \mathbf{v}_1 = \begin{pmatrix} -0.8246 \\ 0.5658\end{pmatrix} \textrm{ and } \lambda_1 = -0.3723, \hspace{1 cm} \mathbf{v}_2 = \begin{pmatrix}  -0.4160 \\ -0.9094 \end{pmatrix} \textrm{ and } \lambda_2 = 5.3723\]
+
+\item Why should we concern ourselves with finding eigenvectors and eigenvalues? Suppose that the system's initial state $(x_0,y_0)^T=c\mathbf{v}$, that is, the initial state is a (real) multiple of an eigenvector.
+
+\item At time zero, the rate of change for the system is:
+\[ \frac{d}{dt} \begin{pmatrix} x\\y \end{pmatrix} = \mathbf{A} \begin{pmatrix} x_0\\y_0 \end{pmatrix} = \lambda \begin{pmatrix} x_0\\y_0 \end{pmatrix} \]
+
+\item So, after a short time $t=\Delta t$, the system's state will be approximately:
+
+\[ \begin{pmatrix} x\\y \end{pmatrix} \approx \begin{pmatrix} x_0\\y_0 \end{pmatrix}  + \lambda \Delta t \begin{pmatrix} x_0\\y_0 \end{pmatrix} = \left(1 + \lambda \Delta t  \right) \begin{pmatrix} x_0\\y_0 \end{pmatrix} = c  \left(1 + \lambda \Delta t  \right) \mathbf{v} \]
+
+In other words, the system is still a complex multiple of the eigenvector.
+
+\item If we imagine repeating this for many infinitessimal timesteps, we can see that at time $t = n \Delta t$, in the limit where $n$ is large and $\Delta t$ is small:
+
+\[ \begin{pmatrix} x\\y \end{pmatrix} = \lim_{\Delta t \to 0,} c \mathbf{v} \left(1 + \lambda \Delta t \right)^n = c \mathbf{v} e^{\lambda t} \]
+
+\item Most points do not lie along eigenvectors: how will systems that start at those points evolve with time?
+
+\item Suppose our matrix $\mathbf{A}$ has two distinct eigenvalues $\lambda_1$ and $\lambda_2$ and two distinct eigenvectors $\mathbf{v}_1$ and $\mathbf{v_2}$, i.e. the eigenvectors are not real multiples of one another. This means that we could describe any initial condition for our system as some combination of real multiples of those eigenvectors:
+
+\[ \begin{pmatrix} x_0\\y_0 \end{pmatrix} = c_1 \mathbf{v_1} + c_2 \mathbf{v_2} \]
+
+\item We know how each of these two terms will evolve with time. This allows us to write the general solution for linear systems with two distinct eigenvalues:
+
+\[ \begin{pmatrix} x\\y \end{pmatrix} = c_1 \mathbf{v_1} e^{\lambda_1 t} + c_2 \mathbf{v_2} e^{\lambda_2 t} \]
+
+where the constants $c_i$ are chosen to match the initial conditions. For an $n$-dimensional system, the general solution is essentially the same but with $n$ terms.
+
+\item Now that we have a general solution for trajectories originating at any point, we can determine whether the fixed point is stable. Recall that the fixed point is stable if all sufficiently nearby trajectories approach the fixed point as $t\to \infty$.
+
+\item The eigenvalues are complex numbers, so we can get a better picture if we break them up into real and imaginary parts and simplify:
+
+\begin{eqnarray*}
+\begin{pmatrix} x\\y \end{pmatrix} & = & c_1 \mathbf{v_1} e^{\left( \alpha + i\beta \right) t} + c_2 \mathbf{v_2} e^{\left( \gamma + i\delta \right) t} \\
+& = & c_1 \mathbf{v_1} e^{\alpha t} e^{i\beta t} + c_2 \mathbf{v_2} e^{\gamma t} e^{i\delta t}\\
+& = & c_1 \mathbf{v_1} e^{\alpha t} \left[ \cos \beta t + i \sin  \beta t  \right] + c_2 \mathbf{v_2} e^{\gamma t} \left[ \cos \delta t + i \sin  \delta t  \right]\\
+\end{eqnarray*}
+
+\item Now it is clear that the imaginary parts of the eigenvalues determine whether the system rotates with time, and in what direction. If the real parts of the eigenvalues are zero but the imaginary parts are not: then, the system will rotate around the fixed point over time but never get any closer or further away.  We call this type of fixed point a \textit{center}.
+
+\item The real parts, which appear in the exponential terms, determine whether the variables' values will grow or shrink with time. If the real parts are all negative, then the system will decay to zero: this indicates that the fixed point is stable.
+
+\item If both of the real parts are positive, then the system will diverge towards the largest eigenvector. When the system behaves this way, we say the fixed point is unstable
+
+\item What if one of the real parts of the eigenvalues is positive, and the other is negative? In this case, the fixed point is called a \textit{saddle}. Trajectories will approach a saddle node along one direction only to veer off at the last minute in a different direction. We saw this type of behavior already in our mutual repression system.
+\end{itemize}
+
+\subsection*{Summary}
+
+Although we have written out examples for a two-dimensional system, the same basic principles apply to an $n$-dimensional linear system:
+
+\begin{itemize}
+
+\item An $n$-variable system is stable if the real parts of all eigenvalues are negative.
+\item If the real part of even one eigenvalue is positive, then the system is unstable.
+
+\end{itemize}
+
+At the beginning of our next lecture, we will practice determining the stability of fixed points and linearizing non-linear systems. Then we will return to the example of mutual repression introduced here to begin our explicit discussion of bistability.
+
+%\section*{1-D example: parabola}
+%
+%Consider the one-dimensional system:
+%
+%\[ \frac{dx}{dt} = x^2 - c, \hspace{1 cm} c > 0 \]
+%
+%To find the fixed points of this system, we set the one and only variable's time derivative to zero and solve:
+%
+%\[ x^* = \pm \sqrt{c} \]
+%
+%If the initial value of $x$ is one of these two values, the system will be stable for all time. What will happen when the initial values are in the following ranges?
+%
+%\begin{itemize}
+%\item $x < - \sqrt{c}$: the value of $x$ will be increasing with time and decelerating as $x$ approaches $\sqrt{c}$.
+%\item $\left|  x \right| < \sqrt{c}$: the value of $x$ will be decreasing.
+%\item $x > \sqrt{c}$: the value of $x$ will be increasing. 
+%\end{itemize}
+%
+%This system nicely illustrates that fixed points come in two flavors. Notice that as long as our initial position is in $(-\infty, \sqrt{c})$, $x \to -\sqrt{c}$ as $t \to \infty$. Fixed points like the one at left here, which we are guaranteed to approach with time if we begin ``close enough," are called \textit{(asymptotically) stable} fixed points: they are also sometimes referred to as ``attractors" or ``sinks."  All points from which trajectories converge on a stable fixed point are said to be part of its \textit{basin of attraction}.\\
+%
+%We can make this point a bit more rigorous by imagining that we are arbitrarily close to \\
+%
+%
+%
+%The right fixed point here is an example of an \textit{unstable} fixed point (``repeller"): one from which the system will move away if it gets too close. It is also possible for a fixed point to be stable from some directions but unstable from others (``half-stable"), or for the system to neither approach nor withdraw (e.g. cycles, continua of fixed points).\\
+%
+%Notice, too, that the number of fixed points depends strongly on our assumption that $c>0$. If $c=0$, there is exactly one (unstable) fixed point; if $c<0$, there are no fixed points at all. Such changes in the number and type of fixed points as parameters vary are called \textit{bifurcations}.\\
+%
+%In this example it was easy to identify the fixed points and dynamic behavior algebraically. However, this is not always handy because biological systems often have non-linear terms in their time derivatives (e.g. Hill curves). It is worthwhile to know the MATLAB approaches for achieving the same goal: symbolic equation solving and drawing slope fields.
+%
+%\section*{Symbolic equation solving}
+%
+%Suppose we want MATLAB to find $x$ such that:
+%
+%\[ x^2 - c = 0 \]
+%
+%If we do nothing, MATLAB will assume that $x$ and $c$ are variables with stored values, then complain when it finds that you have not initialized them. Of course, you cannot store any values for $x$ and $c$: you are solving for $x$, and you don't know $c$, either. You must warn MATLAB that these are ``symbolic" varibles, which you can do with the syms command. Then, the equation can be easily solved using the \mcode{solve()} function:
+%
+%\begin{lstlisting}
+%syms x c;
+%[fixed_points, params, conds] = solve(x^2 - c == 0, x, 'ReturnConditions', true);
+%disp(sprintf('Solutions to x^2 - c == 0: x=%s and x=%s', char(fixed_points(1)), char(fixed_points(2))));
+%\end{lstlisting}
+%
+%The output when running these three lines is:\\
+%
+%\mcode{Solutions to x^2 - c == 0: x=-c^(1/2) and x=c^(1/2)}\\
+%
+%exactly as we expected. The \mcode{solve()} function can also be used to find fixed points for multidimensional systems (see the MATLAB documentation or an example below).
+%
+%\section*{Trajectories and velocity/slope fields}
+%
+%From problem set 1, you already know how to simulate how a system will change in time from a given initial condition. Plotting several of these would give you an indication of a system's possible behaviors, but you might miss interesting behaviors is you don't choose an appropriate combination of initial conditions.\\
+%
+%An alternative is to plot, on a mesh of points, the direction in which the system is moving. This is easily done since we can calculate the rate of change at any point from the time derivative. If this plot also gives some indication of how fast the system is changing (e.g. by having arrows of different size), we call it a velocity field; otherwise,we simply call it a slope field. For a one-dimensional system, it is handy to plot the slopes on $x$ vs. $t$ axes (even though our time derivative normally does not depend on $t$), so that we can see more easily how $x$ will change with time. In a two-dimensional system, we abandon the issue of speed in order to plot $x$ vs. $y$.\\
+%
+%To see this in action, try using MATLAB's \mcode{quiver()} function to make a velocity field, as below:
+%
+%\begin{lstlisting}
+%function []  = slopefield()
+%    global c
+%    c = 1;
+%    
+%    % Choose the points at which we'll determine the rate of change
+%    [x, t] = meshgrid(-3:0.25:3, 0:0.5:6);
+%    
+%    % Calculate the vertical and horizontal components
+%    dx = x.^2 - c;
+%    dt = 1 .* ones(size(t));
+%    r = (dx.^2 + dt.^2).^0.5;
+%    dx = dx ./ r;
+%    dt = dt ./ r;
+%    
+%    % Plot the slope field
+%    quiver(t,x,dt,dx); hold on;
+%    title(sprintf('Slope field for dx/dt=x^2 - c when c=%d', c))
+%    xlabel('Time')
+%    ylabel('x')
+%    axis([0,6,-3,3])
+%    
+%    % Draw in a few trajectories using ode45 for simulation
+%    [t, x] = ode45(@updater, [0 6], [0.9]);
+%    plot(t,x,'-r', 'LineWidth', 3)
+%    
+%    [t, x] = ode45(@updater, [0 6], [-2.5]);
+%    plot(t,x,'-b', 'LineWidth', 3)
+%    
+%    [t, x] = ode45(@updater, [0 6], [1.1]);
+%    plot(t,x,'-g', 'LineWidth', 3)
+%      
+%end
+%
+%function dx = updater(t, x)
+%    global c
+%    dx = x.^2 - c;
+%end
+%\end{lstlisting}
+%
+%To use a velocity/slope field, we simply pick an initial point and start connecting the lines to create a smooth curve. The code above draws in a few real trajectories, which you can see are very close to what you'd achieve by connecting the lines by hand. Notice that all behaviors of the system that we were able to describe analytically are reflected here (provided we try out multiple values of $c$).
+%
+%\section*{1-D example: positive feedback}
+%
+%
+%
+%\section*{Two-dimensional systems}
+%
+%Fixed points also exist in two-dimensional systems, but the range of possible behaviors around these points is a bit more varied. Trajectories might spiral inward or outward from fixed points; approach in one direction, then veer off in another; or form an endless \textit{limit cycle}. In this class we will often be concerned with questions such as whether a limit cycle exists, when a fixed point will be stable, and how large the basin of attraction is around a stable fixed point (i.e. how much noise can the system tolerate before failing to return to its baseline state?).\\
+%
+%As in the one-dimensional case, we can get a quick understanding by plotting the slope field and a few sample trajectories. Consider a simple system where X and Y are transcriptional repressors that each bind to the other's promoter. We'll assume that the fraction of the time these repressors are at their binding sites follow Hill equations with Hill coefficients $n_x$ and $n_y$ and binding constants $K_x$ and $K_y$, e.g.:
+%
+%\[ \textrm{Probability TF X is bound to its site in Y's promoter } = \frac{\left[ X \right]^{n_x}}{K_x + \left[ X \right]^{n_x}} \]
+%
+%Whenever X is bound to its site, Y is not expressed. Therefore the rate at which Y is produced ought to be:
+%
+%\[ \textrm{Rate of Y expression } \propto 1 - \frac{\left[ X \right]^{n_x}}{K_x + \left[ X \right]^{n_x}} =  \frac{K_x}{K_x + \left[ X \right]^{n_x}}\]
+%
+%For simplicity, we will assume that X and Y are each produced at a rate of 1 per unit time in the absence of their repressor. We will also assume that X and Y undergo dilution at the algebra-simplifying rate of 1 per unit time per unit concentration, i.e.:
+%
+%\begin{eqnarray*}
+%\frac{dx}{dt} & = & \frac{K_y}{K_y + y^{n_y}} - x\\
+%\frac{dy}{dt} & = & \frac{K_x}{K_x + x^{n_x}} - y
+%\end{eqnarray*}
+%
+%Even if we make some explit numerical assumptions (e.g., $K_x=K_y=0.5$ and $n_x=n_y=3$), then we can simplify this still a bit further:
+%
+%\begin{eqnarray*}
+%\frac{dx}{dt} & = & \frac{0.5}{0.5 + y^3} - x\\
+%\frac{dy}{dt} & = & \frac{0.5}{0.5 + x^3} - y
+%\end{eqnarray*}
+%
+%Given that each of these transcription factors represses the other, we would expect this system to approach a steady state where one of their concentrations is high and the other is low. But is that the only behavior of the system? How can we know?\\
+%
+%At this point it would still be unpleasant to solve for the fixed points by setting $dx/dt=dy/dt=0$.  It is easy enough, at least, to plot the slope field of $x$ vs. $y$ and add a few trajectories. However, unless we plot many points, we might have difficulty seeing the underlying trend. There are two stable fixed points, and most trajectories approach one or the other of them.\\
+%
+%There is also a third fixed point along the line $x=y$. This type of fixed point is called a saddle. Trajectories along the line $y=x$ approach it stably; trajectories that pass through the fixed point perpendicular to the saddle will head directly away from it; many other trajectories will seem to approach this point only to veer away at the last moment towards the two stable fixed points.\\
+%
+%All of this is rather hard to tell from the slope field and sample trajectories alone. We need a strategy for understanding fixed points that does not rely solely on plotting. For this we turn to stability analysis.
+%
+%
+%\section*{Stability of fixed points}
+%
+%\subsection*{Bifurcations}
+%
+%\section*{Linear systems}
+
+
+
+%\section*{Example: mutation-selection balance}
+%
+%Imperfect DNA replication and improperly repaired DNA damage can introduce novel mutations with each cell division. These mutations can impact the fitness of organisms that carry them: for example, a deleterious mutation could decrease an organism's rate of reproduction (fecundity) or survival probability (viability). A mutation's \textit{selection coefficient}, denoted here by $s$, describes the relative fitness of its carriers:
+%\begin{itemize}
+%\item $s=0$ suggests the mutation has no impact on fitness,
+%\item $s=-1$ indicates the mutation is lethal (or, equivalently, sterilizing), and
+%\item (unbounded) positive values reflect a beneficial mutation
+%\end{itemize}
+%Suppose that no new mutations are occurring. Although any specific mutation occurs infrequently, general classes of mutations 
+
+\end{document}

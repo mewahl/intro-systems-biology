@@ -1,0 +1,153 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\section*{Positive feedback}
+
+All systems that exhibit bistability implement positive feedback. In the mutual repression example, this positive feedback is indirect: protein X increases its own production rate by alleviating repression from Y. The result is that $X$ causes its own \textit{derepression} -- a form of positive feedback.\\
+
+It's possible to make a bistable switch from a single transcription factor by utilizing positive feedback. Suppose X is a transcriptional activator with a maximum expression rate $\alpha$ and degradation rate $\beta$. As previously, the general expression for the rate of change in $x$ is:
+
+\[ \frac{dx}{dt} = \alpha h(x) - \beta x \]
+
+where $0<h(x)<1$. We'll assume that $x$ binds its own promoter and that production of $x$ scales with the likelihood that $x$ is bound there, which in turn is determined by a Hill curve:
+
+\[ h(x) = \frac{x^n}{K + x^n} \rightarrow  \frac{x^n}{1 + x^n} \textrm{  on appropriate choice of units for [X]} \]
+
+Then the equation for our system is:
+
+\[ \frac{dx}{dt} = \frac{\alpha x^n}{1 + x^n} - \beta x \]
+
+The fixed points of this system satisfy:
+
+\[ x = \frac{\alpha x^{n}/\beta }{1 + x^{n}} \]
+
+By plotting both the left-hand and right-hand side on one axis, we can see that when $n=1$ and the right-hand side is hyperbolic, then there are two intersections, one at the origin and another at a positive value of x. Only the right-most fixed point is stable.\\
+
+If the right-hand side has a sigmoidal shape (i.e. $n>1$), then it is possible to have one, two, or three points of intersection. Notice that as we increase $\alpha/\beta$ from a low value, where we have only one intersection at the origin, a new fixed point appears ``out of the clear blue sky" at a positive value of $x$. This point is half-stable and quickly gives way to two fixed points, one of which is stable and the other unstable. This is called a \textit{saddle-node} (or sometimes, ``blue sky") bifurcation.
+
+\begin{figure}[htp] \centering{
+\includegraphics[width=1 \textwidth]{pfb1.pdf}}
+\caption{Illustration of the emergence of a new fixed point as $\alpha/\beta$ increases. Hill coefficient $n=2$.} \label{fig:pfb}
+\end{figure}
+
+At this point it may be tempting to conclude that we are done analyzing this system, but as $\alpha/\beta$ continues to increase, the middle fixed point slides arbitrarily close to the origin so that (assuming any noise is present) the origin becomes functionally unstable. (Bifurcation diagram.) Systems of this type exhibit hysteresis (review this term).
+
+
+\section*{The lac operon}
+
+Bistable switches like this one were among the first identified in real biological systems. Bacterial cells use it to switch between two gene expression states based on the food sources available. \textit{E. coli}, for example, are capable of using lactose (a sugar in milk) as a carbon source. To do this, they must invest energy in making transporters that carry lactose (LacY) into the cell as well as enzymes (LacZ) that break lactose into its component simple sugars, glucose and galactose. LacZ and LacY proteins are not useful the vast majority of the time, since lactose is not bacteria's preferred carbon source. However, when lactose is present, the cell must be able to turn on these genes. How does the cell achieve this?\\
+
+In bacteria, genes of related function are often transcribed together on the same mRNA (i.e. in an \textit{operon}). This means that their expression is regulated by the same promoter. \textit{lacZ} and \textit{lacY} are part of the \textit{lac} operon, which is regulated by a transcriptional repressor called LacI. LacI is bound to the \textit{lac} operon's promoter most of the time, so that these genes are not expressed. (You may recall that LacI was the first example we used when discussing how transcription factors can bind cooperatively when there are multiple nearby sites.) However, when lactose is present inside the cell, it can bind to LacI and cause this repressor to fall of the \textit{lac} promoter, allowing LacZ and LacY to be expressed. The lac operon system uses a repressor: does it display positive feedback, and if so, can we shoehorn it into our model?\\
+
+The positive feedback in this system is the result of the lactose transporter, LacY. Suppose a bacterial cell has been growing for a long time in medium without lactose, so that very little LacZ or LacY are being expressed. We add a little lactose to the medium: what happens? With no LacY present, the lactose is impeded from entering the cell. We must add a high enough concentration of lactose that it is able to ``seep in" before LacI is inhibited and LacZ/Y get expressed. Now LacY will let more lactose into the cell, so more and more LacY will be expressed. Similarly, if we start at a high concentration of lactose and decrease, the \textit{lac} operon will tend to maintain its expression until [lactose] is very low. (Draw the hysteresis and compare to the positive feedback above.)\\
+
+This is all well and good, but is the Hill equation an appropriate production term for [LacY], i.e.
+
+\[ \frac{d\left[ \textrm{LacY}\right]}{dt} = \alpha h \left( \left[ \textrm{LacY} \right] \right) - \beta \left[ \textrm{LacY} \right]  \stackrel{?}{=} \frac{\alpha \left[ \textrm{LacY}\right]^n}{1 + \left[ \textrm{LacY}\right]^n} - \beta \left[ \textrm{LacY}\right]\]
+
+The easiest way to understand this is to interpret the production term for LacY as a function of the concentration of active repressor, which in turn depends on how much lactose is being admitted by the cell (i.e. [LacY] and [lactose]).\\
+
+We'll assume, as we did on Friday, that the production function $h$ has domain $[0,1]$. It will be one when none of the repressor is active and zero when all of the repressor is bound, hence:
+
+\[ h \left( \left[ \textrm{LacY} \right] \right) = 1 - P\left( \textrm{LacI is bound }\right) =  \frac{K_i}{K_i + \left[\textrm{LacI}_{\textrm{active}} \right]} \]
+
+Technically we would be well within our rights to assume that this binding of LacI to its operator is cooperative. We know that LacI is a tetramer and that it has multiple binding sites in/near the \textit{lac} operon's promoter. (Recall that we used it in the ball-and-cup analogy earlier in the course.) However we will see that this cooperativity in LacI binding is not essential for bistability in the lactose response. \\
+
+What fraction of LacI is active? LacI is a tetramer that becomes inactivated when lactose\footnote{Technically it is not lactose that inhibits the repressor, but rather one of its metabolic derivatives, allolactose.} binds allosterically to any one of its subunits. For an appropriate choice of lactose concentration units,
+
+\begin{eqnarray*}
+ \frac{\left[\textrm{LacI}_{\textrm{active}} \right]}{\left[\textrm{LacI}_{\textrm{total}} \right]} & = & P\left( \textrm{lactose not bound to any subunit} \right)\\
+ & = & \left[ P\left( \textrm{lactose not bound to one subunit} \right) \right]^4\\
+  & = & \left( \frac{K_r}{K_r + \left[ \textrm{lactose}_{\textrm{int}} \right]} \right)^4
+  \end{eqnarray*}
+
+The subscript indicates the \textit{internal} concentration of lactose. To understand what the internal concentration of lactose will be, we consider how fast lactose is entering the cell and how fast it is being consumed:
+
+\begin{eqnarray*}
+ \frac{d \left[ \textrm{lactose}_{\textrm{int}} \right]}{dt} & = & \frac{k_{\textrm{cat}} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}} \right]}{K_m +  \left[ \textrm{lactose}_{\textrm{ext}} \right]} - \beta_s  \left[ \textrm{lactose}_{\textrm{int}} \right]\\
+ & \approx & \frac{k_{\textrm{cat}}}{K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}} \right] - \beta_s  \left[ \textrm{lactose}_{\textrm{int}} \right]
+ \end{eqnarray*}
+ 
+ Here we have used an approximation that $\left[ \textrm{lactose}_{\textrm{ext}} \right] \ll K_m$, i.e., LacY is operating in its first-order regime. If we assume that the internal concentration of lactose is at quasi-steady-state, then we have [lactose$_{\textrm{int}}$] as a function of [LacY] and [lactose$_{\textrm{ext}}$]:
+ 
+ \begin{eqnarray*}
+ \left[ \textrm{lactose}_{\textrm{int}} \right] & = & \frac{k_{\textrm{cat}}}{\beta_s K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}} \right]\\
+ \left[\textrm{LacI}_{\textrm{active}} \right] & = & \left[\textrm{LacI}_{\textrm{total}} \right] \left( \frac{K_r}{K_r + \left[ \textrm{lactose}_{\textrm{int}} \right]} \right)^4\\
+& = &  \left[\textrm{LacI}_{\textrm{total}} \right] \left( \frac{K_r}{K_r + \frac{k_{\textrm{cat}}}{\beta_s K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}}  \right]} \right)^4\\
+h \left( \left[ \textrm{LacY} \right] \right) & = & \frac{K_i}{K_i + \left[\textrm{LacI}_{\textrm{active}} \right]}\\
+& = & \frac{K_i}{K_i + \left[\textrm{LacI}_{\textrm{total}} \right] \left( \frac{K_r}{K_r + \frac{k_{\textrm{cat}}}{\beta_s K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}}  \right]} \right)^4}\\
+& = & \frac{K_i \left( K_r + \frac{k_{\textrm{cat}}}{\beta_s K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}}  \right] \right)^4}{K_i \left( K_r + \frac{k_{\textrm{cat}}}{\beta_s K_m} \left[ \textrm{LacY} \right]  \left[ \textrm{lactose}_{\textrm{ext}}  \right] \right)^4 + \left[\textrm{LacI}_{\textrm{total}} \right] K_r^4  }
+ \end{eqnarray*}
+
+This is not a Hill function of [LacY]; however, it does have sigmoidal character. Notice that the production level of LacY is never precisely zero, even when there is no external lactose:
+
+\[ \left[ \textrm{lactose}_{\textrm{ext}}  \right] \to 0: \hspace{2 cm} h\left(  \left[\textrm{LacY}\right] \right) \to  \frac{K_i}{K_i + \left[\textrm{LacI}_{\textrm{total}} \right]} \]
+
+It turns out to make a big difference that the intercept is positive. Recall that at any fixed point $ \left[\textrm{LacY}\right]_{s-s}$,
+
+\[  y_1 \equiv \left[ \textrm{LacY} \right]_{ss} = \frac{\alpha}{\beta} h \left( \left[\textrm{LacY}\right]_{ss} \right) \equiv y_2 \]
+
+so that the fixed points occur at intersections of $y_1$ and $y_2$. As we increase [lactose$_{\textrm{ex}}$] from zero, we go from a single intersection (at a low LacY concentration) to two, to three, back to two, and finally to a single steady-state (at a high LacY concentration).  (Draw sample intersections and finally the bifurcation curve.) Unlike when the production term was a Hill function, it is now possible to truly, not just functionally, lose the lower stable state. (Discussion of hysteresis in this system.)\\
+
+Although this is a canonical result in molecular biology (dating to Novick and Weiner's 1957 paper), the system is still under theoretical consideration (see Ozbudak 2004, Santill\'{a}n 2007).\\
+
+\section*{Collins Toggle Switch}
+
+\begin{itemize}
+
+\item Want to build a mutual repression system with a means for switching between the two states.
+
+\item Knew that they needed $n>1$ and $\alpha/\beta$ greater than a threshold value in order to get bistability.
+
+\item ``What I cannot build, I do not understand.'' -- Feynman; unclear whether these simplifications of gene regulation would apply generally.
+
+\item At the time of publication (Gardner 2000), the number of well-characterized repressors, promoters, and RBSes was limited. Needed to try multiple options.
+
+\item The repressors and the promoters that contain their binding sites are:
+\begin{itemize}
+\item LacI binds to P$_{\textrm{trc2}}$
+\item The lambda phage repressor cI (``see-one") binds to P$_{Ls1con}$ 
+\end{itemize}
+
+\item New genetic constructs are often designed and introduced into hosts on plasmids: small (3-10kb) circular pieces of double-stranded DNA.
+
+\item Elements of a bacterial plasmid:
+
+\begin{itemize}
+\item Origin of replication (tricks host into amplifying the plasmid as if it were its own genome)
+\item Often no explicit means of segregation between daughter cells (relying on high copy number)
+\item A marker for selection (e.g. encoding antibiotic resistance, so that only bacteria that maintain a copy of the plasmid can survive in media containing the antiobitic)
+\item For each gene, a transcriptional promoter, ribosome binding site (not required in eukaryotes), the gene's open reading frame (i.e. the codons that should actually be translated into amino acids), a stop codon, and a transcriptional terminator.
+\item Optionally in bacteria: multiple RBSes and ORFs per transcriptional promoter/terminator (because operons can encode multiple proteins). A similar approach using ``internal ribosome entry sites" sort-of works in eukaryotes where IRESes are well-defined.
+\item Ribosomes have a greater affinity for some RBSes than others. One straightforward way to change the production rate of a protein is to swap out the RBS.
+\item It is also possible to change a protein's effective expression level by using a temperature-sensitive variant. Essentially these are proteins that contain mutations which place them on the cusp of not folding properly. When the temperature increases above a threshold, they unfold cease to function. (This is true for all proteins, but temperature-sensitive variants undergo this transition at a temperature where most of the organism is still functional.)
+\end{itemize}
+
+\item Can add IPTG (isopropyl-$\beta$-D-1-thiogalactopyranoside, an allolactose analog) to make LacI stop binding. Raising the temperature inactivates cI.
+
+\item Difference in off rates explained by mechanism (temperaure-induced instability of cI vs. slow dilution of LacI following IPTG addition)
+
+\end{itemize}
+\end{document}

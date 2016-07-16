@@ -1,0 +1,49 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+\usepackage{enumitem} % change spacing between lines in lists
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 3: Computability continued; the definition of life}
+\maketitle
+
+\[ U = mgh = m \cdot 9.8 \textrm{ m/s}^2 \cdot h\]
+
+\begin{eqnarray*}
+F & = & - \nabla U\\
+& = & - \left[ \frac{dU}{dx} \hat{x} + \frac{dU}{dy} \hat{y} + \frac{dU}{dz} \hat{z} \right]\\
+& = & -  \frac{dU}{dh} \frac{dh}{dy} \hat{y}\\
+& = & - mg \hat{y}\\
+& = & - m \cdot 9.8 \textrm{ m/s$^2$, pointing downwards}
+ \end{eqnarray*}
+
+\[ \mu = c + RT \ln \left[ \textrm{ Na$^+$ } \right] \]
+
+\[ V = \sum_i \frac{Q_i}{4 \pi  \epsilon_0 r_i} \]
+
+\[ \textrm{Output } = \begin{cases}
+    0, & \text{if } \theta > \sum_{i=1}^n b_i w_i \\
+    1,              & \text{otherwise}
+\end{cases}
+\]
+
+\[ \textrm{Output } = \begin{cases}
+    0, & \text{if } 4 > 5b_1 + 5b_2 \\
+    1,              & \text{otherwise}
+\end{cases}
+\]
+
+\end{document}

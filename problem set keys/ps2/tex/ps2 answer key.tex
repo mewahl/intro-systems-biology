@@ -1,0 +1,197 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\section*{Problem 1}
+
+Ultimately we would like to calculate the rate of product formation, which from the law of mass action is given by:
+
+\[ \frac{d\left[ P \right]}{dt} = k_2 \left[ C_2 \right] - k_{-2} \left[ P \right] \left[ E \right] \]
+
+Assume that $[C_2]$ is at steady state:
+
+\[ 0 = \frac{d \left[ C_2 \right]}{dt} =  k_r \left[ C_1 \right] + k_{-2} \left[ P \right] \left[ E \right] - k_2 \left[ C_2 \right] = k_r \left[ C_1 \right]  -  \frac{d\left[ P \right]}{dt}   \implies  \frac{d\left[ P \right]}{dt}  = k_r \left[ C_1 \right] \]
+
+Assume that $[C_1]$ is also at steady state:
+
+\[ 0 = \frac{d \left[ C_1 \right]}{dt} =  k_1 \left[ S \right] \left[ E \right] -\left(  k_{-1} + k_r \right)  \left[ C_1 \right] \implies \left[ C_1 \right]  = \frac{k_1 \left[ S \right] \left[ E \right]}{k_{-1} + k_r} \]
+
+Given this expression and the above result:
+
+\begin{eqnarray}
+ \frac{d\left[ P \right]}{dt}  = \frac{k_1 k_r \left[ S \right] \left[ E \right]}{k_{-1} + k_r} \label{eqn:prob1a} 
+ \end{eqnarray}
+
+The desired rate law expression is equivalent to this statement, but does not contain the variable $[E]$, suggesting we must substitute an equivalent expression for $[E]$. Noting that the enzyme moiety is conserved, we can see that:
+
+\begin{eqnarray*}
+\left[ E_{\textrm{tot}} \right]  & = &  \left[ E\right]  + \left[ C_1 \right] + \left[ C_2 \right]\\
+ \left[ E\right] & = & \left[ E_{\textrm{tot}} \right] - \left[ C_1 \right] - \left[ C_2 \right]\\
+ & = & \left[ E_{\textrm{tot}} \right] - \frac{k_1}{k_{-1} + k_r} \left[ S \right] \left[ E \right] - \left[ C_2 \right]
+\end{eqnarray*}
+
+To simplify further, we must find an expression for $[C_2]$. The statement that the product readily rebinds free enzyme suggests that it may be appropriate to assume a rapid equilibrium assumption for the right-most reversible reaction:
+
+\begin{eqnarray*}
+k_2 \left[ C_2 \right] & = & k_{-2} \left[ P \right] \left[ E \right]\\
+\left[ C_2 \right] & = & \frac{k_{-2} }{k_2} \left[ P \right] \left[ E \right]
+\end{eqnarray*}
+
+where we have again defined $K_p$ for convenience. Plugging this expression for $[C_2]$ into our expression for $[E]$ derived from moiety conservation and rearranging, we get:
+
+\begin{eqnarray*}
+ \left[ E\right] & = & \left[ E_{\textrm{tot}} \right] - \frac{k_1}{k_{-1} + k_r} \left[ S \right] \left[ E \right] - K_p \left[ P \right] \left[ E \right]\\
+ \left(1 + \frac{k_1 \left[ S \right]}{k_{-1} + k_r} + \frac{k_{-2} }{k_2}  \left[ P \right] \right) \left[ E \right]   & = & \left[ E_{\textrm{tot}} \right]\\
+  \left(\frac{k_{-1}+k_r}{k_1} + \left[ S \right]+ \frac{k_{-2} \left(k_{-1}+k_r \right)}{k_1k_2}  \left[ P \right] \right) \left[ E \right]   & = & \frac{k_{-1}+k_r}{k_1} \left[ E_{\textrm{tot}} \right]\\
+   \left( K_m + \left[ S \right] + \frac{K_m}{K_p} \left[ P \right] \right) \left[ E \right] & = & K_m \left[ E_{\textrm{tot}} \right]\\
+ \left[ E \right] & = & \frac{K_m \left[ E_{\textrm{tot}} \right]}{\left[ S \right] + K_m \left(1 + \frac{\left[ P \right]}{K_p} \right)}
+\end{eqnarray*}
+
+where we have defined $K_m$ and $K_p$ for convenience. This expression for $[E]$ can be plugged into equation \ref{eqn:prob1a} to get:
+
+\begin{eqnarray*}
+ \frac{d\left[ P \right]}{dt}  & = & \frac{k_r \left[ S \right]}{K_m} \left( \frac{K_m \left[ E_{\textrm{tot}} \right]}{\left[ S \right] + K_m \left(1 + \frac{\left[ P \right]}{K_p}  \right)} \right)  = \frac{V_{\textrm{max}} \left[ S \right]}{\left[ S \right] + K_m \left(1 + \frac{\left[ P \right]}{K_p} \right)}
+ \end{eqnarray*}
+ 
+ \section*{Problem 2}
+
+We illustrate two approaches: the first uses rapid equilibrium assumptions for binding, and the second uses quasi-steady-state assumptions as the problem statement hints.
+
+\subsection*{Rapid equilibrium assumptions}
+
+Enzyme moiety conservation gives the expression:
+
+\[ \left[ E_{\textrm{tot}} \right] = \left[ E \right] + \left[ ES \right] + \left[ EI \right] + \left[ ESI \right] \]
+
+To simplify this, we will assume that all substrate and inhibitor binding events are in rapid equilibrium:
+
+\begin{eqnarray*}
+k_1 \left[ E \right] \left[ S \right] = k_{-1} \left[ ES \right] & \implies & \left[ E \right]  = \frac{k_{-1} \left[ ES \right]}{k_1 \left[ S \right]}\\
+k_3 \left[ E \right] \left[ I \right] = k_{-3} \left[ EI \right] & \implies & \left[ EI \right]  = \frac{k_3 \left[ I \right]}{k_{-3}} \left( \frac{k_{-1} \left[ ES \right]}{k_1 \left[ S \right]} \right) = \frac{k_{-1}k_3 \left[ I \right] \left[ ES \right]}{k_{-3}k_1 \left[ S \right]}\\
+k_3 \left[ ES \right] \left[ I \right] = k_{-3} \left[ ESI \right] & \implies & \left[ ESI \right] = \frac{k_3 \left[ ES \right] \left[ I \right]}{k_{-3}}
+\end{eqnarray*}
+
+Plugging these equations into the moiety conservation statement allows us to find an expression for [ES]:
+
+\begin{eqnarray*}
+\left[ E_{\textrm{tot}} \right] & = & \left( \frac{k_{-1}}{k_1 \left[ S \right]} + 1 + \frac{k_{-1}k_3 \left[ I \right]}{k_1 k_{-3} \left[ S \right]} + \frac{k_3 \left[ I \right]}{k_{-3}}  \right) \left[ ES \right]\\
+& = & \left( 1 + \frac{k_3 \left[ I \right]}{k_{-3}} \right)\left( 1 + \frac{k_{-1}}{k_{1}\left[ S \right]} \right) \left[ ES \right]\\
+\left[ ES \right] & = & \frac{\left[ E_{\textrm{tot}} \right]}{\left( 1 + \frac{k_3 \left[ I \right]}{k_{-3}} \right)\left( 1 + \frac{k_{-1}}{k_{1}\left[ S \right]} \right)} = \frac{\left[ E_{\textrm{tot}} \right] \left[ S \right]}{\left( 1 + \frac{\left[ I \right]}{K_i} \right)\left( \left[ S \right] + K_m\right)}
+\end{eqnarray*}
+
+Notice that the definition of $K_m$ here is a bit unexpected: this is due to our use of rapid equilibrium rather than steady-state assumptions. Plugging this into the equation for rate of product formation, we get:
+\begin{eqnarray*}
+\frac{d \left[ P \right]}{dt} = k_2 \left[ ES \right] = \left( \frac{k_2 \left[ E_{\textrm{tot}} \right]}{1 + \frac{\left[ I \right]}{K_i}} \right) \frac{\left[S\right]}{\left[ S \right] + K_m} = \left( \frac{V_{\textrm{max}}}{1 + \frac{\left[ I \right]}{K_i}} \right) \frac{\left[S\right]}{\left[ S \right] + K_m}
+\end{eqnarray*}
+
+\subsection*{Quasi-steady-state assumptions}
+
+The quasi-steady-state assumptions give three expressions:
+
+\begin{eqnarray*}
+\frac{d\left[ EI \right]}{dt} & = & k_{3} \left[ E\right] \left[ I\right]  + k_{-1} \left[ ESI \right] - \left( k_1 \left[ S \right] + k_{-3} \right) \left[ EI \right] = 0 \\
+\frac{d\left[ ES \right]}{dt} & = & k_{1} \left[ E\right] \left[ S \right]  + k_{-3} \left[ ESI \right] - \left( k_3 \left[ I \right] + k_{-1} + k_2 \right) \left[ ES \right] = 0\\
+\frac{d\left[ ESI \right]}{dt} & = & k_{1} \left[ EI \right] \left[ S \right]  + k_{3} \left[ ES \right] \left[ I \right] - \left( k_{-3} + k_{-1} \right) \left[ ESI \right] = 0 \\
+\end{eqnarray*}
+
+
+We can eliminate [E] from these expressions using moiety conservation, i.e.
+
+\[ \left[ E \right] = \left[ E_{\textrm{tot}} \right] - \left[ ES \right] - \left[ EI \right] - \left[ ESI \right] \]
+
+Plugging in and rearranging, we get:
+
+\begin{eqnarray*}
+\frac{d\left[ EI \right]}{dt} & = & k_{3} \left[ E_{\textrm{tot}} \right] \left[ I\right]  - k_{3} \left[ I\right]  \left[ ES \right]  + \left(k_{-1} - k_3 \left[ I \right] \right) \left[ ESI \right] - \left( k_1 \left[ S \right] + k_{-3} + k_3 \left[ I \right] \right) \left[ EI \right] = 0 \\
+\frac{d\left[ ES \right]}{dt} & = & k_{1} \left[ E_{\textrm{tot}} \right] \left[ S \right]  - k_{1} \left[ S \right] \left[ EI \right]  + \left( k_{-3} - k_1 \left[S\right] \right) \left[ ESI \right] - \left( k_3 \left[ I \right] + k_{-1} + k_2 + k_1 \left[S\right] \right) \left[ ES \right] = 0\\
+\frac{d\left[ ESI \right]}{dt} & = & k_{1} \left[ EI \right] \left[ S \right]  + k_{3} \left[ ES \right] \left[ I \right] - \left( k_{-3} + k_{-1} \right) \left[ ESI \right] = 0 \\
+\end{eqnarray*}
+
+The third quasi-steady-state assumption gives us that:
+
+\[ \left[ ESI \right] = \frac{k_{1}}{k_{-3} + k_{-1}} \left[ EI \right] \left[ S \right]  + \frac{k_{3}}{k_{-3} + k_{-1}} \left[ ES \right] \left[ I \right] \]
+
+Plugging this in to the remaining two expressions, we get:
+
+\begin{eqnarray*}
+\frac{d\left[ EI \right]}{dt} & = & k_{3} \left[ E_{\textrm{tot}} \right] \left[ I\right]  - k_{3} \left[ I\right]  \left( \frac{k_{-3} + k_3 \left[ I \right]}{k_{-3} + k_{-1} } \right) \left[ ES \right]  - \left( k_1 \left[ S \right] \left( \frac{k_{-3} + k_3 \left[ I \right]}{k_{-3} + k_{-1} } \right) + k_{-3} + k_3 \left[ I \right] \right) \left[ EI \right] = 0 \\
+\frac{d\left[ ES \right]}{dt} & = & k_{1} \left[ E_{\textrm{tot}} \right] \left[ S \right] 
+- k_{1} \left[ S \right]  \left( \frac{k_{-1} + k_1 \left[ S \right]}{k_{-3} + k_{-1} } \right) \left[ EI \right] - \left( k_3 \left[ I \right] \left( \frac{k_{-1} + k_1 \left[ S \right]}{k_{-3} + k_{-1} } \right) + k_{-1} + k_2 + k_1 \left[S\right] \right) \left[ ES \right] = 0
+\end{eqnarray*}
+
+We can solve the first equation to find an expression for [EI], then plug this into the second equation and solve to find [ES]:
+
+\begin{eqnarray*}
+\left[ ES \right] & = & \frac{}{k_3 \left[ I \right] \left( \frac{k_{-1} + k_1 \left[ S \right]}{k_{-3} + k_{-1} } \right) + k_{-1} + k_2 + k_1 \left[S\right]}
+
+\end{eqnarray*}
+
+
+\begin{lstlisting}
+function []  = mutualrepression()
+    % Pick some parameter values for plotting
+    global k n
+    k = 0.5; n=3;
+    
+    [x, y] = meshgrid(0:0.05:1.5, 0:0.05:1.5);
+    dx = k ./(k+y.^n) - x;
+    dy = k ./(k+x.^n) - y;
+    r = (dx.^2 + dy.^2).^0.5;
+    dx = dx ./ r;
+    dy = dy ./ r;
+    
+    quiver(x,y,dx,dy); hold on;
+    xlabel('[X]')
+    ylabel('[Y]')
+    axis([0,1.5,0,1.5])
+    [t, c] = ode45(@updater, [0 50], [0.7, 0.8]);
+    plot(c(:,1),c(:,2),'-r', 'LineWidth', 3)
+    plot(0.7, 0.8, 'or');
+    [t, c] = ode45(@updater, [0 50], [0.6,0.5]);
+    plot(c(:,1),c(:,2),'-g', 'LineWidth', 3);
+    plot(0.6, 0.5, 'og');
+    [t, c] = ode45(@updater, [0 50], [1.4,0.2]);
+    plot(c(:,1),c(:,2),'-b', 'LineWidth', 3);
+    plot(1.4, 0.2, 'ob');
+    [t, c] = ode45(@updater, [0 50], [0.3,1.2]);
+    plot(c(:,1),c(:,2),'-k', 'LineWidth', 3);
+    plot(0.3, 1.2, 'ok');
+    [t, c] = ode45(@updater, [0 50], [0.3,0.3]);
+    plot(c(:,1),c(:,2),'-m', 'LineWidth', 3);
+    plot(0.3, 0.3, 'om');
+      
+end
+
+function dc = updater(t, c)
+    x = c(1);
+    y = c(2);
+    global k n
+    dx = k/(k+y^n) - x;
+    dy = k/(k+x^n) - y;
+    dc = [dx; dy];
+end
+\end{lstlisting}
+
+
+\end{document}

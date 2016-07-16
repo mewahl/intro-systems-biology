@@ -1,0 +1,157 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+Here is another trick to identify moieties within a chemical reaction network. We'll use the five-species system mentioned in class (and in Gunawardena's chemical reaction network theory PDF, available on the course website) as our example. We'll  label our four reactions:
+
+\begin{eqnarray*}
+r_1: & &  \ce{A <=>  2B }\\
+r_2: & &  \ce{D <=>  A + C }\\
+r_3: & &  \ce{D ->  B + E }\\
+r_4: & &  \ce{B + E ->  A + C }\\
+\end{eqnarray*}
+
+At a given time, each of these reactions has a net forward rate $v_i$. Note that the $v_i$ are not mass action rate constants: for example, $v_1 = k_1 A - k_{-1} B^2$, where the $k_i$ are the mass action rate constants for the forward and reverse directions of reaction 1.\\
+
+We construct a stoichiometry matrix with as many rows as there are molecular species, and as many columns as there are reactions. The entries are the coefficients of each species in each reaction. If a species is not mentioned in a certain reaction, then its entry is zero. If the species is a reactant (i.e. on the left-hand side of the arrows), then its entry will be negative; otherwise, the entry will be positive.
+
+\begin{eqnarray*}
+&  & \hspace{0.25cm}
+\begin{array}{ccccc}
+       r_1 & r_2 & r_3 & r_4
+     \end{array}\\
+\textrm{stoichiometry matrix } S & = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} 
+\hspace{0.2 cm}
+\begin{array}{l}
+       A\\
+      B\\
+      C\\
+      D\\
+      E
+     \end{array}
+\end{eqnarray*}
+
+This matrix has rank three (which we can determine using MATLAB's rank() function), while there are five chemical species. This implies that we can apply row reduction to eliminate two rows. I hope you'll excuse the steps being written out here explicitly: you could also use a MATLAB function like rref(), but I want to make it clear what's happening.\\
+
+To begin, we describe how the concentrations are changing with time as:
+\begin{eqnarray*}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} = 
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &0\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 0 & 0 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Now, we add the fifth row to the second row (on both sides of the equation):
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 0 & 0 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Now we add rows three and four to the fifth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 1 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Next, we multiple the fourth row by 2:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 0 & 0 & 0& 2 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & -2 & -2 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Then we add two times the first row to the fourth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 2 & 0 & 0& 2 & 0\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+-2 & 0 & -2 & 2\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+Finally, we add the second row to the fourth row:
+
+\begin{eqnarray*}
+\begin{pmatrix} 1 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 &1\\ 0 & 0 & 1 & 0 & 0\\ 2 & 1 & 0& 2 & 1\\ 0 & 0 & 1 & 1 & 1\end{pmatrix}
+\frac{d}{dt} \begin{pmatrix} A\\ B \\ C\\ D\\ E \end{pmatrix} 
+& = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 2 & -2\\
+0 & 1 & 0 & 1\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0
+\end{pmatrix} \begin{pmatrix} v_1\\ v_2 \\ v_3 \\ v_4 \end{pmatrix}
+\end{eqnarray*}
+
+As expected, we were able to eliminate two rows of the matrix. Notice that the last row implies that:
+
+\[ \frac{dC}{dt} + \frac{dD}{dt} + \frac{dE}{dt} = 0 \]
+
+or, taking the integral with respect to time,
+
+\[ \left[ C \right] + \left[ D \right] + \left[ E \right] = \textrm{ constant} \]
+
+Similarly, the fourth row implies that:
+
+\[ 2 \frac{dA}{dt} + 2 \frac{dD}{dt} + \frac{dB}{dt} + \frac{dE}{dt} = 0 \]
+
+or, in other words,
+
+\[ 2 \left[ A \right] + 2 \left[ D \right]+ \left[ B \right]  + \left[ E \right] = \textrm{ constant} \]
+
+These are our two moiety conservation relations. Feel free to try it out this method on the homework problem!
+
+\end{document}

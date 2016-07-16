@@ -1,0 +1,83 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 9 \hfill Due Wedesday, April 22, 2015 at 2:30 PM
+
+\section*{Problem 1: Bicoid gradient scaling (40 points)}
+
+The generic reaction-diffusion equation for a system with one component and one spatial dimension is\footnote{$\nabla^2$ is the Laplace operator. In one dimension, it is simply the second spatial derivative, $\partial_{xx}$. On the Cartesian plane, it is the sum of the two spatial derivatives, $\partial_{xx} + \partial_{yy}$.}:
+\[ \frac{\partial}{\partial t} c(x,t) = f\left[ c(x,t) \right] + D \nabla^2  c(x,t) \]
+When simulating such systems, we consider only a finite number of points on a one-dimensional grid.
+\begin{enumerate}[a)]
+\item Show, using the definition of the derivative, that the Laplacian term can be approximated on a grid with spacing $h$:
+\[  \nabla^2 c(x,t) \approx  \frac{c(x-h,t) + c(x+h,t) - 2 \, c(x,t)}{h^2} \]
+\end{enumerate}
+We will model Bicoid reaction and diffusion in one dimension (representing the A-P axis of the embryo). Since Bicoid diffuses through the cytoplasm, it should not be able to ``exit" the embryo at either end: the boundaries of our grid must therefore be reflective. Unfortunately, the MATLAB function which implements the discrete Laplacian, \mcode{del2()}, does not handle these boundary conditions.
+\begin{enumerate}[a)]
+\setcounter{enumi}{1}
+\item Write a function to estimate the discrete Laplacian on a grid with reflective boundaries at either end. The Turing pattern example script in the Lecture 29 notes, which implements the discrete Laplacian on a torus, may be a helpful starting point.
+\item Suppose that the Bicoid protein gradient is established over the course of two hours in a 500 $\mu$m embryo according to the reaction-diffusion equation:
+\[  \frac{\partial}{\partial t} c(x,t) =  \alpha \, \delta_k(x) - \beta \, c(x,t) + D \frac{\partial^2}{\partial x^2}  c(x,t) \]
+where $\delta_k(x)$ is the Kronecker delta distribution, $\alpha$ = 10 nM/s is the translation rate, $\beta$ = 1/1800 s$^{-1}$ is the degradation rate, and $D$ = 0.3 $\mu$m$^2$/s is the diffusion rate. Show that the final Bicoid gradient is approximately exponential by simulating the system using  Euler's method and your subroutine from part (b). Assume that no Bicoid protein is present initially and use a step size\footnote{If you do use a different grid spacing, ensure that Bicoid is still synthesized in a 5 $\mu$m region.} of $h$=5 $\mu$m.
+\item Repeat for an embryo twice as long, and for a third embryo half as long as the original, maintaining the same step size and synthesis rate. Plot the Bicoid concentration profiles vs. fractional body length on the same axes. Does the concentration profile scale?
+\item Implement a gradient scaling mechanism of your choice and demonstrate an improvement by creating a plot similar to part (c) for comparison.
+\end{enumerate}
+
+%\section*{Problem 1: Reaction-diffusion in two dimensions (20 points)}
+%
+%The generic reaction-diffusion equation for a system with one component on the Cartesian plane is:
+%\[ \frac{\partial}{\partial t} c(x,y,t) = g\left[ c(x,y,t) \right] + D \left[ \frac{\partial^2}{\partial x^2} +  \frac{\partial^2}{\partial y^2} \right] c(x,y,t) = g(c) + D \nabla^2 c(x,y,t) \]
+%where $\nabla^2$ represents the \textit{Laplace operator}. When simulating such systems, we consider only a finite number of points on a two-dimensional grid.
+%\begin{enumerate}[a)]
+%\item Show, using the definition of the derivative, that the Laplacian term can be approximated on a grid with spacing $h$:
+%\[ D \nabla^2 c(x,y,t) \approx  \frac{c(x-h,y,t) + c(x+h,y,t) +  c(x,y-h,t) +  c(x,y+h,t) - 4 c(x,y,t)}{h^2} \]
+%\end{enumerate}
+%Bicoid protein primarily diffuses through the yolkless cytoplasm near the surface of the fruit fly embryo: a region shaped like a thin ovoid shell. We will approximate this region by a cylindrical shell using a rectangular grid with appropriate boundary properties. The MATLAB function \mcode{del2()} implements the discrete Laplacian but unfortunately will not tolerate these creative boundary conditions. 
+%\begin{enumerate}[a)]
+%\setcounter{enumi}{1}
+%\item Write a function to estimate the discrete Laplacian on a grid with reflective boundaries at the left and right. Arrange for continuity under diffusion between the top and bottom row of the grid\footnote{In other words, particles which would diffuse off the left side of the grid instead bounce back to the right, and particles which diffuse off the top row of the grid appear in the bottom row, etc. The Turing pattern example script on the course website, which implements the discrete Laplacian on a torus, may be a helpful starting point.}.
+%\item 
+%\end{enumerate}
+
+\section*{Problem 2: Growing snake (60 points)}
+
+Another Turing pattern mechanism proposed by Gierer and Meinhardt (1972) follows:
+\[ \frac{\partial A}{\partial t} = \frac{\alpha \, A^2}{B} - \beta \, A + \epsilon \, D \,  \nabla^2 A \hspace{ 2 cm}  \frac{\partial B}{\partial t} = \gamma \, A^2  - \delta \, B + D \nabla^2 B\]
+where all constants are positive. 
+\begin{enumerate}[a)]
+\item Show that the spatially-homogeneous solution for this system is:
+\[ (A^*, B^*) = \left( \frac{\alpha \delta}{\beta \gamma}, \frac{\alpha^2 \delta}{\beta^2 \gamma} \right) \]
+\item Show that for Turing patterns to arise, the following two conditions must hold:
+\[ \delta > \beta \hspace{2 cm} \textrm{ and } \hspace{2 cm} \left( \beta + \delta \, \epsilon \right)^2  > 8 \, \beta \, \delta \, \epsilon \]
+\end{enumerate}
+Consider the specific case where $\alpha=\beta =\gamma = 1$, $\delta = 1.1$, $\epsilon = 0.12$, and $D=15$. You will use Euler's method to simulate this system on a two-dimensional grid representing the skin of a snake. The left and right boundaries of the grid (the ``head" and ``tail") should be reflective under diffusion, while the top and bottom should wrap around. You may wish to modify the example Turing pattern script on the course website for this purpose.
+\begin{enumerate}[a)]
+\setcounter{enumi}{3}
+\item Simulate this system on a grid with dimensions 5 units x 10 units (a ``baby snake"). Use a step size of one unit; choose the time step and duration appropriately to allow the system to reach its steady-state pattern. Include an image of your results. How many stripes does this snake have?
+\item The snake grows up. Repeat the simulation on a grid with dimensions 10 units by 100 units. How many stripes does the snake have now? Include an image of the results.
+\item The snake lives large. Repeat on a grid with dimensions 100 units by 100 units. Include an image of the results.
+\item Determine which modes are unstable for organisms with the following lengths (i) $L=\sqrt{5^2 + 10^2}$, (ii) $L=\sqrt{10^2 + 100^2}$, and (iii) $L=\sqrt{100^2 + 100^2}$. How are these values reflected in the images you produced in (d-f)? Hint: see Iglesias section 3.3.2 and Figure 3.9 for a worked example.
+\end{enumerate}
+
+\end{document}

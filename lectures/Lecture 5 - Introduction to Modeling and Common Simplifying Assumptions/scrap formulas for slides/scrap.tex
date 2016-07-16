@@ -1,0 +1,113 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate, color}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+
+\[ \frac{dy}{dt} = f(t,y) \textrm{ and } y(t_0) = y_0 \]
+
+\[ \frac{dy}{dt} = f(t,y) = y - t^2 + 1, \hspace{1 cm} y(0)=0.5 \]
+
+\[ \frac{dy}{dt} = -2.3y \hspace{1 cm} y(0) = 1 \]
+
+\begin{eqnarray*}
+\frac{dy}{dt} & = & f(t,y) \hspace{1.9 cm} \textrm{ is our ODE}\\
+y(t_0) & = & y_0  \hspace{2.7 cm} \textrm{ is our initial condition}\\
+t_k & = & t_0 + k \Delta t  \hspace{1.72 cm} \textrm{ are our ``mesh points"}\\
+y_k & =& y_{k-1} + \Delta t \cdot f(t_{k-1},y_{k-1})\\
+& \approx & y(t_k)
+\end{eqnarray*}
+
+\[ \frac{dA}{dt} = k_0 - k_1 A = f(t, A) \hspace{2 cm} A(t=0) = A_0 = 0 \]
+
+\begin{eqnarray*}
+ t_k & = & t_0 + k \Delta t\\
+A_k & =& A_{k-1} + \Delta t \cdot f(t_{k-1},A_{k-1})\\
+& \approx & A(t_k)
+\end{eqnarray*}
+
+
+
+\begin{eqnarray*}
+\frac{dx}{dt} = f(t, x, y) & & \frac{dy}{dt} = g(t, x, y)\\
+x(t_0) = x_0 & & y(t_0) =  y_0 \\
+t_k & = & t_0 + k \Delta t\\
+x_k & =& x_{k-1} + \Delta t \cdot f(t_{k-1},x_{k-1},y_{k-1})\\
+& \approx & x(t_k)\\
+y_k & =& y_{k-1} + \Delta t \cdot g(t_{k-1},x_{k-1}, y_{k-1})\\
+& \approx & y(t_k)
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{d A}{dt} = - c_1 A & \implies & \frac{\frac{d A}{dt} }{A} = - c_1\\
+\int \frac{\frac{d A}{dt} \,  dt}{A} = \int \frac{1}{A} \, dA = \int - c_1 \, dt\\
+\ln A = -c_1 t + c_2\\
+A = e^{-c_1 t + c_2} = e^{-c_1}e^{c_2} = c_3 e^{-c_1 t}
+\end{eqnarray*}
+
+
+\[ A = c_3 e^{-c_1 t} \]
+
+\[ A = A_0 e^{-c_1 t} \]
+
+\begin{eqnarray*}
+\frac{dB}{dt} & = & c_1 A = c_1c_3 e^{-c_1 t}\\
+B & = & \int c_1c_3 e^{-c_1t} \, dt = c_4 -c_3 e^{-c_1 t}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{dE}{dt} & = & \textrm{\color{blue} Rate of formation }  \textrm{\color{red} - Rate of breakdown}\\
+& = & {\color{blue} k_3 D} {\color{red} \, - k_4 B E}\\
+\frac{dC}{dt} & = & {\color{blue} k_2 D + k_4 B E} {\color{red} \, - k_{-2} A C}\\
+\frac{dA}{dt} & = & {\color{blue} k_{-1} B^2 + k_2 D + k_4 B E} {\color{red} \, - k_1 A - k_{-2} A C}\\
+\frac{dB}{dt} & = & {\color{blue} 2k_1 A + k_3 D} { \color{red}\,  - 2k_{-1} B^2 - k_4 B E}\\
+\frac{dD}{dt} & = & {\color{blue} k_{-2} A C - k_3 D} {\color{red}\,  - k_2 D}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{dA}{dt} & = & {\color{blue} k_{-1} B^2 + k_2 D + k_4 B E} {\color{red} \, - k_1 A - k_{-2} A C}\\
+\frac{dB}{dt} & = & {\color{blue} 2 k_1 A + k_3 D} { \color{red}\,  - 2k_{-1} B^2 - k_4 B E}\\
+\frac{dC}{dt} & = & {\color{blue} k_2 D + k_4 B E} {\color{red} \, - k_{-2} A C}\\
+\frac{dD}{dt} & = & {\color{blue} k_{-2} A C - k_3 D} {\color{red}\,  - k_2 D}\\
+\frac{dE}{dt} & = & {\color{blue} k_3 D} {\color{red} \, - k_4 B E}
+\end{eqnarray*}
+
+\[ k_1 \left[ A \right] = k_{-1} \left[ B \right]  \implies  \frac{k_1}{k_{-1}} = \frac{\left[B \right]}{\left[ A \right]} \]
+
+\begin{eqnarray*}
+\left[ C \right] & = & \left[ A \right] + \left[ B \right]\\
+& = & \frac{k_{-1}}{k_1}  \left[ B \right] +  \left[ B \right]\\
+& = & \frac{k_{-1} + k_1}{ k_1} \left[ B \right]\\
+\frac{d\left[ C \right]}{dt} & = & - k_2 \left[ B \right]\\
+& = & - \frac{ k_2}{k_{-1} + k_1} \left[ C \right]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+ \frac{d\left[ A \right]}{dt} & = & k_1 - k_2 \left[ A \right] = 0\\
+ & \implies & \left[ A \right] = \frac{k_1}{k_2}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+ \frac{d \left[ B \right]}{dt} & = & k_2 \left[A\right] - k_3 \left[ B \right]\\
+ & = & k_1 - k_3 \left[ B \right]
+ \end{eqnarray*}
+\end{document}

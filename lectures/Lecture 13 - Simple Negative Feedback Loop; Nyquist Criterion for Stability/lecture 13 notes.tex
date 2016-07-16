@@ -1,0 +1,342 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath, mathrsfs, mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, color}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+
+\usepackage{float}
+\restylefloat{table}
+\newcommand{\Lapl}{\mathcal{L}}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\section*{Recap of linear, time-invariant systems}
+
+\begin{itemize}
+\item To simplify our analysis, we made the assumption that we are working with linear, time-invariant (LTI) systems.
+\item Any input can be represented as a combination of Dirac delta distributions (instantaneous pulses). Assuming the input begins at time zero,
+
+\[  x(t) = c_0 \delta(t) + c_1 \delta(t - \Delta t) + c_2 \delta(t - 2 \Delta t) + \ldots  \]
+
+\item The constant terms simply represent the amplitude of the input function at each timepoint, so we can rewrite:
+
+\[  x(t) = x(0) \delta(t) \Delta t + x(\Delta t) \delta(t - \Delta t) \Delta t + x(2\Delta t) \delta(t - 2 \Delta t) \Delta t + \ldots  \]
+
+\item Consider an open-loop system (one with no feedback). Suppose the system's response to an instanteous pulse of input is known to be $h(t)$. Then, by linearity,
+
+\[ y(t) = x(0) h(t) \Delta t + x(\Delta t) h(t - \Delta t) \Delta t  + \ldots + x(t) h(0) \] 
+
+\item New MATLAB demo to illustrate this in a discrete case (chimes.m and chimecontroller.m).
+\item In the limit where $\Delta t$  is very small, this large sum is equivalent to taking an integral:
+
+\[ y(t) = \int_0^t x(\tau) h(t-\tau)\, d \tau =x(t) \otimes h(t) \]
+\item We will use ``$\otimes$" to denote a convolution integral; some authors use an asterisk ($*$) instead. Laplace transformation will allow us to calculate it with (relative) ease.
+
+\[ \tilde{y}(s) = \tilde{x}(s)\tilde{h}(s) = \tilde{x}(s) G(s) \]
+
+\item The Laplace transform of the impulse response function has a special name, the \textit{open loop transfer function}.
+
+\[ \frac{\tilde{y}(s)}{\tilde{x}(s)} = \tilde{h}(s) = G(s) \]
+
+As shown above, it is also often denoted simply by $G(s)$ instead of $\tilde{h}(s)$.
+\end{itemize}
+
+\section*{Recap of Laplace transforms}
+
+\begin{itemize}
+\item Definition:
+\[ \Lapl \left[ f(t) \right] \triangleq \hat{f}(s) = \int_0^{\infty} \exp \left(-st \right) \, f(t) \, dt\]
+\item In a typical problem, you might calculate $G(s)$ and $\tilde{x}(s)$, multiply them together to find $\tilde{y}(s)$, then take the inverse Laplace transform to get $y(t)$.
+\item We will not generally need to evaluate this integral in order to determine the Laplace transform. The most common ones can be quickly looked up in tables. Similarly, the inverse Laplace transform can be determined by comparing $\tilde{f}(s)$ to the Laplace transforms in a table.
+\item However, it is worthwhile to ensure you understand how the most common transforms can be calculated. The most commonly-encountered transforms are the ones that correspond to inputs which we can provide experimentally (pulses, step functions, ramps), and the transforms of the most common system outputs.
+\end{itemize}
+
+\section*{Example calculations with Laplace transforms}
+\begin{itemize}
+\item As an example, consider the exponential function:
+
+\[  f(t)=\begin{cases}
+    e^{- \alpha t}, & t \geq 0\\
+    0, & t < 0
+  \end{cases} \]
+  
+\item We know that the time evolution of linear systems often involves such exponential growth/decay terms, so this falls into the category of transforms you will encounter often.
+\item Its transform is given by:
+
+\begin{eqnarray*}
+\Lapl \left[ f(t) \right] = \tilde{f}(s) & = & \int_0^{\infty} e^{-s t} e^{- \alpha t}\, dt\\
+& = & - \frac{1}{s + \alpha} \left.  e^{-(s + \alpha)t} \right|_0^{\infty}\\
+& = &  \frac{1}{s + \alpha}
+\end{eqnarray*}
+
+\item You will find that $\tilde{y}(s)$ is a rational function: the numerator and denominator are both polynomials. A rational function can be rewritten in factored form, e.g.
+
+\[ \tilde{y}(s) = \frac{(s-a)}{(s-b)(s-c)} \]
+
+\item The zeros of the numerator (in this case, $s=a$) are the \textit{roots} of $\tilde{y}(s)$. The roots of the denominator ( $b$ and $c$ here) are the \textit{poles} of $\tilde{y}(s)$.
+
+\item We would not expect to find a perfect match to this example function $\tilde{y}(s)$ in our Laplace transform table because it is highly specific. However, we can use partial fraction decomposition to rewrite:
+
+\[ \tilde{y}(s) = \frac{z_1}{s-b} + \frac{z_2}{s-c}  \]
+
+where $z_1$ and $z_2$ are integers.
+
+\item We already found that:
+
+\[ \Lapl^{-1} \left[ \frac{1}{s + \alpha} \right] = e^{-\alpha t}, \hspace{1 cm} t > 0 \]
+
+Notice that each of the terms of $\tilde{y}(s)$ is of this form.
+
+\item Therefore,
+
+\[ y(t) = z_1e^{bt} + z_2 e^{ct}, \hspace{1 cm} t > 0 \]
+
+Notice that this solution will diverge if the real part of $b$ or $c$ -- i.e., any of the poles of $\tilde{y}$ -- are positive.
+
+\item If an example is needed for review of the partial fractions method, try consider working out the following:
+
+\begin{eqnarray*}
+\frac{1}{(s-a)(s-b)} & = & \frac{A}{s-a} + \frac{B}{s-b}\\
+1 & = & A \left( s-b \right) + B \left( s - a \right)\\
+\frac{1}{b - a} &= & B\\
+\frac{1}{a-b} & = & A\\
+\frac{1}{(s-a)(s-b)} & = & \frac{1}{a-b} \left[\frac{1}{s-a} - \frac{1}{s-b} \right]
+\end{eqnarray*}
+
+\end{itemize}
+
+\section*{Other properties of Laplace transforms}
+\begin{itemize}
+\item  Laplace transforms also convert derivatives and integrals into algebraic expressions.
+\item For example, suppose we would like to calculate the Laplace transform of $df/dt$. We make use of integration by parts:
+
+\[ \int_0^{\infty} u \, dv = \left. uv \right|_0^{\infty} - \int_0^{\infty} v \, du \]
+
+\item Plugging in with  $dv = \frac{df}{dt} \, dt$ and $u = e^{-st}$,
+
+\begin{eqnarray*}
+\Lapl \left[ \frac{d\, f}{dt} \right]  & = & \int_0^{\infty} e^{-s t} \frac{d\, f}{dt} \, dt\\
+& = & \left. e^{-s t} f(t) \right|_0^{\infty} + s \int_0^{\infty} f(t) e^{-st} \, dt\\
+& = &  -f(0) + s \hat{f}(s)
+\end{eqnarray*}
+
+\item Likewise, it can be shown that:
+
+\[ \Lapl \left[ \int f(t) \, dt \right] = \frac{1}{s} \left( \hat{f}(s) + \left[ \int f(t) \, dt \right]_{t=0} \right) \]
+
+\item A system of differential equations (for example, from mass action rate laws) can be transformed and rearranged algebraically using this method. We will see an example when we apply this to understanding negative autoregulation by a repressor.
+
+\end{itemize}
+
+\section*{Application of control theory to negative autorepression}
+\begin{itemize}
+\item Negative autoregulation can be pictured as a system's attempt to keep its output at a fixed, desired value $y^*$ in spite of input that might tend to displace the system from $y^*$ via the \textit{plant} (draw this system).
+\item The system's approach will be to monitor its current output, compare it to the desired value to calculate an \textit{error}, then subtracting something from the input that would tend to make the output closer to $y^*$.
+\item In block diagram form, we visualize this as subtracting $y^*$ from $y$ to get the error, then sending the error term through a controller that determines what value needs to be subtracted from the input, then performing the subtraction. (Draw block diagram while explaining.)
+\item Assume that the plant and controller are both linear, time-invariant systems so that we can describe them by their impulse response functions $h(t)$and $k(t)$.
+\item Then the system's output is:
+\[ y(t) = \left[ x - \left(y - y^*\right) \otimes k \right] \otimes h \]
+\item To make some sense of this, we apply a Laplace transform and rearrange. We denote the Laplace transform of $h(t)$ (the ``open loop transfer function") by $G(s)$ as is the convention.
+
+\begin{eqnarray*}
+ \tilde{y}(s) & = & \left[ \tilde{x} - \tilde{k} \tilde{y} + \tilde{k} y^* \right] G(s)\\
+ \tilde{y}(s) & =& \frac{G(s) \tilde{x}(s)}{1 + \tilde{k}(s) G(s)} +  \frac{G(s) \tilde{k}(s)  y^* }{1 + \tilde{k}(s) G(s)}
+\end{eqnarray*}
+
+\item Notice that the ratio $\tilde{y}(s)/\tilde{x}(s)$ for the closed loop is no longer simply $G(s)$. In particular, if $y^*=0$, the \textit{closed loop transfer function'} is:
+
+\[ \frac{\tilde{y}}{\tilde{x}} =  \frac{G(s)}{1 + \tilde{k}(s) G(s)} \]
+
+\item A measure of how well the system is performing is given by the error,
+
+\[ \tilde{y}(s) - y^* = \frac{G(s) \left[ \tilde{x} + \tilde{k}(s) y^*  \right]}{1 + \tilde{k}(s)G(s)} - \frac{\left[ 1 + \tilde{k}(s)G(s) \right] y^*}{1 + \tilde{k}(s) G(s) } = \frac{G(s) \tilde{x}}{1 + \tilde{k}(s)G(s)} - \frac{y^*}{1 + \tilde{k}(s)G(s)}  \]
+
+\item The simplest case imaginable is that the controller simply multiplies its input by some constant value, which we call the gain, $\tilde{k}(s) = k$.
+
+\[ \tilde{y}(s) - y^* = \frac{G(s) \tilde{x}}{1 + kG(s)} - \frac{y^*}{1 + kG(s)}  \]
+
+\item A cursory examination suggests that we can make the error term shrink to nothing by just choosing the gain, $k$, to be very large.
+\end{itemize}
+
+\section*{Concerns with choosing $k$ too large}
+\begin{itemize}
+\item There is a problem with this logic which I will illustrate by ``choosing" an input $x(t)$ and open loop transfer function $G(s)$. (Later, you can decide whether my choice of $G(s)$ was reasonable.)
+\item For input, I choose a step function: a table of Laplace transforms tells us that $\tilde{x}(s) = 1/s$ (and you will show this on your homework).
+\item I also choose $G(s)$ to be a rational function in $s$, with the degree of the numerator less than or equal to the degree of the denominator ($m \leq n$). Then our expression for the error is a rational function, and we can rewrite the numerator and denominator by factoring out each polynomial's respective zeros ($c_i$s and $d_i$s):
+
+\[ \tilde{y}(s) - y^* = \frac{G(s) \left[ \tilde{x} - y^*  \right]}{1 + kG(s)} = \frac{G(s) \tilde{x}}{1 + kG(s)} + \ldots = \frac{\left( s - c_1 \right) \cdots \left( s - c_m \right) }{s \left( s - d_1 \right) \cdots \left( s - d_n \right)} + \ldots \]
+
+\item Since the degree of the denominator is higher than the degree of the numerator (because of my choice of input), if all of the $d_i$ are distinct and non-zero, I can rewrite this using partial fractions as:
+
+\[ \tilde{y}(s) - y^* = \frac{f_0}{s} + \frac{f_1}{s - d_1 } + \ldots + \frac{f_{n}}{s - d_n} + \ldots \]
+
+\item We happened to see, during our discussion of Laplace transforms, that $\Lapl [e^{-\alpha t}] = 1/(s+ \alpha)$, so:
+
+\[ y(t) = f_0 + f_1e^{d_1 t} + \ldots + f_{n} e^{d_n t}  + \ldots \]
+
+If any of the $d_i$ have positive real parts, the solution will diverge.
+
+\item In general, if any of the closed loop transfer function's poles (here, the $d_i$) has a positive real part, then the system will be unstable.
+
+\item Increasing $k$ will change the values of the roots of $1 + kG(s)$ (i.e. the poles of the closed loop transfer function): therefore, it is possible to make a system unstable by choosing $k$ too large.
+
+\item Demo in MATLAB illustrating how adding one to $G(s)$ and/or multiplying $G(s)$ by a constant value $k$ can shift the positions of the roots of $1 + kG(s)$.
+\end{itemize}
+
+
+\section*{Transcriptional repressor example}
+
+\begin{itemize}
+\item We now apply this logic more specifically to a biological control system: a transcriptional repressor that binds to its own promoter.
+\item We will assume that the input to the complete system, $x(t)$, represents some force that is trying to cause the repressor to be expressed.
+\item The output of the system, $p(t)$, will be the concentration of the repressor's protein. Its ideal value $p^*$ is assumed to be zero.
+\item The control loop in this case will create negative feedback proportional to the error $p - p^* = p$, with gain $k$.
+\item The input to the plant is considered to be the overall rate of the gene's transcription. This depends both on $x$ (which drives expression) and the control loop's feedback (which represses it). We'll say the input to the plant is $a(t) = x(t) - ky(t)$.
+\item The plant's function is to map a timecourse of mRNA expression ($a(t)$) to a timecourse of protein abundance ($p(t)$) abundance. We model the production and degradation of both protein and mRNA ($m(t)$).
+\item The rate of translation is assumed to be proportional to the concentration of mRNA (a reasonable assumption because the mRNA concentration will not be high enough to saturate the cell's translational machinery). The usual degradation terms are also present:
+
+\begin{eqnarray*}
+\frac{dm}{dt} & = & c_m a(t) - \gamma_m m(t)\\
+\frac{dp}{dt} & = & c_p m(t) - \gamma_p p(t)
+\end{eqnarray*}
+
+\item Transforming to Laplace space, we can find an expression for $\tilde{p}(s)$ in terms of $\tilde{a}(s)$:
+
+\begin{eqnarray*}
+s\tilde{m} - m(0) & = & c_m \tilde{a} - \gamma_m \tilde{m}\\
+s\tilde{p} - p(0) & = & c_p \tilde{m} - \gamma_p \tilde{p}\\
+\tilde{p}(s)  & = & \frac{1}{s + \gamma_p} \left( c_p \tilde{m} - p(0) \right)\\
+& = &  \frac{1}{s + \gamma_p} \left( \frac{c_p}{s + \gamma_m} \left[ c_m \tilde{a} + m(0) \right] - p(0) \right)\\
+& = & \frac{c_p c_m \tilde{a}}{\left( s + \gamma_p \right)\left( s + \gamma_m \right)} + \frac{c_p m(0)}{\left( s + \gamma_p \right)\left( s + \gamma_m \right)} + \frac{p(0)}{s + \gamma_p}
+\end{eqnarray*}
+
+\item Notice that only one term depends on the input; the other two depend on the initial conditions. We could easily find the inverse Laplace transform for this whole expression, but we will focus on the first term, which reflects the system's long-term behavior irrespective of the initial conditions. (The other two terms correspond to transient behaviors based on initial conditions.)
+
+\item Choosing $m(0)=p(0)=0$, we find that the open loop transfer function $G(s)=\tilde{a}(s)/\tilde{p}(s)$ is given by:
+
+\[ G(s) = \frac{c_p c_m}{\left( s + \gamma_p \right)\left( s + \gamma_m \right)} \]
+
+\item We saw above that for negative feedback control systems with $y^*=0$, the closed loop transfer function is
+
+\[ \frac{\tilde{y}(s)}{\tilde{x}(s)}  = \frac{G(s)}{1 + kG(s)}  \]
+
+\item We have seen that the solution for such systems will diverge if $1 + kG(s)$ has any roots with positive real parts. Now we have a specific form for $G(s)$ that we can plug in and test.
+
+\item The easiest way to determine whether any roots of $1 + kG(s)$ with positive real part exist is to use the Nyquist stability criterion.
+\end{itemize}
+
+\subsection*{Nyquist theorem}
+
+\begin{itemize}
+\item The Nyquist stability criterion is a graphical technique: a curve is drawn on the complex plane, and from the number of times it encircles a certain point, we conclude whether any roots with non-negative real parts exist.
+
+\item A proof of this theorem requires analysis and is beyond the scope of this class. However, the theorem is easily applied in practice -- particularly since MATLAB is happy to make the necessary plots for us. We will provide a quick heuristic argument for why the Nyquist method works.
+
+\item We want to know whether any roots of $1 + kG(s)$ lie in the right half of the complex plane.
+
+\item Define the Nyquist contour to enclose the right half of the complex plane, going clockwise (!). For example, begin by traveling from $0 - i \infty$ to $0 + i \infty $ along the imaginary axis, then travel along a semicircular arc with radius $\infty$ back to $0 - i \infty$.
+
+\item We want to know how many roots are enclosed of $1 + kG(s)$ are enclosed by this Nyquist contour.
+
+\item Suppose that we map every point $s$ along this contour to another point $w = 1 + k G(s)$. These points would form another closed loop, which we call the Nyquist plot.
+
+\item It turns out that the number of times the Nyquist plot encircles the origin depends on how many poles and zeros of $1 + kG(s)$ are enclosed by the Nyquist contour.
+
+\item Demo showing that enclosing a zero with a clockwise contour results in a clockwise rotation of the plot around the origin. Enclosing a pole with a clockwise contour results in a counterclockwise rotation of the plot around the origin. Enclosing one of each results in no net rotations around the origin. (This we will take as given and not explain further.)
+
+\item If $N$ is the number of times the Nyquist plot of $1 + kG(s)$ encircles the origin clockwise, then $N = Z - P$, where $Z$ and $P$ are the number of zeros and poles enclosed by the Nyquist contour, respectively.
+
+\item We can find $N$ by examining the Nyquist plot. To make a Nyquist plot in MATLAB, we define the transfer function $G(s)$ by giving the coefficients of the polynomials in its numerator and denominator using the function \mcode{tf()}. Then use the function \mcode{nyquist()} to draw the plot.
+
+\item The number of enclosed poles $P$ can be determined by examination:
+
+\[ G(s) = \frac{(s-c_1)(s - c_2) \cdots (s - c_m) }{(s-d_1)(s - d_2) \cdots (s - d_n)} \implies 1 - kG(s) = \frac{(s-d_1)(s - d_2) \cdots (s - d_n) - k(s-c_1)(s - c_2) \cdots (s - c_m) }{(s-d_1)(s - d_2) \cdots (s - d_n)} \]
+
+i.e., the poles of $1 + kG(s)$ are just the same as the poles of $G(s)$.
+
+\item So, by finding $N$ and $P$, we can calculate $Z = N + P$. If $Z$ is not zero, then $y(t)$ diverges.
+
+\item Throughout all of this we have assumed that the Nyquist plot is of $1 + kG(s)$ and that $N$ is the number of encirclements of zero. Equivalently, you can make a Nyquist plot of $G(s)$ and define $N$ to be the number of clockwise encirclements of $-1/k$ (which requires a bit less algebra, so we will do it below).
+
+\end{itemize}
+
+\subsection*{Application to the transcriptional autorepression system}
+
+\begin{itemize}
+
+\item As an illustration, we now apply the Nyquist stability criterion to the repressor example where
+
+\[ G(s) =  \frac{c_p c_m}{\left( s + \gamma_p \right)\left( s + \gamma_m \right)} \]
+
+We will define our Nyquist plot using $G(s)$ (not $1 + kG(s)$) and define $N$ to be the number of clockwise encirclements of $-1/k$.
+
+\item We first calculate $P$: the number of poles of $G(s)$ with real part greater than zero. Since the constants $\gamma_i$ are real and positive, all of the poles of $G(s)$ are real and negative. Therefore $P=0$.
+
+\item  For stability, we require $Z=0$, so we need $N=Z-P=0$. At this stage we could simply examine the plot to determine $N$. ($N=0$ since the contour never encloses any numbers on the negative real line.)
+
+\item Let's also build some intuition, however, by considering where $G(s)$ will map values on the Nyquist contour. On the arc of the contour, where $r = |s|=\infty$, $G(s)$ equals zero. Therefore, we only need to consider where $G(s)$ maps numbers on the imaginary line -- that is, numbers of the form $i\omega$, $\omega \in (-\infty, \infty)$.
+\item Where are all of the points $w=G(i\omega)$?
+
+\begin{eqnarray*}
+G(i \omega) & = &  \frac{c_p c_m}{\left( i\omega + \gamma_p \right)\left( i\omega + \gamma_m \right)} \cdot \frac{\left(- i\omega + \gamma_p \right)\left( - i\omega + \gamma_m \right)}{\left(- i\omega + \gamma_p \right)\left(- i\omega + \gamma_m \right)}\\
+& = & \frac{c_p c_m \left[  - \omega^2 + \gamma_p \gamma_m -i \omega \left(\gamma_p + \gamma_m \right) \right]}{\left( \omega^2 + \gamma_p^2 \right)\left( \omega^2 + \gamma_m^2 \right)}
+\end{eqnarray*}
+
+\item This contour crosses the real axis when the imaginary component is equal to zero. This happens only once, when $\omega=0$. At that point the real part is positive ($G(i \omega) = \gamma_p \gamma_m$).
+
+\item Since the curve crosses the x axis only once at a positive real number, it is impossible for the point $-1/k$ to be enclosed, no matter what $k$ we choose. Therefore, the system is stable for any gain $k$!
+
+\end{itemize}
+
+\section*{Example using three-reaction system}
+
+\begin{itemize}
+
+\item  The transcriptional feedback system above had three parts: a gene locus, its mRNA, and the encoded protein.
+
+\item Suppose we made our feedback pathway just one step longer, e.g. by having the protein produce a fourth chemical ($f$) that represses expression of the gene:
+
+\begin{eqnarray*}
+\frac{dm}{dt} & = & c_m a(t) - \gamma_m m(t)\\
+\frac{dp}{dt} & = & c_p m(t) - \gamma_p p(t)\\
+\frac{df}{dt} & = & c_f p(t) - \gamma_f f(t)
+\end{eqnarray*}
+
+The system's output is now considered to be $f(t)$, not $p(t)$.
+
+\item Performing the Laplace transforms and algebraic rearrangements as above, we find that when $m(0)=p(0)=f(0)$:
+
+\[ G(s) = \frac{c_p c_m c_f}{\left( s + \gamma_p \right)\left( s + \gamma_m \right)\left( s + \gamma_f \right)} \]
+
+\item Although this looks quite similar to the above, we will find that the system's behavior has changed qualitatively:
+\begin{eqnarray*}
+G(i \omega) & = &  \frac{c_p c_m c_f}{\left( i\omega + \gamma_p \right)\left( i\omega + \gamma_m \right)\left( i\omega + \gamma_f \right)} \cdot \frac{\left(- i\omega + \gamma_p \right)\left( - i\omega + \gamma_m \right)\left( -i\omega + \gamma_f \right)}{\left(- i\omega + \gamma_p \right)\left(- i\omega + \gamma_m \right)\left( -i\omega + \gamma_f \right)}\\
+& = & \frac{c_p c_m c_f \left[ \gamma_p \gamma_m \gamma_f - \omega^2 \left(\gamma_g + \gamma_m + \gamma_f \right) + i \omega \left( \omega^2 - \left[ \gamma_g \gamma_m + \gamma_g \gamma_f + \gamma_m \gamma_f \right] \right) \right]}{\left( \omega^2 + \gamma_p^2 \right)\left( \omega^2 + \gamma_m^2 \right)\left( \omega^2 + \gamma_f^2 \right)}
+\end{eqnarray*}
+
+\item Now the plot crosses the real axis in two more places ($\omega = \pm \sqrt{ \gamma_g \gamma_m + \gamma_g \gamma_f + \gamma_m \gamma_f}$), and the real part of $G(i\omega)$ at those crossings is the same:
+
+\[ c_p c_m c_f \left[ \gamma_p \gamma_m \gamma_f - \left( \gamma_g \gamma_m + \gamma_g \gamma_f + \gamma_m \gamma_f \right) \left(\gamma_g + \gamma_m + \gamma_f \right) \right] < 0  \]
+
+\item The Nyquist plot confirms our suspicion that some points on the negative real axis have been enclosed by the contour. If $-1/k$ falls within that range (i.e. if $k$ is sufficiently large),  the system becomes unstable. The gain will need to be kept below a threshold determined by the parameters above in order to prevent instabilty.
+
+\item The take-home message is that the more steps are included in a process, the easier it is for that process to become unstable; in a system with five components, the threshold gain $k$ would be even lower.
+\item As you will see on your fifth problem set, another potential factor contributing to a system's instability is a time delay.
+\item On Monday, we will discuss another negative feedback system introduced by Goodwin that owes its unexpeced unstable behavior to non-linearity.
+
+\end{itemize}
+\end{document}

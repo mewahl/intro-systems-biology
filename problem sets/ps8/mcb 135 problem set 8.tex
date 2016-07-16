@@ -1,0 +1,76 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 8 \hfill Due Monday, April 13, 2015 at 2:30 PM
+
+\section*{Problem 1: Fluorescence Recovery After Photobleaching (40 points)}
+
+A protein's localization can be used to regulate its activity. Fluorescence Recovery After Photobleaching (FRAP) is one method to investigate whether a protein is diffusing freely or physically confined. The coding sequence of a fluorescent protein is appended to the open reading frame of the protein of interest. A small region of a cell expressing this construct is then photobleached so that all proteins in that region permanently lose fluorescence. Diffusion of nearby fluorescent proteins into the region gradually restores fluorescence. This problem will guide you through a calculation of the expected spatiotemporal profile of fluorescence recovery for diffusion in one dimension, which can be compared to experimental data to estimate the protein's diffusion coefficient.
+\begin{enumerate}[a)]
+\item Consider the initial concentration profile:
+\[ c(x,t=0) = \left\{
+     \begin{array}{lr}
+       0 & : x < 0\\
+       a & : x \geq 0
+     \end{array}
+   \right. \]
+Using the fact that the ``impulse response function" for 1-D diffusion from a point source is $h(x,t)=e^{-x^2/4Dt}/\sqrt{4\pi D t}$, show via convolution that:
+\[ c(x,t) = \frac{a}{2} \left[ 1 + \textrm{erf} \left( \frac{x}{\sqrt{4Dt}} \right)\right], \hspace{3 cm} \textrm{ where }\textrm{erf} \left( z \right) \triangleq \frac{2}{\sqrt{\pi}} \int_0^z e^{-u^2} \, du \]
+\item A region along the axis of a rod-shaped cell is photobleached so that the initial concentration profile is:
+\[ c(x,t=0) = \left\{
+     \begin{array}{lr}
+       0 & : -L < x < L\\
+       a & : \textrm{otherwise}
+     \end{array}
+   \right. \]
+Find an expression for $c(x,t)$ in terms of the error function erf(). (Hint:  this can be done without taking any more integrals.)
+\item Plot $c(x,t)$ from part (b) for $x\in[-20,20]$ at $t=0.01, 1,$ and $100$. Use the parameter values $D=1$, $a=1$, and $L=5$.
+\item Outline how you would estimate $D$ if given a single fluorescence profile collected $\tau$ seconds after photobleaching. You may assume that photobleaching is perfectly efficient, and that $L$ and $x$ are known.
+\end{enumerate}
+
+\section*{Problem 2: Epidemic (60 points)}
+A disease spreads through a population of $N$ persons: $x$ of them are infected, and the remainder, $s=N-x$, are susceptible. When the infection subsides, a person becomes susceptible again (no immunity is conferred). Infection and recovery are modeled by two events:
+\[ \ce{X + S ->[k_1] X + X} \hspace{3 cm} \ce{X ->[k_2] S}  \]
+
+\begin{enumerate}[a)]
+\item What is the analog of the system size $\Omega$ in this model?
+\item What is the stoichiometry matrix for these events?
+\item What are the two event propensities $\Omega r_i(x, \Omega)$?
+\item Using your answers to (a)-(c), find expressions for the first and second jump moments, $\mu(x,t)$ and $\sigma^2(x,t)$.
+\item Write down an expression for $dx$ in Langevin notation.
+\item Simulate the system using the Euler-Maruyama method with parameters $N=1000$, $k_1 = 0.2$, and $k_2 = 0.1$ and with step size $\Delta t = 0.1$ and $t \in [0,1000]$. Include a plot with three sample trajectories with initial values $x(0)=100,500,$ and $900$.
+\item Use Wright's formula to find an expression proportional to the stationary probability distribution of states, $P(x)$. Do not calculate the normalization constant. Hint: to save headaches later, don't omit the absolute value notation when taking integrals of the form  $\int \frac{dx}{x} = \ln |x|+C$.
+\item In the real world, what would happen if $x$ chances to reach zero? How does this reflect what will happen if you attempt to normalize your expression for $P(x)$ over $x \in [0, N] \cap \mathbb{Z}$?
+\end{enumerate}
+As you saw in part f, this system has a different, ``pseudo-stable" behavior that is apparent on intermediate timescales. We can investigate it by normalizing $P(x)$ over all $x \neq 0$.
+\begin{enumerate}[a)]
+\setcounter{enumi}{8}
+\item Numerically calculate $P^*(x)$, the ``pseudo-stationary probability distribution," by normalizing $P(x)$ with the parameter values given above for $x \in [1, N] \cap \mathbb{Z}$.  Hint: to minimize rounding errors, calculate $\ln P(x)$ for each value of $x$, subtract the minimum value in this array from all values in the array, then exponentiate and normalize.
+\item Calculate the mean $m$ and standard deviation $s$ of $P^*(x)$.
+\item Add lines to your plot from part (f) to mark $x=m-2s$ and $x=m+2s$. Do your simulated trajectories tend to remain within these bounds after reaching the pseudo-stationary distribution?
+
+
+\end{enumerate}
+
+\end{document}

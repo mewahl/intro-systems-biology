@@ -1,0 +1,184 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\section*{Introduction}
+
+\begin{itemize}
+\item You have already seen several examples of circuits that can generate oscillations:
+\begin{itemize}
+\item Simple negative autoregulation with time delay
+\item Simple negative autoregulation with multi-step feedback cascade
+\item The Goodwin oscillator (simple negative autoregulation with sigmoidal repression term)
+\end{itemize}
+
+\item At the time, we took it as given that these oscillations were unintended, undesirable consequences of feedback that was meant to stabilize the output.
+
+\item Consider the example of intention tremor: a debilitating condition in which feedback from the sensory nervous system is offset in time from the motor responses it is intended to control.
+
+\item In patients with multiple sclerosis, for example, demyelination of sensory axons can create a delay in the arrival time of information on hand position in the brain. If so, the patient's nervous system may perceive that the hand is offset from the desired position even if it has since moved there. This initiates a new motor response to reposition the hand, which now really is displaced, etc. We showed a video of a patient suffering from this condition in the introductory lecture of the course.
+
+\item However, there are conditions under which oscillations could be beneficial: biological clocks are a case in point, which we will study over the next two lectures.
+
+\end{itemize}
+
+
+\section*{Motivation for the study of biological clocks}
+\begin{itemize}
+\item Consider an organism which lives in a variable environment with two possible environmental conditions, A and B. The organism has two gene expression states: state A is adaptive in environment A but maladaptive in environment B, and vice versa. How should the organism control the transition between gene expression states?
+\item The simplest option is for the organism to simply switch states randomly. While this may sound like a straw man, it has certain advantages: no energy is wasted on trying to sense or predict changes in environment.
+\item Another option is for the organism to sense environmental cues and initiate a transition to state A when it senses that it is in environment A. This requires that the organism invest energy in a system for sensing environmental cues that is both reliable and fast. Transitions in this case will also be reactionary, and during the delay, the organism will not be well-suited to its environment.
+\item Another alternative is for the organism to predict changes in advance. The organism will require a clock: an accurate oscillator that can be entrained to environmental cues and which can be genetically hard-wired to initiate the change in gene expression state at appropriate times. 
+\item When environmental changes are rare, stochastic switching can be the most viable strategy, since there is reduced benefit to constantly producing the sensory machinery and/or clock needed to sense or predict changes. Similarly, if the sensory system introduces a delay that is long relative to the expected time spent in each state, stochastic switchng is preferable to sensing. (see Kussell and Leibler, 2005). The clock-based prediction is only valuable, of course, if the environment fluctuates predictably.
+\item Though this would seem to limit the circumstances under which clocks are valuable, such circumstances do occur naturally due to tidal rhythms, the rotation of the Earth, and its movement around the sun.
+\item Biological clocks can also be used to choreograph actions at timescales from milliseconds ([Ca$^{2+}$] fluctuations, pacemaker neurons) to years (cicada life cycle).
+\end{itemize}
+
+\section*{Introduction to the cyanobacterial clock}
+\begin{itemize}
+\item Cyanobacteria are photosynthetic bacteria that fix nitrogen (i.e., convert N$_2$ into ammonia). The O$_2$ relieved by photosynthesis interferes with nitrogenase.
+\item Some cyanobacteria have evolved multicellularity and multiple cell types, so that nitrogen fixation and photosynthesis can be performed in distinct compartments. Many unicellular cyanobacteria, however, separate these two processes temporally instead.
+\item The switch requires virtually-genome-wide changes in transcription rate and a delay due to the necessity of accumulating the relevant new genes.
+\item The cyanobacterial circadian clock anticipates dawn and dusk, allowing the organism to begin preparing for the next phase well in advance.
+\item Function of the clock has quantifiable fitness advantages for the organism. Cyanobacteria with a broken clock reproduce more slowly than wildtype when grown in alternating periods of light and dark. (The fitness benefit is reversed in constant light conditions.)
+\item A notable characteristic of this clock is that, under ideal growth conditions, the doubling time of the organism can be shorter than the period of the clock.
+\item As recently as the 80s, when the circadian rhythm of cyanobacteria was discovered, it was generally presupposed that no circadian rhythms would be found in organisms with so short a doubling time due to the perceived difficulty of making a clock that maintained its phase in the face of substantial growth and dilution.
+\item The cyanobacterial clock will receive special attention in this lecture as it is exceptionally well-studied. At its core is a protein-based oscillator with only three components: kaiA, kaiB, and kaiC. (``Kai" is the Japanese word for cycle: the two operons encoding these three genes were identified by Takao Kondo's group at Nagoya University, in collaboration with Susan Golden and Carl Johnson.)
+\item These three proteins are capable of forming an oscillator when combined in vitro. The oscillator is stable to temperature variation in this context, but is sensitive to variation in stoichiometry, and does not robustly maintain phase.
+\item A feedback loop entailing transcription and translation helps to maintain the three proteins at an appropriate ratio even as division time varies.
+\item Before beginning deeper discussion of this example, however, we should discuss briefly some of the features we expect from biological clocks and methods that are used to analyze them.
+\end{itemize}
+
+\section*{Defining features of a biological clock}
+
+\begin{itemize}
+\item Not all oscillators are considered to be biological clocks. A common definition is that a biological clock should:
+
+\begin{itemize}
+\item Have a periodic output. This is not necessarily sinusoidal; there are indeed interpretation challenges when the output of a clock is perfectly sinusoidal (e.g. the same output value occurs twice in every period).
+\item Exhibit entrainment: a method for setting the oscillator's phase appropriately using an environmental cue such as sunlight.
+\item Continue oscillating with the same period/phase/amplitude even in the absence of the entrainment cue, or indeed any cue with the same period.
+\item Display robustness to likely perturbations, such as noise in gene expression, temperature changes, and growth rate differences. In particular, the phase and period of the clock should be maintained.
+\end{itemize}
+
+\item Another major consideration is whether the clock is cell autonomous or requires interactions with other cells, directly or through the media.
+
+\item Some tolerance is given on the requirement that the system continue oscillating in the absence of the entrainment cue (usually scaled to the likelihood and duration of the absence of this cue under natural circumstances, and to the importance of the clock).
+
+\item The majority of circadian clocks in eukaryotes seem to rely on transcriptional feedback. This may be simply an issue of timescale: transcription and translation in higher eukaryotes institute time delays on the order of minutes to hours. The cyanobacterial circadian clock uses phosphorylation and dephosphorylation reactions with surprisingly slow kinetics. Another common approach is to require build-up of an extracellular byproduct -- or even a change in cell density -- that drives forward the cycle (e.g. bioluminescent dinoflagellates in squid ``light organs").
+
+\end{itemize}
+
+
+
+\section*{Useful methods for the study of biological rhythms}
+
+\begin{itemize}
+\item In order to assess whether entrainment has occurred, and whether phase/amplitude/period are maintained, we need a method for analyzing the clock's output and comparing this across multiple cells/organisms.
+\item Suppose that a timecourse of the clock's output, $y(t)$, can be obtained. By necessity this will be a series of measurements made at discrete times.
+
+\item A function on a bounded region can be expressed as a sum of sinusoidal functions of varying phase and amplitude. By comparing the amplitude for sinusoidal functions at the frequency of interest to other frequencies, we can appreciate the relative contributions of signal and noise. By comparing the phase across organisms in a population, we can assess the degree of synchronization.
+
+\item Let's assume that $N$ measurements are made at constant intervals from time $t=0$ to time $t=N-1$. Intuitively, the discrete nature of the data will limit the resolution with which we can decompose the output into $N$ sinusoidal functions:
+
+\[ y(t) = \frac{1}{N} \sum_{k=0}^{N-1} A_{k} e^{i 2 \pi k t/N}  \]
+
+\item The coefficient $A_{k}=Ae^{i\phi}$ is complex and describes both the phase and amplitude of the component wave with frequency $k$. The coefficients can be found from the discrete Fourier transform:
+
+\[ A_k \triangleq \sum_{t=0}^{N-1} y(t) e^{-i 2 \pi k  t/N}  \]
+
+\item The signal ought to have higher-than-average amplitude at the frequency corresponding to the period of the clock. To determine whether this is so, we can compare the amplitudes of the various coefficients $A_k$.
+
+\item As in the case for Bode plots, in practice it is more common to deal wih the power ($\sim$ amplitude squared) rather than the amplitude itself.
+
+\item While we could certainly plot the power of each sinusoidal term vs. its frequency, it is more common to perform a normalization first. We divide by the total power of the signal $y(t)$, and plot the result in decibels per unit frequency. 
+
+\item This type of plot, called a \textit{power spectral density}, is a sort of power density function. We can determine what fraction of the variance in $y(t)$ is accounted for by frequencies in a certain range by integrating underneath it.
+
+\item If $y(t)$ were perfectly sinusoidal, there would be one strong peak at the same frequency as $y(t)$, and no amplitude elsewhere. In practice, however, the amplitude for the other $A_k$s is usually non-zero due to noise.
+
+\item On your homework, you'll generate PSDs to quantify how well a system performs at generating a sinusoidal function at a particular frequency. The necessary MATLAB code will be provided to you.
+
+\item Another thing that can be done with these decompositions is to consider only $A_k$ for the frequency at which the clock should operate (perhaps, determined in advance with a PSD), and plot $A_k$ in polar coordinates. This ``polar plot" is often used in the study of biological rhythms to visually gauge synchronicity. For example, signals $y(t)$ can be collected for each of many cells, each signal decomposed, and $A_k$ for the frequency of interest plotted on the same axes. In a synchronized population, all cells would be expected to have the same phase.
+
+\item Anecdotally, a clock is often considered to have ``failed" when phase maintenance is lost; amplitude variation is generally excused. This is partly due to the observed wide range in amplitudes of some biological clocks functioning ``normally."
+
+\item While visually striking, it is hard to quantify the degree of synchronicity by looking at a polar plot of a population. An alternative is to use a synchronization index such as the entropy. In this case, the polar plot is divided into a reasonable number of sectors, the probability $p_i$ that an individual falls in each sector is calculated, and from this, the entropy $S = - \sum p_i \ln p_i$ is determined. The observed entropy can be compared to the maximal possible value (i.e. with all $p_i$ equal).
+
+\item You will see polar plots and entropy-based synchronization indices in your sixth discussion paper (after the break).
+\end{itemize}
+
+
+\section*{\textit{Synechococcus elongatus} post-translational oscillator}
+
+\begin{itemize}
+\item The cyanobacterial clock continues to isolate even in the presence of transcriptional and translational inhibitors. This property was ultimately exploited by the Kondo lab to identify a minimal set of components necessary for the circadian oscillations: the three proteins KaiA, KaiB, and KaiC, as well as a steady supply of ATP (the phosphate group donor).
+
+\item The central componet of the post-translational oscillator is KaiC, a hexameric protein with ATPase, auto-kinase, and auto-phosphatase activity.
+\item KaiC has two relevant phosphorylation sites: S431 and T432. These get phosphorylated/dephosphorylated in a particular order during the normal cycling of the clock (what follows is a gross but helpful oversimplification):
+\begin{enumerate}
+\item U-KaiC: no phosphorylation (``dawn")
+\item T-KaiC: threonine phosphorylated (``noon")
+\item D-KaiC: both phosphorylated (``dusk")
+\item S-KaiC: serine phosphorylated (``midnight")
+\end{enumerate}
+\item In the absence of KaiA and KaiB, KaiC fully dephosphorylates.
+\item KaiA promotes KaiC's kinase activity through direct binding.
+\item KaiB inhibits KaiA from functioning, but only at KaiC sites with only the serine phosphorylated. Thus the rates of all phosphorylations and dephosphorylations are thought to depend on [S-KaiC].
+\item The model is described by:
+
+\begin{eqnarray*}
+\frac{dT}{dt} & = & k_{UT} U + k_{DT} D -\left(  k_{TD} + k_{TU} \right) T\\ 
+\frac{dD}{dt} & = & k_{TD} T + k_{SD} S - \left(k_{DT} + k_{DS} \right) D\\
+\frac{dS}{dt} & = &k_{DS} D +  k_{US} U - \left( k_{SU} + k_{SD} \right) S\\
+k_{xy} & = & k_{xy}^0 + \frac{k_{xy}^A A(S)}{K + A(S)}\\
+A(S) & = & \max \left(0, \left[ \textrm{KaiA} \right] - 2 S \right)
+\end{eqnarray*}
+
+This includes every forward and backward reaction along the loop (though some rate constants are measured to be very low). First-order kinetics are assumed for all phosphorylation and dephosphorylation reactions.
+
+\item Notice that all rates are scaled by the concentration of KaiA not sequestered by S-KaiC. The rate constants $k_{xy}$ can be positive or negative depending on whether KaiA promotes or inhibits the reaction. In general phosphorylation reactions are promoted by KaiA, and dephosphorylation rates are not affected or weakly decreased by KaiA.
+
+\item These rate constants were fit by analysis of experimental results (in particular, the timecourse of phosphorylation and dephosphorylation when KaiC is incubated in the presence or absence of KaiA). Parameters are chosen to minimize least-squares difference between the prediction of the model and the experimental data.
+
+\item Because many parameters are fit simultaneously, there is the potential that confidence in the fitted values might be low. To check this, the authors performed a technique called bootstrapping. The original data set was randomly sampled with replacement to generate a new data set of the same size but with some values missing or repeated, and the parameter values were fitted again. By performing this many times, we get an estimate for the uncertainty in the fitted parameter values.
+
+\item $K$ is measured to be rather low, which gives a sharp nonlinear response (for a hyperbolic function). This means that KaiA can actively promote phosphorylation reactions with approximately the same efficiency until it is almost completely exhausted by sequestration. Only then do dephosphorylation reactions kick in which transition the system back to the primarily-U-KaiC state.
+
+\item Simulation of this model reveals that the system approaches a limit cycle from physiologically-relevant initial conditions.
+\end{itemize}
+
+\section*{Entrainment}
+
+\begin{itemize}
+\item Unexpected periods of darkness during the subjective day lead to decreases in the ATP:ADP ratio. Typically, ATP makes up 90\% of the combined pool of these two molecules; after an eight-hour pulse of darkness, the ratio falls to about 40\%.
+
+\item Since ATP serves as the phosphate group donor for KaiC's phosphorylation reactions, this increases the tendency for KaiC to be in an unphosphorylated state.
+
+\item The dependence on the ATP:ADP ratio is easily studied in vitro, where more ADP can be spiked in (or ATP can be regenerated by adding pyruvate kinase). The phase of the clock is reset to a lower overall phosphorylation (primarily U-KaiC and S-KaiC) after a period when the ATP:ADP ratio is low. This is sensible because that phosphorylation pattern corresponds to the period between midnight and dawn.
+
+\item The model described above was modified to account for the entrainment system as follows:
+
+\[k_{phos} = k_{phos}^A \left( \frac{A(S)}{K + A(S)} \right) \left( \frac{[\textrm{ATP}]}{[\textrm{ATP] + $K_{rel}$[ADP}]} \right) \]
+
+The dephosphorylation reactions do not appear to depend on the ATP:ADP ratio when observed experimentally, so they remain dependent only on $A(S)$.
+
+\item This model follows a limit cycle that maintains the appropriate period for various steady-state daylight ATP:ADP ratios, but shifts phase in response to sudden changes in the ratio.
+
+\item If the dark pulse is delivered around subjective dusk, the phase is modestly advanced; if delivered around subjective dawn, the phase lags. The magnitude of the phase shift is largest around mid-day, when kinase activity would otherwise have peaked: this results in a large phase advance.
+
+\item We will continue our discussion of the cyanobacterial clock next time, when we introduce the system for the clock's entrainment.
+\end{itemize}
+
+\end{document}

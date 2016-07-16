@@ -1,0 +1,95 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 5: Introduction to Modeling}
+\maketitle
+
+
+
+
+Based mainly on chapter 2 of Ingalls
+
+\section*{Motivation}
+
+We have mentioned that biological systems differ from man-made systems in their use of chemical reactions to effect change. We would like to know whether this is any limitation or advantage over, e.g., the binary low vs. high voltage of electrical systems. To determine this we will need to know:
+
+\begin{itemize}
+\item What are the limitations on how fast biologically-relevant reactions occur?
+\item How ``switch-like" can the output of these reactions be? (Beneficial for behaviors that should never be done in half measures, like sporulating, differentiating, dividing...)
+\item What will a system look like after a long time?
+\item $\ldots$ as it evolves from a starting condition?
+\end{itemize}
+
+\section*{Chemical reaction networks}
+
+\subsection*{Stoichiometry}
+
+\subsection*{Forward and reverse rates, and the law of mass action}
+
+Kinetic order often reflects stoichiometric coefficients. Intuitive b/c reactions will require molecules to collide with one another and the probability increases with concentration of each. In this class the kinetic order will be the stoichiometric coefficient unless we warn you otherwise.\\
+
+However need to be careful because the kinetic order can only really be determined by experiment. Can often learn something about the mechanism and rate-limiting step. Could be a non-integer or negative value.\\
+
+Diffusion-limited reaction rates.\\
+
+Effective rate constants for when enzyme/proton/etc. concentration is not changing.
+
+\subsection*{Equilibrium constants}
+
+\subsection*{Thermal Equilibrium, Dynamic Equilibrium, Steady-State}
+
+Thermal equilibrium (for closed networks): all net reaction rates are zero.\\
+
+Dynamic equilibrium (for open networks): ratio of products to reactants in reversible reactions ceases to change.\\
+
+Steady-state: less specific than dynamic equilibrium (does not require that reactions are reversible).
+
+\section*{Simplifying assumptions}
+Everything well-mixed. If we have to envision a molecule moving between two spatial locations, then we make up pseudo-species and let them ``interconvert" at rates that reflect the rate of movement from one location to another.\\
+
+Many molecules present so allow to vary continuously. (Note: not always a good assumption. Use chromosomes or organelles to illustrate this.)\\
+
+\section*{Partial differential equations}
+
+Describe relationships between several variables and their derivatives. In general this could be quite complicated. However the PDEs we need now are of a particular form: they relate the rate of change in one variable (a concentration) to the current values of other variables.\\
+
+\subsection*{Examples of writing PDEs to correspond to a reaction system}
+
+\section*{Analytical solutions, simulation, and studying the steady-state behavior}
+
+This class is designed to be taken concurrently with a differential equations course like Ma 19a. As they introduce techniques for finding analytical solutions, we will incorporate them. In the meantime we also have simulation to study how concentrations will change. Your problem set for this week will introduce how to use MATLAB for simulation. \\
+
+It is also possible to learn about the steady-state behavior of a system without analytical solutions or simulation. By definition, at steady-state, the concentrations are not changing. We can therefore set the derivates equal to zero and solve to learn more about the system at steady-state.
+
+\subsection*{Examples of decay and production with decay}
+
+\subsection*{Euler's method}
+
+\section*{Rapid equilibrium assumption}
+
+Rate constants for interconversion of two molecules are faster than rate constants for other reactions, so it is okay to assume that that reactant/product pair is at equilibrium.\\
+
+Simplification to a single species by this method.
+
+\section*{Quasi-steady-state assumption}
+
+The rate constants associated with formation and degradation of a certain species $A$ are assumed very rapid. Even as the concentrations of other species change, $[A]$ very quickly adjusts so that $dA/dt = 0$ is zero again. By setting $dA/dt = 0$, we find an expression for $[A]$ in terms of the other species. We can plug that expression into their rate equations; we now have one less rate equation to solve. Need an intuitive biological example for this.
+
+\section*{Conservation of moieties}
+
+\end{document}

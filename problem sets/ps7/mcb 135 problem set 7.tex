@@ -1,0 +1,73 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate}
+\usepackage[autolinebreaks,framed,numbered]{mcode}
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 7 \hfill Due Friday, April 3, 2015 at 2:30 PM
+
+\section*{Problem 1: Noise-induced oscillations (Ingalls 7.8.27, 45 points)}
+
+Stochastic systems can exhibit a range of oscillatory behaviors, ranging from near-perfect periodicity to erratic cycles. To explore this behavior, consider a stochastic relaxation oscillator studied by Jos\'{e} Vilar and colleagues (Vilar et al., 2002). The system involves an activator and a repressor. The activator enhances expression of both proteins. The repressor acts by binding the activator, forming an inert complex. A simple model of the system is:
+
+\begin{eqnarray*}
+\textrm{ Name and description } \hspace{2 cm} & \textrm{Reaction} & \hspace{2 cm} \textrm{Reaction propensity}\\ \hline
+R_1 \textrm{ (activator synthesis) } \hspace{2 cm} & \ce{\varnothing {\color{white}.} -> b_A A} & \hspace{2 cm} \frac{\gamma_A}{b_A} \cdot \frac{\alpha_0 + N_A/K_A}{1 + N_A/K_A}\\
+R_2 \textrm{ (repressor synthesis) } \hspace{2 cm} & \ce{\varnothing {\color{white}.} -> b_R R} & \hspace{2 cm} \frac{\gamma_R}{b_R} \cdot \frac{N_A/K_R}{1 + N_A/K_R}\\
+R_3 \textrm{ (activator decay) } \hspace{2 cm} & \ce{A -> \varnothing} & \hspace{2 cm} \delta_A N_A \\
+R_4 \textrm{ (repressor decay) } \hspace{2 cm} & \ce{R -> \varnothing} & \hspace{2 cm} \delta_R N_R \\
+R_5 \textrm{ (association) } \hspace{2 cm} & \ce{A + R -> C} & \hspace{2 cm} k_C N_A N_R \\
+R_6 \textrm{ (dissociation w/ activator decay) } \hspace{2 cm} & \ce{C -> R} & \hspace{2 cm} \delta_A N_C \\
+\end{eqnarray*}
+
+Here, $N_A$, $N_R$, and $N_C$ are the molecular counts for the activator, repressor, and activator-repressor complex. The parameters $b_A$ and $b_R$ characterize the expression burst size. The Hill-type propensities of the synthesis reactions are not well-justified at the molecular level, but these expressions nevertheless provide a simple formulation of a stochastic relaxation oscillator.
+
+\begin{enumerate}[a)]
+\item Take parameter values $\gamma_A = 250$, $b_A = 5$, $K_A = 0.5$, $\alpha_0 = 0.1$, $\delta_A = 1$, $\gamma_R = 50$, $b_R = 10$, $K_R=1$, $k_C = 200$, and $\delta_R = 0.1$. Run a Gillespie SSA simulation of this model and verify its quasi-periodic behavior.
+\item The deterministic version of this model is:
+\begin{eqnarray*}
+\frac{da}{dt} = \gamma_A \frac{\alpha_0 + a/K_A}{1 + a/K_A} - k_C a r - \delta_A a\\
+\frac{dr}{dt} = \gamma_R \frac{a/K_R}{1 + a/K_R} - k_C a r + \delta_A c - \delta_R r\\
+\frac{dc}{dt} =  k_C a r - \delta_A c
+\end{eqnarray*}
+where $a$, $r$, and $c$ are the concentrations of activator, repressor, and complex. Run a simulation with the same parameter values as in part (a). Does the system exhibit oscillations? How is the behavior different if you set $\delta_R=0.2$?
+\item The contrast between the behavior of the models in parts (a) and (b), for $\delta_R=0.1$, can be explained by the excitability of this relaxation oscillato. Run two simulations of the deterministic model ($\delta_R=0.1$), one from initial conditions $(a,r,c)=(0,10,35)$ and another from initial conditions $(a,r,c)=(5,10,35)$. Verify that in the first case, the activator is quenched by the repressor, and the system remains at a low-activator steady state, whereas in the second case, this small quantity of activator is able to break free from the repressor and invoke a (single) spike in expression. Explain how noise in the activator abundance could cause repeated excitations by allowing the activator abundance to regularly cross the threshold. This is referred to as \textit{noise-induced oscillation}.
+\end{enumerate}
+
+\section*{Problem 2: Effect of autorepression (55 points)}
+
+Consider the open system
+\[ \ce{\varnothing {\color{white} .} ->[k_1] A ->[k_2] \varnothing} \]
+\begin{enumerate}[a)]
+\item Find the master equation for this system.
+\item Show that, at steady state,
+\[ P(N_A = n) = \frac{k_1}{k_2 n} P(N_A = n-1, t) \]
+\item Use the Taylor series for $e^x$ to derive the steady-state probability distribution:
+\[ P(N_A = n) = \frac{\left( \frac{k_1}{k_2} \right)^n e^{-k_1/k_2}}{n!} \]
+\item Perform a Gillespie SSA simulation of the open system above with $k_1=10, k_2=1$. Estimate the probability distribution $P(n)$ from the timecourse $A(t)$. (Exercise your judgment in ignoring data early in the simulation and choosing an appropriate timescale for the simulation.) Plot the Poisson probability density function with $\lambda=k_1/k_2$ on the same axes for comparison.
+\end{enumerate}
+Now consider a related molecule that exhibits hyperbolic autorepression, i.e.
+\[ \ce{\varnothing {\color{white} .} ->[k_1/(1+k_3B)] B ->[k_2] \varnothing} \]
+\begin{enumerate}[a)]
+\setcounter{enumi}{4}
+\item Perform a Gillespie SSA simulation of this system with $k_1=100, k_2=k_3=1$ and estimate the probability distribution $P(n)$ from the timecourse $B(t)$. Fit a Poisson distribution to $P(n)$ and plot both on the same axes (e.g. using \mcode{poissfit()} and \mcode{poisspdf()} in MATLAB). Does the negative autoregulation system have more or less variance than expected for the simple regulation system?\end{enumerate}
+
+\end{document}

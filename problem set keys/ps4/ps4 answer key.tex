@@ -1,0 +1,376 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate, xcolor}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 4 \hfill Due Monday, March 2, 2015 at 2:30 PM
+
+\section*{Problem 1: Positive Feedback (adapted from Alon 3.4, 15 points)}
+
+In last week's problem set, you showed that a gene $Z$ with simple regulation decribed by
+\begin{eqnarray*}
+\frac{dZ}{dt} = \beta_0 - \alpha Z, \hspace{2 cm} Z(0)=0
+\end{eqnarray*}
+has a response time (i.e., time required to reach half of its steady-state expression level) given by $\tau=\frac{\ln 2}{\alpha}$. Now consider a protein $X$ which positively regulates its own expression:
+\[ \frac{dX}{dt} = \beta_0 + \beta_1 X  - \alpha X, \hspace{1 cm} X(0)=0\]
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Identify any fixed points of this system and determine their stability. Consider the three cases (i) $\alpha < \beta_1$, (ii) $\alpha = \beta_1$, and (iii) $\alpha > \beta_1$.\\
+
+{\color{red}
+\begin{enumerate}[i)]
+\item $\alpha < \beta_1$:\\
+
+$dX/dt > 0$ for all non-negative values of $X$: this system has no physically-meaningful fixed points and grows exponentially without bound. (No deduction for mentioning that there is a fixed point at $X* = - \frac{\beta_0}{\beta_1 - \alpha} $ or indicating that it is unstable, though this value of $X$ is physically unrealizable.)
+
+\item $\alpha = \beta_1$:\\
+
+Now $dX/dt = \beta_0$: the system grows linearly without bound; no fixed points.
+
+\item $\alpha > \beta_1$
+
+Setting $dX/dt = 0$, we get:
+
+\[ X^* = \frac{\beta_0}{\alpha - \beta_1} \]
+
+This fixed point is stable since $dX/dt > 0$ for $X< X^*$ and $dX/dt < 0$ for $X > X^*$.
+
+
+\end{enumerate}
+
+
+}
+\item When the response time of $X$ is well-defined, how does it compare to the response time of $Z$?\\
+
+{
+\color{red}
+From the above we conclude that the response time is only well-defined when $\alpha > \beta_1$, in which case the response time is the time $\tau$ such that $X(\tau)=  \frac{ \beta_0}{2(\alpha - \beta_1)}$. Following a method analogous to that used on last week's problem set, we find an expression for $X(t)$:
+
+\begin{eqnarray*}
+\int \frac{dX}{\beta_0 + \left(\beta_1 - \alpha \right) X} & = & \int dt\\
+\frac{1}{\beta_1 - \alpha} \ln \left[ \beta_0 + \left( \beta_1 - \alpha \right) X \right] & = & t + c_0\\
+ \beta_0 + \left( \beta_1 - \alpha \right) X & = & c_1e^{-\left(\alpha - \beta_1 \right)t} \hspace{1 cm} X(0)=0 \implies c_1 = \beta_0\\
+ X & = & \frac{\beta_0 \left[ 1 - e^{-\left(\alpha - \beta_1 \right)t}  \right]}{\alpha - \beta_1}
+\end{eqnarray*}
+
+We can then solve for $\tau$:
+
+\begin{eqnarray*}
+\frac{ \beta_0}{2(\alpha - \beta_1)} & = & \frac{\beta_0 \left[ 1 - e^{-\left(\alpha - \beta_1 \right)\tau}  \right]}{\alpha - \beta_1}\\
+e^{-\left(\alpha - \beta_1 \right)\tau}  & = & \frac{1}{2}\\
+\tau & = & \frac{\ln 2}{\alpha - \beta_1}
+\end{eqnarray*}
+
+Because the denominator is smaller than in the simple regulation case, the response time is longer with positive feedback.
+
+}
+
+
+\item Describe a biological scenario where positive regulation of this type would be preferable to simple regulation. Explain your reasoning.\\
+
+{ \color{red}
+
+Slowed responses can be used to institute a time delay, which may be useful for coordinating the timing of developmental processes.
+
+}
+
+
+\end{enumerate}
+
+\section*{Problem 2: Global dynamics from local stability analysis (Ingalls 4.8.6, 35 points)}
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Consider the chemical reaction network with mass-action kinetics:
+\begin{eqnarray*}
+\ce{A + X ->[k_1] 2 X} \hspace{2 cm} \ce{X + X ->[k_2] Y}  \hspace{2 cm} \ce{Y ->[k_3] B} 
+\end{eqnarray*}
+Assume that [A] and [B] are held constant.
+\begin{enumerate}[i)]
+\setlength{\itemsep}{0pt}
+\item Write a differential equation model describing the concentrations of $X$ and $Y$.\\
+
+{\color{red}
+
+\begin{eqnarray*}
+\frac{dX}{dt} = f(X,Y) & = & k_1A X - 2 k_2 X^2\\
+\frac{dY}{dt} = g(X,Y) & = & k_2 X^2 - k_3 Y
+\end{eqnarray*}
+
+}
+
+\item Verify that the system has two steady states.\\
+
+{\color{red}
+
+\begin{eqnarray*}
+\frac{dX}{dt} & = & X \left( k_1A - 2 k_2 X \right) = 0 \implies X = 0 \textrm{ or } \frac{k_1A}{2k_2}\\
+X = 0 \textrm{ and } \frac{dY}{dt}=0 & \implies & Y=0\\
+X =  \frac{k_1A}{2k_2} \textrm{ and } \frac{dY}{dt}=0 & \implies & Y = \frac{k_1^2 k_2 A}{4 k_2^2 k_3}
+\end{eqnarray*}
+
+The fixed points are $(0,0)$ and $(\frac{k_1A}{2k_2}, \frac{k_1^2 k_2 A}{4 k_2^2 k_3})$.
+
+}
+
+
+\item Determine the system Jacobian at the steady states and characterize the local behavior of the system near these points.\\
+
+{\color{red}
+
+\begin{eqnarray*}
+J & = & \begin{pmatrix} \frac{df}{dX} & \frac{df}{dY}\\ \frac{dg}{dX} & \frac{dg}{dY} \end{pmatrix}_{(X^*, Y^*)} = \begin{pmatrix} k_1 A -4 k_2 X & 0\\ 2k_2 X & - k_3 \end{pmatrix}_{(X^*, Y^*)}
+\end{eqnarray*}
+
+Linearizing around the fixed point $(0,0)$ therefore gives
+
+\[ \frac{d}{dt} \begin{pmatrix} X\\Y\end{pmatrix} = \begin{pmatrix} k_1 A & 0\\ 0 & - k_3 \end{pmatrix} \begin{pmatrix} X\\Y\end{pmatrix} \]
+
+Since all constants in this system are non-negative, the Jacobian is guaranteed to have one positive and one negative eigenvalue: $\lambda_1 = k_1A > 0$ and $\lambda_2 = -k_3 < 0$. This means the origin is a \textit{saddle}. (For comparison to part iv, we also mention that the eigenvector corresponding to $\lambda_2$ is $\mathbf{v}_2 = (0, 1)^T$, so all trajectories where $X=0$ decay to the origin with time.)\\
+
+Linearizing around the fixed point $(\frac{k_1A}{2k_2}, \frac{k_1^2 k_2 A}{4 k_2^2 k_3})$ gives
+
+\[ \frac{d}{dt} \begin{pmatrix} X\\Y\end{pmatrix} = \begin{pmatrix} - k_1 A& 0\\ k_1 A & - k_3 \end{pmatrix} \begin{pmatrix} X\\Y\end{pmatrix} \]
+
+For this fixed point, both eigenvalues $\lambda_1=-k_1A$ and $\lambda_2 = -k_3$ are negative, so this is a stable fixed point.
+}
+
+\item By referring to the network, provide an intuitive description of the system behavior from any initial condition for which [X] = 0.\\
+
+{\color{red}
+
+If [X] is initially zero, then it will stay zero forever, because the only reaction that produces X requires some X to already be present. This also means that no more Y will be produced, since Y is produced from X. However,  Y is decaying into B: therefore, [Y] will approach zero as $t \to \infty$.\\
+
+This matches our intuition from the formal stability analysis, since the origin is a saddle and trajectories along the y-axis approach the origin.
+}
+
+
+\item Sketch a phase portrait for the system that is consistent with your expectations from (iii) and (iv).\\
+
+{\color{red}
+Drawing not included in this file.
+}
+\end{enumerate}
+\item Repeat for the related system
+\begin{eqnarray*}
+\ce{A + X ->[k_1] 2 X} \hspace{2 cm} \ce{X + Y ->[k_2] 2 Y}  \hspace{2 cm} \ce{Y ->[k_3] B} 
+\end{eqnarray*}
+In this case, you'll find that the nonzero steady state is a center: it is surrounded by concentric periodic trajectories.\\
+
+{\color{red}
+
+\begin{eqnarray*}
+\frac{dX}{dt} = f(X,Y) & = & k_1A X -  k_2 XY\\
+\frac{dY}{dt} = g(X,Y) & = & k_2 XY - k_3 Y
+\end{eqnarray*}
+
+Find the steady states:
+
+\begin{eqnarray*}
+\frac{dX}{dt} =\left( k_1A -  k_2Y \right) = 0 & \implies & X = 0 \textrm{ or } Y = \frac{k_1A}{k_2}\\
+\frac{dY}{dt} = Y \left( k_2 X - k_3 \right) = 0 & \implies & Y=0 \textrm{ or } X = \frac{k_3}{k_2}
+\end{eqnarray*}
+
+This gives two possible fixed points: $(0, 0)$ and $(\frac{k_3}{k_2}, \frac{k_1A}{k_2})$.
+
+
+\begin{eqnarray*}
+J & = & \begin{pmatrix} \frac{df}{dX} & \frac{df}{dY}\\ \frac{dg}{dX} & \frac{dg}{dY} \end{pmatrix}_{(X^*, Y^*)} = \begin{pmatrix} k_1 A - k_2 Y & -k_2 X\\ k_2 Y & k_2 X - k_3 \end{pmatrix}_{(X^*, Y^*)}
+\end{eqnarray*}
+
+Linearizing around the fixed point $(0,0)$ therefore gives
+
+\[ \frac{d}{dt} \begin{pmatrix} X\\Y\end{pmatrix} = \begin{pmatrix} k_1 A & 0\\ 0 & - k_3 \end{pmatrix} \begin{pmatrix} X\\Y\end{pmatrix} \]
+
+$\ldots$and exactly as before, the origin has one positive and one negative eigenvalue, and is therefore a saddle.\\
+
+Linearizing around the fixed point $(\frac{k_3}{k_2}, \frac{k_1A}{k_2}))$ gives
+
+\[ \frac{d}{dt} \begin{pmatrix} X\\Y\end{pmatrix} = \begin{pmatrix} 0 & -k_3 \\ k_1 A & 0 \end{pmatrix} \begin{pmatrix} X\\Y\end{pmatrix} \]
+
+This matrix has two purely imaginary eigenvalues, so solutions form closed loops around this fixed point.\\
+
+Drawing not included in this file.
+
+}
+
+\end{enumerate}
+
+\section*{Problem 3: Practice with Laplace transforms (adapted from Meister 2009, 50 points)}
+
+Absorption of a single photon by a photoreceptor neuron triggers a biochemical cascade that results in a change in current across the neuron's membrane called the ``single photon response," which lasts for a few hundred milliseconds before decaying away. The neuron's photon detection system is approximately linear and time-invariant: when several photons get absorbed, the resulting current is simply the sum of all their single photon responses.
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item  We will represent the single photon response for a photon absorbed at time $t=0$ by $h(t)$. What is the photoreceptor's response $O(t)$ to an arbitrary time-varying light stimulus, in which the rate of photon absorptions varies with time as $I(t)$, where
+\[ I(t) \, dt = \textrm{number of photons absorbed in short interval } dt \textrm{ ?} \]
+Write the answer as a convolution integral, then apply a Laplace transform to find $\tilde{O}(s)$ in terms of $\tilde{I}(s)$ and $\tilde{h}(s)$.
+
+{\color{red}
+\begin{eqnarray*}
+O(t) & = & I(t) \otimes h(t) = \int_{-\infty}^{\infty} I(t - \tau) h(\tau) \, d\tau = \int_{0}^{t} I(t - \tau) h(\tau) \, d\tau 
+ \end{eqnarray*}
+ 
+ It is not necessary to prove that $\tilde{O}(s) = \tilde{h}(s)  \tilde{I}(s)$ as this is a property of the Laplace transform of the convolution integral which we stated in class. However, the derivation is given below for reference.\\
+ 
+ To narrow the limits on the convolution integral, we have used the fact that $h(\tau)$ is nonzero only for positive $\tau$, and $I(t-\tau)$ is nonzero only for $\tau \leq t$.
+
+\begin{eqnarray*}
+ \tilde{O}(s) & = & \int_{0}^{\infty} e^{-st} \left[  \int_{0}^{t} I(t - \tau) h(\tau) \, d\tau \right] \, dt\\ 
+ & = & \int_{0}^{\infty} \left[  \int_{0}^{t} e^{-st} I(t - \tau) h(\tau) \, d\tau \right] \, dt\\ 
+  & = & \int_{0}^{\infty} \left[  \int_{\tau}^{\infty} e^{-st} I(t - \tau) h(\tau) \, dt \right] \, d\tau\\ 
+    & = & \int_{0}^{\infty} \left[  \int_{\tau}^{\infty} e^{-st} I(t - \tau) \, dt \right] h(\tau)  \, d\tau\\ 
+     \end{eqnarray*}
+     
+Now, making the substitution $\sigma = t - \tau$, $d\sigma = dt$:
+    
+\begin{eqnarray*}
+ \tilde{O}(s) & = & \int_{0}^{\infty} \left[  \int_{0}^{\infty} e^{-s(\sigma + \tau)} I(\sigma) \, d\sigma \right] h(\tau)  \, d\tau\\ 
+ & = & \int_{0}^{\infty} \left[  \int_{0}^{\infty} e^{-s\sigma} I(\sigma) \, d\sigma \right] e^{-s\tau} h(\tau)  \, d\tau\\
+  & = & \int_{0}^{\infty} \tilde{I}(s) e^{-s\tau} h(\tau)  \, d\tau\\  
+ &= & \tilde{h}(s)  \tilde{I}(s)
+ \end{eqnarray*}
+}
+
+
+
+\item One way to investigate a system's behavior is to apply a well-defined ``test" input and study the resulting output timecourse. Determine the Laplace transforms $\tilde{I}(s)$ for the two common types of test inputs given below, showing your work:
+\begin{enumerate}[i)]
+\setlength{\itemsep}{0pt}
+\item  $I(t) = \delta(t)= \left\{
+     \begin{array}{lr}
+       \infty, & t = 0 \\
+       0, & t \neq 0
+     \end{array}
+   \right.$ (Dirac delta/unit impulse)\\
+   
+{\color{red}
+\begin{eqnarray*}
+ \tilde{I}(s) & = & \int_{0}^{\infty} e^{-st} \delta(t) \, dt\\
+ & = & \left. e{-st} \right|{t=0} = 1
+ \end{eqnarray*}
+ 
+We have used the fact that the integrand is non-zero at only one point ($t=0$) and that the Dirac delta distribution is defined such that
+
+\[ \int_{-\infty}^{\infty} \delta(t) \, dt = 1 \]
+}   
+   
+   
+\item  $I(t) = \theta(t)= \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+       1, & t \geq 0
+     \end{array}
+   \right.$ (Heaviside step function)\\
+   
+{\color{red}
+\begin{eqnarray*}
+ \tilde{I}(s) & = & \int_{0}^{\infty} e^{-st} \theta(t) \, dt\\
+ & = & \int_{0}^{\infty} e^{-st} \, dt = \left. \frac{-e^{-st}}{s} \right|_0^{\infty}\\
+ & = & \int_{-\infty}^{\infty} e^{-s\tau} I(t-\tau) h(\tau)\\
+ & = & 0 - \left(-\frac{1}{s} \right) = \frac{1}{s}
+ \end{eqnarray*}
+}      
+   
+   
+\end{enumerate}
+\end{enumerate}
+When a very brief flash of light consisting of $N$ photons is delivered to a photoreceptor, the photon detection system's output is:
+\[ O(t) = \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+       A \sin \left( \omega t \right) e^{-\alpha t}, & t \geq 0
+     \end{array}
+   \right. \]   
+   \begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\setcounter{enumi}{2}
+\item Write an expression for $I(t)$ in this case, and then apply a Laplace transform to find an expression for $\tilde{I}(s)$.
+
+{\color{red}
+\begin{eqnarray*}
+ I(t) & = & N \delta(t)\\
+ \tilde{I}(s) & = & N
+ \end{eqnarray*}
+}
+
+
+\item Find an expression for $\tilde{O}(s)$ (for the rest of the problem, you may consult a table of Laplace transforms\footnote{A thorough table is available at \url{http://www.dartmouth.edu/\~sullivan/22files/New\%20Laplace\%20Transform\%20Table.pdf}.}). 
+
+{\color{red}
+\begin{eqnarray*}
+ \tilde{O}(s) & = & \frac{A \omega}{\left(s + \alpha \right)^2 + \omega^2} \\
+ \end{eqnarray*}
+}
+
+\item Find the impulse response $h(t)$ by determining $\tilde{h}(s)$ and finding the inverse Laplace transform.
+
+{\color{red}
+\begin{eqnarray*}
+ \tilde{h}(s) & = & \frac{\tilde{O}(s)}{\tilde{I}(s)} = \frac{A \omega}{N \left[ \left(s + \alpha \right)^2 + \omega^2 \right]} \\
+ \end{eqnarray*}
+}
+
+
+\end{enumerate}
+An input of the form
+\[ I(t) = \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+      M \textrm{ photons per second, } & t \geq 0
+     \end{array}
+   \right. \]      
+is then applied. Below you will determine what output $O(t)$ was expected under the assumption that the photon detection system is linear and time-invariant.
+\begin{enumerate}[a)]  
+\setlength{\itemsep}{0pt}
+\setcounter{enumi}{4}
+\item What is $\tilde{I}(s)$?\\
+
+{\color{red}
+\[ \tilde{I}(s) = \frac{M}{s} \]
+}
+
+\item Use $\tilde{h}(s)$, calculated in part (e), to express $\tilde{O}(s)$ as a rational function in $s$.\\
+
+{\color{red}
+\begin{eqnarray*}
+ \tilde{O}(s) & = & \tilde{h}(s)  \tilde{I}(s)\\
+ & = & \frac{A M}{N} \frac{\omega}{s \left[ \left(s + \alpha \right)^2 + \omega^2 \right]}
+ \end{eqnarray*}
+}
+
+\item Determine $O(t)$. What value does $O(t)$ approach as $t \to \infty$?
+
+{\color{red}
+\begin{eqnarray*}
+ \tilde{O}(s) & = & \frac{A M}{N} \frac{\omega}{\alpha^2 + \omega^2} \left( \frac{\alpha^2 + \omega^2}{s \left[ \left(s + \alpha \right)^2 + \omega^2 \right]} \right)\\
+ & = & \frac{A M}{N} \frac{\omega}{\alpha^2 + \omega^2} \left(   \frac{\left( s + \alpha \right)^2 + \omega^2}{s \left[ \left(s + \alpha \right)^2 + \omega^2 \right]}  - \frac{s \left( s + 2 \alpha \right)}{s \left[ \left(s + \alpha \right)^2 + \omega^2 \right]} \right)\\
+  & = & \frac{A M}{N} \frac{\omega}{\alpha^2 + \omega^2} \left(   \frac{1}{s}  - \frac{s + \alpha}{\left(s + \alpha \right)^2 + \omega^2} - \frac{\alpha}{\omega} \frac{\omega}{\left(s + \alpha \right)^2 + \omega^2} \right)\\
+  O(t) & = & \frac{A M}{N} \frac{\omega}{\alpha^2 + \omega^2} \left( 1 - e^{-\alpha t} \cos \omega t - \frac{\alpha}{\omega} e^{-\alpha t} \sin \omega t \right)\\
+ & \to & \frac{A M}{N} \frac{\omega}{\alpha^2 + \omega^2} \textrm{ as } t \to \infty
+ \end{eqnarray*}
+}
+
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,96 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 3 \hfill Due Monday, February 23, 2015 at 2:30 PM
+
+\section*{Problem 1: Transcription Factor Cascade (adapted from Alon 2.4, 30 points)}
+
+Consider a cascade of three transcriptional activators, $X \rightarrow Y \rightarrow Z$. Protein $X$ is initially present in the cell in its inactive form. At time $t=0$, $X$ rapidly becomes active and binds the promoter of $Y$, so that protein $Y$ starts to be produced at a rate $\beta_y$. When $Y$ levels exceed a threshold $K_y$, gene $Z$ begins to be expressed at a rate $\beta_z$. All proteins have the same degradation/dilution rate $\alpha$.
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Using the information above, find an expression for the time derivative of $Y$. Integrate to find $Y(t)$ given the initial condition $Y(0)=0$. (Hint: A similar derivation is given in Alon Ch. 2.)
+\item At what time $\tau$ does expression of $Z$ begin?
+\item What is the concentration of protein $Z$ as a function of time? 
+\item What is the \textit{response time} of the system, i.e., the time between when $X$ is activated and when $Z$ reaches one half of its maximal value?
+\end{enumerate}
+
+\section*{Problem 2: Multistep Ultrasensitivity (Ingalls 6.8.7, 40 points)}
+
+In a 2005 paper, Jeremy Gunawardena presented a straightforward analysis of multistep ultrasensitivity and revealed that it is not well-described by Hill functions\footnote{\href{http://www.pnas.org/content/102/41/14617.abstract}{Gunawardena, J. (2005). Multisite protein phosphorylation makes a good threshold but can be a poor switch. \textit{PNAS}}}.\\
+
+Consider a protein $S$ that undergoes a sequential chain of $n$ phosphorylations, all of which are catalyzed by the same kinase $E$, but each of which requires a separate collision event. Let $S_k$ denote the protein with $k$ phosphate groups attached. Suppose the phosphatase $F$ acts in a similar multistep manner. The reaction scheme is then
+\[ \ce{S_0 <=> S_1 <=>} \cdots  \ce{<=> S_n } \]
+
+In steady state, the net reaction rate at each step is zero.
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Consider the first phosphorylation-dephosphorylation cycle. Expanding the steps in the catalytic mechanism, we have
+\[ \ce{S_0 + E <=>[k_{1E}][k_{-1E}] ES_0 ->[k_{catE}] E + S_1} \hspace{1 cm} \textrm{ and } \hspace{1 cm} \ce{S_1 + F <=>[k_{1F}][k_{-1F}] FS_1 ->[k_{catF}] F + S_0} \]
+
+Apply a rapid equilibrium assumption to the association reactions ($S_0 + E \leftrightarrow ES_0$ and \linebreak $S_1 + F \leftrightarrow FS_1$) to describe the reaction rates as
+\[ k_{\textrm{catE}} \left[ ES_0 \right] = \frac{k_{\textrm{catE}}}{K_{ME}} \left[ S_0 \right] \left[ E \right] \hspace{1 cm} \textrm{ and } \hspace{ 1cm} k_{\textrm{catF}} \left[ FS_1 \right] = \frac{k_{\textrm{catF}}}{K_{MF}} \left[ S_1 \right] \left[ F \right] \]
+
+where $K_{ME} = k_{-1E}/k_{1E}$, $K_{MF} = k_{-1F}/k_{1F}$, and $[E]$ and $[F]$ are the concentrations of free kinase and phosphatase.
+
+\item Use the fact that at steady state the net phosphorylation-dephosphorylation rate is zero to arrive at the equation
+\[ \frac{\left[ S_1 \right]}{\left[ S_0 \right]} = \lambda \frac{\left[ E \right]}{\left[ F \right]}, \hspace{ 1 cm} \textrm{ where } \lambda = \frac{k_{\textrm{catE}}}{k_{\textrm{catF}}} \frac{K_{MF}}{K_{ME}}\]
+
+\item Suppose the kinetic constants are identical for each phosphorylation-dephosphorylation step. In that case, verify that
+\[ \frac{\left[ S_2 \right]}{\left[ S_1 \right]} = \lambda \frac{\left[ E \right]}{\left[ F \right]}, \hspace{0.5 cm}  \textrm{ so } \hspace{0.5 cm} \frac{\left[ S_2 \right]}{\left[ S_0 \right]} = \lambda^2 \left( \frac{\left[ E \right]}{\left[ F \right] } \right)^2 \hspace{0.5 cm}  \textrm{ and more generally } \hspace{0.5 cm}  \frac{\left[ S_j \right]}{\left[ S_0 \right]} = \lambda^j  \left( \frac{\left[ E \right]}{\left[ F \right] } \right)^j \]
+
+\item Use the result in part c to write the fraction of protein $S$ that is in the fully phosphorylated form as
+\begin{eqnarray}
+\frac{\left[ S_n \right]}{\left[ S_{\textrm{total}} \right]} = \frac{\left( \lambda u \right)^n}{1 + \lambda u + \left( \lambda u \right)^2 + \ldots + \left( \lambda u \right)^n} \label{eqn:prob1d}
+\end{eqnarray}
+
+where $u=[E]/[F]$ is the ratio of kinase to phosphatase concentrations. Hint: $[S_{\textrm{total}}] = [S_0] + [S_1] + [S_2] + \ldots + [S_n]$.
+
+\item Use the ratio $[E]/[F]$ to approximate the ratio of total concentrations $[E_{\textrm{total}}]/[F_{\textrm{total}}]$, so that equation \ref{eqn:prob1d} describes the system's dose-response. Plot this function (vs. $u$) for various values of $n$. Take $\lambda = 1$ for simplicity. Use your plots to verify Gunawardena's conclusion that for high values of $n$, these dose-response curves exhibit a threshold (in this case, at $u=1$) but their behavior cannot be described as switch-like, as they show near-hyperbolic growth beyond the threshold, regardless of the values of $n$.
+\end{enumerate}
+
+\section*{Problem 3: Fixed Point Analysis (Adapted from Ingalls 4.8.3, 30 points)}
+
+Consider the general linear system
+\begin{eqnarray*}
+\frac{dx}{dt} & = & ax + by\\
+\frac{dy}{dt} & = & cx + dy
+\end{eqnarray*}
+
+Note that the steady state is $(x,y)=(0,0)$. Choose six sets of parameter values ($a$, $b$, $c$, and $d$) that yield the following behaviors:
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Stable node (real negative eigenvalues)
+\item Stable spiral point (complex eigenvalues with negative real part)
+\item Center (purely imaginary eigenvalues)
+\item Unstable spiral point (complex eigenvalues with positive real part)
+\item Unstable node (real positive eigenvalues)
+\item Saddle point (real eigenvalues of different sign)
+\end{enumerate}
+
+In each case, prepare a phase portrait of the system, including a direction field and a few representative trajectories. (Note: Unlike the problem in Ingalls, we will not require that you include the nullclines.) Hint: if either of the off-diagonal entries in the Jacobian matrix are zero, then the eigenvalues are simply the entries on the diagonal.
+
+\end{document}

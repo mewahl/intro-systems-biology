@@ -1,0 +1,102 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\title{Lecture 6: Enzyme Kinetics}
+\maketitle
+
+Based mainly on chapter 3 of Ingalls
+
+\section*{Anatomy of an enzyme}
+
+\subsection*{Basics}
+
+Enzymes can be either proteins or nucleic acids. They are catalysts: molecules that speed up a reaction without being consumed by it. Enzymes typically are folded up in such a way as to create a binding site for each of the \textit{substrates} (reactants in the reactions they catalyze). A close look at these binding sites may reveal the favorable ionic or hydrophobic interactions that help hold substrates in place until the reaction occurs. The part of the enzyme where the reaction occurs is the active site: it normally includes the binding site(s) as well as any additional parts of the enzyme that are chemically responsible for the reaction(s) occurring. (PyMOL illustration of a protein enzyme with binding site and active site residues drawn in, scale indicated, etc. Show structural changes during catalysis changing the enzyme's shape far away.)
+
+\subsection*{Coupling reactions}
+Relationship between free energy and favorability. Catalysts speed up reactions that are favorable. They cannot change the free energy of a reaction. However, by positioning two active sites on the same enzyme, we can cause two reactions to be coupled. The free energy of the couples reaction is the sum of the free energies of the individual reactions. For example, we can couple a favorable reaction (like hydrolysis of ATP) to an unfavorable one (??): this is a typical ``solution" for catalyzing unfavorable reactions.
+
+
+\section*{Single-substrate, single-product reaction}
+
+We will denote a molecule of enzyme by E, a molecule of its substrate by S, and a molecule of its product by P. When the substrate or product is bound to the enzyme such that they form a single entity, we denote it by E-S or E-P. To catalyze a reaction, the enzyme must bind a substrate to form E-S, convert the substrate to a product while it's still bound, and then let go of the product. The general reaction system looks like:
+
+\begin{eqnarray*}
+\ce{E + S <=>[k_1][k_{-1}] E-S <=>[k_{\textrm{cat}}][k_{-\textrm{cat}}] E-P  <=>[k_3][k_{-3}] E + P}
+\end{eqnarray*}
+
+\subsection*{Simplifying assumption: immediate product release after reaction}
+
+Notice that in this general reaction, it is possible for the product to bind to the enzyme to form E-P:
+
+\begin{eqnarray*}
+\ce{E-P  <=>[k_3][k_{-3}] E + P}
+\end{eqnarray*}
+
+For most enzymes this reaction is very strongly in favor of releasing the product. (This is intuitive: an enzyme that has evolved this feature can more easily go bind another substrate.) This unbinding is so rapid and favorable that we can often ignore the existence of E-P:
+
+\begin{eqnarray*}
+\ce{E + S <=>[k_1][k_{-1}] E-S <=>[k_{\textrm{cat}}][k_{-\textrm{cat}}] E + P}
+\end{eqnarray*}
+
+\subsection*{Simplifying assumption: reverse catalysis step can be neglected}
+
+We expect that the binding and back-conversion of E + P to E-S is negligible either because the rate constant $k_{-2}$ is small or the concentration of P is relatively small. In either event, the above simplifies to:
+
+\begin{eqnarray*}
+\ce{E + S <=>[k_1][k_{-1}] E-S ->[k_{\textrm{cat}}] E + P}
+\end{eqnarray*}
+
+This is the reaction network most commonly used to describe enzyme kinetics.
+
+\section*{Michaelis-Menten kinetics}
+
+\subsection*{Quasi-steady-state approximation}
+
+Keeping in mind that E$_T$ = E-S + E is a constant by moiety conservation,
+
+\begin{eqnarray*}
+\frac{d\left[ \textrm{E-S}\right]}{dt} & = & k_1 \left[ \textrm{E} \right]\left[ \textrm{S} \right] - \left( k_{-1} + k_{\textrm{cat}} \right) \left[ \textrm{E-S} \right]\\
+& = & k_1 \left[ \textrm{S} \right] \left( \left[ \textrm{E}_T \right] - \left[ \textrm{E-S} \right] \right] - \left( k_{-1} + k_{\textrm{cat}} \right) \left[ \textrm{E-S} \right] \\
+& = &  k_1 \left[ \textrm{S} \right]  \left[ \textrm{E}_T \right] - \left(k_1 \left[ \textrm{S} \right] + k_{-1} + k_{\textrm{cat}} \right) \left[ \textrm{E-S} \right] 
+\end{eqnarray*}
+
+Now if we make the quasi-steady-state assumption for E-S:
+
+\[ \frac{d\left[ \textrm{E-S}\right]}{dt}= 0 \implies \left[ \textrm{E-S} \right] =  \frac{k_1 \left[ \textrm{S} \right]  \left[ \textrm{E}_T \right]}{k_1 \left[ \textrm{S} \right] + k_{-1} + k_{\textrm{cat}} } = \frac{ \left[ \textrm{E}_T \right] \left[ \textrm{S} \right]}{K_M + \left[ \textrm{S} \right] } \]
+
+where $K_M = (k_{-1} + k_{\textrm{cat}})/k_1$. We can now find the rate at which product is accumulating:
+
+\[ V = \frac{d\left[ \textrm{P}\right]}{dt} = k_{\textrm{cat}} \left[ \textrm{E-S} \right] = \frac{V_{\textrm{max}} \left[ \textrm{S} \right]}{K_M + \left[ \textrm{S} \right] }\]
+
+where $V_{\textrm{max}} = k_{\textrm{cat}}\left[ \textrm{E}_T \right]$ is the maximum rate at which the product could accumulate as $\left[ \textrm{S} \right]  \to \infty$.\\
+
+Show that the curve is hyperbolic. Explain the meaning of $K_M$ as well.
+
+\subsection*{How can we gauge an enzyme's ``effectiveness?"}
+
+High $k_{\textrm{cat}}$, low $K_M$
+
+\subsection*{Michaelis-Menten's original method}
+
+We do not use the method originally employed by Michaelis and Menten to derive their result. They used a rapid equilibrium assumption between E + S and E-S; we used a QSSA on E-S. Homework problem?
+
+\section*{The single-molecule level}
+
+Sunney Xie's lab
+
+\end{document}

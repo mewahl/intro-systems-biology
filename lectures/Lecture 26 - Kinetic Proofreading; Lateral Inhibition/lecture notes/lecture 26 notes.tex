@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyperref, chemfig}
+\usepackage{subfigure}
+\newcommand{\Lapl}{\mathscr{L}}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\section*{Introduction to the issue of accuracy in translation}
+
+A common problem in biological systems is the identification of a correct binding partner. Many incorrect binding interactions exist, and some of these will have on and off rates similar to the rates for the correct binding interaction.\\
+
+A straightforward biological example of the problem occurs during translation. The ribosome's goal is to match the correct transfer RNA to a three-nucleotide codon on the mRNA. The mRNA interacts with the tRNA only through its codon, so the hydrogen bonds that make up base pairs may be the sole discriminator between correct and incorrect pairing. Steric hindrance may prevent some incorrect interactions as well, but at least in some cases, like G-U vs. G-C base pairing, the difference in interaction energy is expected to be largely attributable to the difference in number of hydrogen bonds formed. Since a G-U base pair forms two hydrogen bonds and a G-C base pair forms three, the primary energetic difference in binding of the correct vs. a certain incorrect tRNA is just the energy of a single hydrogen bond, approximately 10 kJ/mol.\\
+
+Let's focus our attention on a ribosome $R$ and its interactions with two tRNAs: the correct one, $c$, and the incorrect tRNA $w$. We will assume that $c$ and $w$ differ from one another only in that $w$ forms a G-U base pair where $c$ forms a G-C base pair. The on and off rates for each binding event may differ, but it is most likely that the on rates are similar and diffusion-limited, so that only the off rates depend significantly on the free energy of binding. The two binding reactions are:
+\[ \ce{c + R <=>[k_1][k_{-1}] cR ->[k_t] \textrm{ Correct AA}} \hspace{3 cm} \ce{w + R <=>[k_2][k_{-2}] wR ->[k_t] \textrm{ Incorrect AA}} \]
+We will assume that the binding events are in equilibrium:
+\[ \left[ c R \right] = \frac{k_1\left[ c \right]\left[ R \right]}{k_{-1}} \hspace{3 cm} \left[ w R \right] = \frac{k_2\left[ w \right]\left[ R \right]}{k_{-2}} \]
+The rates of correct and incorrect product formation are $k_t [cR]$ and $k_t [wR]$, respectively, so the error rate (i.e. the ratio of incorrect to correct amino acid incorporations) will be:
+\[ \textrm{ Error rate: } \hspace{0.5 cm} \frac{k_t  \left[ w R \right]  }{k_t  \left[ c R \right] } = \frac{k_2k_{-1}  \left[ w \right]  }{k_1k_{-2}  \left[ c \right] } \approx  \frac{k_{-1}  \left[ w \right]  }{k_{-2}  \left[ c \right] }  \]
+The cell's solution cannot be to simply increase the concentration of the ``correct" tRNA, since for any given codon the correct tRNA will be different. The off rate in this case will be due to a difference in binding energy of 10 kJ/mol, so
+\[ \frac{k_{-1}}{k_{-2}} = e^{10000 \textrm{ J/mol } / 8.3 \textrm{ J/mol$\cdot$K } \times 298 \textrm{ K}} \approx e^4 = 55 \]
+An error rate of 1:55 is likely to be unacceptable: real amino acid misincorporation rates are closer to $10^{-4}$. This large discrepancy was resolved in the mid-seventies with the work of John Hopfield (1974), who introduced the concept of kinetic proofreading\footnote{Later, Hopfield was also instrumental in developing the theory of cyclic (``recurrent") artificial neural nets, a form of which still bears his name. Their stochastic counterpart, the Boltzmann machine, implement probabilistic behaviors in logic circuits. }.\\
+
+Before explaining what kinetic proofreading is, I should clearly state what it isn't: kinetic proofreading in translation does \textit{not} involve incorporating the wrong amino acid into the polypeptide, detecting the error, and running the ribosome in reverse to fix the mistake. (That type of proofreading is used, however, by many nucleic acid polymerases.) Kinetic proofreading is a way to improve accuracy before the incorrect amino acid is added to the growing polypeptide chain.
+
+\section*{Kinetic proofreading by analogy}
+
+Uri Alon uses a wonderful analogy, which I'll modify slightly here to avoid repetition with your textbook, to describe kinetic proofreading.\\
+
+Imagine that you would like to get as many Republicans as possible into one building, making as few mistakes as possible. (What you'll do with them once they're in there is for you to imagine.) You set up a mobile unit on the Boston common on a busy Saturday with the front door wide open, allowing any curious passerby to wander in. Inside, you set up a stereo to play the Rush Limbaugh show on loop. Republicans and others enter at the same rate, but Republicans take longer to leave: let's say, five minutes on average vs. one minute for everyone else. After the door has been open for a long time, you'll have about five-fold enrichment of Republicans compared to their frequency in the Boston tourist population. Obviously you can do better than that!\\
+
+Now suppose that once the population in the room has come to equilibrium, you shut the front door and reveal a rear door with a one-way turnstyle so that it is only possible to exit. After three minutes, most Democrats will be gone and most Republicans will have stayed.
+
+\section*{Kinetic proofreading }
+This basic principle -- imposing a delay during which an irreversible unbinding can occur which is likely to eliminate more incorrect than correct interactions -- is also at play in translation. The equivalent of the one-way door in prokaryotic translation is elongation factor thermo-unstable (EF-Tu). EF-Tu binds each tRNA long before it enters the ribosome and is essentially required for the tRNA to begin interacting with the ribosome. Once the tRNA is in place, in order for translation to proceed, EF-Tu must be released in a reaction catalyzed by GTP hydrolysis. Once EF-Tu is gone, there is still an opportunity for the tRNA to fall off before amino acid incorporation occurs: this is a one-way reaction, since it would be impossible for a tRNA to simply bind to the ribosome at this stage. Therefore the complete reaction scheme looks more like:
+\begin{center}
+\schemestart
+ c + R
+ \arrow{<=>[$k_1$][$k_{-1}$]}
+ cR
+ \arrow{->[$k_d$]}
+ cR$^*$
+ \arrow{->[*0$\ell_1$]}[-90]
+ c + R
+ \arrow(@c3--){->[$k_t$]}
+ Correct incorporation
+\schemestop
+\end{center}
+The scheme for the incorrect tRNA incorporation is similar: $k_d$ is assumed to be the same, but the irreversible dissociation rate after GTP hydrolysis will differ and is therefore labeled $\ell_2$. The codon-anticodon binding is not affected by GTP hydrolysis and EF-Tu association, so $\ell_1/\ell_2 = k_{-1}/k_{-2}$. Proceeding as before, assuming that the initial binding step is at equilibrium:
+\[ \frac{d \left[ c R^* \right]}{dt} = k_d \left[ c \right]\left[ R \right] - \left( \ell_1 + k_t \right) \left[ c R^* \right] \hspace{1 cm} \frac{d \left[ w R^* \right]}{dt} = k_d \left[ w \right]\left[ R \right] - \left( \ell_2 + k_t \right) \left[ w R^* \right] \]
+Therefore the error rate is:
+\[ \textrm{ Error rate: } \hspace{0.5 cm} \frac{k_t  \left[ w R^* \right]  }{k_t  \left[ c R^* \right] } =  \frac{k_{-1} \left( \ell_1 + k_t \right) \left[ w \right]  }{k_{-2} \left( \ell_2 + k_t \right) \left[ c \right] } \approx \frac{k_{-1}^2 \left[ w \right]}{k_{-2}^2 \left[ c \right]} \]
+This gets us into the regime where we can explain the ribosome's low error rate with a hundred-fold difference in off rate between the correct and incorrect tRNAs. We would see improvement if we added additional kinetic proofreading steps.
+
+\section*{Time delay}
+The improved accuracy gained by kinetic proofreading is purchased in gratuitous GTP hydrolysis and decreased overall translation rates, the latter because of the delay used to allow more incorrect tRNA to dissociate before proceeding to amino acid incorporation. This can be calculated by generating a matrix $\mathbf{P}$ corresponding to the master equation for the system: $P_{ij}$ is the probability of transitioning from state $i$ to state $j$ in one time step. The first step will be considered the state with unbound ribosome, and the ``final" $n$th state will be an imagined absorbing state which the system enters once either type of amino acid has been incorporated. Then the expected time for transition from state 1 to $n$ is:
+\[ T = \sum_{k=0}^{\infty} k \left[ \mathbf{P}^k \right]_{1n} = \left[ \mathbf{P} \right]_{1n} + 2 \left[ \mathbf{P}^2 \right]_{1n} + 3 \left[ \mathbf{P}^3 \right]_{1n} + \ldots \]
+which it turns out is roughly proportional to all of the reverse reaction rates and inversely proportional to all of the forward reaction rates, viz. $T \sim k_{-1} \ell_1 / k_1k_dk_t$.$T$ is large because $k_{-1} \gg k_d$ (rapid equilibrium assumption for initial tRNA binding) and $\ell_1 \gg k_t$. In your discussion paper this week, you'll learn more about the trade-off in expected time elapsed per reaction vs. error rate motivated by analogy to dynamical instability in microtubules.
+
+\section*{Lateral inhibition through Delta-Notch signaling}
+
+You are probably used to thinking of the ligand in an intercellular signaling system as a free-floating secreted molecule, but in this case, the ligand Delta is a transmembrane protein. By keeping Delta attached to the cell that produced it, this system ensures that it will only signal to immediate neighbors.\\
+
+Delta's receptor is called Notch. Named for the phenotype its mutation produces in the fruit fly wing, this gene has been known to science since the 1910s, when it was identified and mapped. Delta is also named for its phenotype in the wing (where it refers to the shape of the veins near the edge), though Delta and Notch are used in many developmental contexts in many organisms, notably including the pattern of mechanosensory bristles along the fly's back. Binding of Notch to Delta causes the intracellular domain of Notch (NICD) to be cleaved off and enter the nucleus, where it functions as a transcription factor.\\
+
+Activation of Notch by ligand binding typically causes the cell to downregulate its own expression of Delta and activate a positive feedback loop that enhances the sensitivity of its own Notch proteins. If signaling is prolonged, as expected if a neighboring cell continues to express Delta, then the cell assumes a Notch$^+$ Delta$^-$ identity. Failing to receive a signal from Notch, however, does not result in a stable a Notch$^-$ Delta$^+$ identity.\\
+
+This patterning system is used in many contexts throughout development. In the case of bristle patterning, its goal is to establish a certain ratio and spatial pattern of Delta$^+$ vs. Notch$^+$ cells (the descendants of each Delta$^+$ cell will eventually form a bristle). This feat is accomplished by amplifying small initial differences in gene expression between cells (the result of noisy gene expression or protein localization).
+
+\subsection*{A synthetic lateral inhibition system}
+
+Earlier this year, Matsuda et al. reported reconstructing Notch-Delta signaling in q mammalian cells that normally lacks this pathway by expressing four components: Notch, Delta under a promoter containing tetO (repressed by tTS), tTS under a promoter activated by Notch signaling (pTP1), and lunatic fringe (Lfng) -- an enhancer of Notch which acts by glycosylating it -- under pTP1 to mimic the positive feedback loop of Notch activity normally induced by Notch signaling. (Other components that enhance Delta-Notch signaling may also have been natively produced by the cells, though this particular cell line does not express crucial components of the pathway natively.) A fluorescent marker for the Delta$^+$ state is placed under the same promoter as Delta; similarly, a fluorescent marker for the Notch$^+$ state is placed under the same promoter as tTS.\\
+
+The authors used Chinese hamster ovary (CHO) cells\footnote{This peculiar-sounding cell type rose to prominence, particularly in industrial recombinant protein expression, because of its ease of transformation and selectable markers.}, an ``epithelial-like" cell line which grows in a monolayer without extensive contact between cells. By contrast, the epithelium of the fruit fly involved in bristle patterning is columnar, with cells squished against their neighbors in the plane. One result of this difference is that when Matsuda et al.'s synthetic system is cultured under typical conditions, neighboring cells may not signal strongly to one another. Enough signaling occurs, however, to get a robust ratio between cell types (i.e. the ratio is restored after it is perturbed via cell sorting). Furthermore, when the cell line is cultured on special substrates that force two daughter cells to remain in close contact after cell division, one cell always assumes each fate, even though initially their gene expression pattern was identical (modulo segregation at mitosis). Forcing cells to overexpress N-cadherin, an intercellular cell adhesion protein, also reduced the frequency of neighboring Delta$^+$ cells.\\
+
+The problem of modeling this system deterministically becomes apparent when we would like to write down, for example, the rate of change in Notch concentration. Clearly we need to keep track of Notch, etc. expression levels in each cell individually and to have some notion of which cells are adjacent to one another. The authors use, e.g.:
+\[ \frac{dN}{dt} = \beta_N - \gamma_N N - \frac{k_L L N}{k_m + N} - k_t N \left< D \right> - k_c N D \]
+The first two terms reflect the rate of production and decay in the absence of other proteins, the third term reflects glycosylation by lunatic fringe ($L$), the fourth represents activation of Notch by Delta on other cells, and the fifth represent self-activation. The issue is how to define $\left< D \right>$, the expression of Delta in cells which neighbor the cell of interest. Clearly the cells must be modeled with a physical position and shape in order to determine which are their nearest neighbors.\\
+
+Spatial modeling is the art of accounting for these spatial inhomogeneities without breaking the complexity bank. A simple solution is to assume that no divisions are occurring and place cells on a square or hexagonal lattice. Sometimes this approximation is perfectly justifiable: many columnar epithelia even look like hexagonal lattices from above. However, the geometry of a lattice can impose patterns which would not necessarily be present in the geometry of the real system.\\
+
+A more computationally taxing alternative is to arrange cells on an amorphous lattice. To explore the challenges in constructing this lattice, consider starting with a small initial cluster of circular cells and adding each new cell at a random location on the edge, requiring that it touch at least two other cells. It can be shown (Rubinstein and Nelson, 1982) that even with this form of random placement one arrives at something very closely approximating a hexagonal lattice. A better option is to place cells of different sizes or shapes, or (if physical adjacency is not an expectation) to place cells randomly on the plane at sufficiently low density. The latter option is taken by Matsuda et al.\\
+
+The importance of cell shape becomes clear when we consider that many cells in the epithelium where bristle patterning occurs make long filopodial extensions that may contact targets multiple cell diameters away. To make matters worse, these extensions are dynamic: that is, they are extended and retracted.\\
+
+Even with the geometry ironed out, the deterministic model cannot alone account for the system's behavior, since it would not explain why an isolated pair of daughter cells adopts different cell fates (or, for that matter, in an epithelium where all cells are assumed initially identical). We require at least some initial difference between these cells, which ultimately is provided by noise in gene expression or in segregation of protein products at mitosis. Thus noise is a driving factor in the adoption of different cell fates through lateral inhibition.
+
+\section*{Heterocyst formation}
+
+In the section of this course on oscillators, I mentioned that the apparent value of the cyanobacterial circadian clock is to balance the competing pressures of nitrogen fixation and photosynthesis by relegating each to a different portion of the day. An alternative strategy for segregating nitrogen fixation and photosynthesis has also evolved in some multicellular cyanobacteria which form long (and in some clades, branched) filaments one cell wide. To understand the mechanism I'll soon present, it is worthwhile to note that multicellularity has evolved in these gram-negative bacteria by preventing the septation of the outer cell wall, so that the bacteria are containined in a long tube where signaling molecules can diffuse without convected away by currents or diluted to kingdom come.\\
+
+This alternative approach involves creating a specialized cell type called a heterocyst, which performs nitogen fixation but not photosynthesis. It suffices to intersperse these cells at regular intervals along the filament for every cell to have sufficient access to fixed nitrogen. However, heterocysts are a somatic cell type incapable of further division or de-differentiation, so as their neighbors divide, the average distance between heterocysts increases, and it is necessary for new heterocysts to differentiate in between.\\
+
+Suppose someone na\"{i}ve -- Donny Do-Not, if you will -- were to design a control system for the differentiation of heterocysts based on a simple sensor for nitrogen availability: any cell with sufficiently poor access to fixed nitrogen would differentiate into a heterocyst. At first this option appears attractive: as the filament grows, some cell equidistant between two heterocysts will eventually become nitrogen-starved, resulting in a new heterocyst right where we need it. However, there is nothing to prevent two heterocysts from forming right beside each other in this location by chance, which is a waste to the multicellular organism, since heterocysts are reproductively dead. Furthermore, if the filament were grown in a nitrogen-rich environment and the media suddenly changed, every cell would become a heterocyst.\\
+
+Biology does not do what Donny Do-Not does. Instead, a more direct form of lateral inhibition is used: cells begin to produce a ``signaling" protein, PatS, as soon as they can after committing to the heterocyst fate. PatS then diffuses away from its source in both directions down the filament, where its binding to a heterocyst transcription factor inhibits other cells from differentiating into heterocysts. The number of ``erroneous" neighboring heterocysts formed is still elevated, however, after a transfer back to nitrogen-poor media.
+
+\end{document}

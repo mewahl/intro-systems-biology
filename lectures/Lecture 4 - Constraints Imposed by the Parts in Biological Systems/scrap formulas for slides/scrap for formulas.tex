@@ -1,0 +1,99 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage{hyper ref}
+\usepackage{courier, subcaption}
+\usepackage{multirow}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+\begin{eqnarray*}
+a & = & c_1\\
+b & = & c_2 Z\\
+ \frac{dZ}{dt} & = & a - b\\
+ & = & c_1 - c_2 Z\\
+ & = & c \theta \left( X > K_X \textrm{ AND } Y < K_Y \right) - c_2Z
+ \end{eqnarray*}
+
+\begin{eqnarray*}
+\ce{\textrm{C$_6$H$_{12}$O$_6$} + 6 \textrm{O}_2 ->[k_f] 6\textrm{CO}_2 + 6 \textrm{H$_2$O}}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+& \ce{\textrm{Glucose} + \textrm{ATP} ->[k_1]  \textrm{Glucose-6-phosphate} + \textrm{ADP}} &\\
+& \ce{\textrm{Glucose-6-phosphate}  ->[k_2]  \textrm{Fructose-6-phosphate} } &\\
+&\ce{\textrm{Fructose-6-phosphate} + \textrm{ATP} ->[k_3]  \textrm{Fructose-1,6-bisphosphate} + \textrm{ADP} }&\\
+&\ce{\textrm{Fructose-1,6-bisphosphate} ->[k_4] \textrm{Glyceraldehyde-3-phosphate} + \textrm{Dihydroxyacetone phosphate}}&\\
+&\ce{\textrm{Dihydroxyacetone phosphate} ->[k_5] \textrm{Glyceraldehyde-3-phosphate}}&\\
+& \vdots &
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&\ce{\textrm{Fructose-6-phosphate} + \textrm{ATP} ->[k_3]  \textrm{Fructose-1,6-bisphosphate} + \textrm{ADP} }&\\
+&\ce{\textrm{Fructose-6-phosphate} + \textrm{ATP} + \textrm{Enzyme} -> \textrm{Fructose-1,6-bisphosphate} + \textrm{ADP} + \textrm{Enzyme}}&\\
+&\ce{\textrm{Fructose-6-phosphate} + \textrm{Enzyme} -> \textrm{Enzyme-F6P complex}}&\\
+&\ce{\textrm{ATP} + \textrm{Enzyme-F6P complex} -> \textrm{Enzyme-F6P-ATP complex}}&\\
+&\ce{\textrm{Enzyme-F6P-ATP complex} -> \textrm{Enzyme-F1,6BP-ADP complex}}&\\
+&\ce{\textrm{Enzyme-F1,6BP-ADP complex} -> \textrm{Fructose-1,6-bisphosphate} + \textrm{ADP} + \textrm{Enzyme}}&
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&\ce{a\textrm{A} + b\textrm{B} ->[k_f]  c\textrm{C} + d \textrm{D} }&\\
+&k_f = c \left[ \textrm{A} \right]^a \left[ \textrm{B} \right]^b &
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&\ce{\textrm{A} + \textrm{B} ->[k_f]  \textrm{C}}&\\
+&k_f = c \left[ \textrm{A} \right] \left[ \textrm{B} \right] &
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&\ce{\alpha \textrm{A} +  \beta \textrm{B} <=> \gamma \textrm{C} + \delta \textrm{D}}&\\
+&\textrm{Forward reaction rate } = k \left[ \textrm{A} \right]^{\alpha} \left[ \textrm{B} \right]^{\beta} &\\
+&k_r = c_2 \left[ \textrm{C} \right]^{\gamma} \left[ \textrm{D} \right]^{\delta} & \\
+&\textrm{At equilibrium, } k_f = k_r& \\
+& K_{\textrm{eq}} = \frac{c_2}{c_1} = \frac{\left[ \textrm{C} \right]^{\gamma} \left[ \textrm{D} \right]^{\delta}}{\left[ \textrm{A} \right]^{\alpha} \left[ \textrm{B} \right]^{\beta}}&
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\frac{dS_1}{dt} & = & v_0 - k_1 S_1\\
+\frac{dS_2}{dt} & = & k_1 S_1 - k_2 S_2
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&  & \hspace{0.25cm}
+\begin{array}{ccccc}
+       r_1 & r_2 & r_3 & r_4
+     \end{array}\\
+\textrm{stoichiometry matrix } S & = & \begin{pmatrix} -1 & 1 & 0 & 1\\
+2 & 0 & 1 & -1\\
+0 & 1 & 0 & 1\\
+0 & -1 & -1 & 0\\
+0 & 0 & 1 & -1
+\end{pmatrix} 
+\hspace{0.25 cm}
+\begin{array}{l}
+       A\\
+      B\\
+      C\\
+      D\\
+      E
+     \end{array}
+\end{eqnarray*}
+
+\end{document}

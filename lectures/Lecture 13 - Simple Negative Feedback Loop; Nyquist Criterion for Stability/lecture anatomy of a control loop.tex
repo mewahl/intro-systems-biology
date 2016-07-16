@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+
+\newcommand{\Lapl}{\mathscr{L}}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+
+\section*{Introduction to LTI systems}
+
+Imagine a system as a black box to which we can supply an input $x(t)$ and measure an output, $y(t)$. [Draw a block diagram.] To describe how the system works, we would like to find a mathematical representation for the relationship between $x(t)$ and $y(t)$. You can imagine how we might approach this experimentally, by supplying simple inputs like pulses, step functions, or ramps and measuring the resulting output timecourse. \\
+
+It would make our life much easier if we could make a few simplifying assumptions about the system. For example, it would be great if we got the same output every time we supply the same input: this system property is called \textit{time invariance} and its utility is probably clear. It would also be handy if the system is \textit{linear}, i.e., once we have determined the outputs $y_1(t)$ and $y_2(t)$ for two inputs $x_1(t)$ and $x_2(t)$, then we should be able to predict that the output for $ax_1(t) + bx_2(t)$ is  $ay_1(t) + by_2(t)$. Why is this second property so useful?\\
+
+Recall that the Dirac delta distribution $d(t)$ is defined to have integral unity and the properties:
+\[ \delta(t)=\begin{cases}
+    \infty, & t = 0\\
+    0, & t \neq 0
+  \end{cases} \]
+  
+Any input function $x(t)$ can be represented as a time-offset combination of (Dirac) delta distributions. So if we know the system's response to a delta distribution input, and the system is linear, then we can predict the system's output for any input! The response to the Dirac delta distribution input deserves its own name -- the \textit{impulse response function} -- and can be used to fully describe a linear, time-invariant (LTI) system.
+
+\section*{Introduction to negative feedback}
+
+Many biological processes have evolved within the context of stable internal conditions. The cyanobacterial clock we studied earlier assumed, for example, that there would be a generous supply of ATP with which to phosphorylate each substrate, that the pH would permit the proteins to stay folded, and many other implicit requirements which could only be considered reasonable because of the cell's active efforts to maintain consistent internal conditions despite a variable environment -- a process called homeostasis. Biological systems designed to maintain some variable at a constant value are thus essential for permitting all of the other qualities of life.\\
+
+Most such systems share a quality in common: the system's output is monitored and used to regulate the system's activity through negative feedback. Why? [Audience response.] Here is how we would draw the corresponding block diagram. Notice that we consider this feedback to be combined with the input \textit{before} it enters the block: in this way, the system represented by the block remains linear and time-invariant. More generally, some processing might be done to the output signal before it is fed back [draw in another box]. For example, we will soon compare the value of responding proportionally to the output, to the derivative of the output, and to the integral of the output. At the moment, however, we need to discuss how to calculate what the system output will be.
+
+%As an example, consider the biosynthesis pathway that converts threonine to isoleucine. A Goldilocks concentration of isoleucine is needed: making too much is potentially poisonous and limits threonine availability; making too little limits protein synthesis. Regulation is achieved through allosteric inhibition of the first enzyme in the pathway by isoleucine: when the isoleucine concentration gets high enough, no more isoleucine is made. What type of feedback is this? [Accept student input. Then, discuss how the block diagram for this negative feedback would be drawn.] 
+
+\section*{Convolution}
+
+Consider first a system with no feedback and suppose that we have determine the impulse response function, $h(t)$ (recall that this is the system's response to a DDD input). What is the system's output $y(t)$ for an arbitrary input $x(t)$?
+
+Suppose as an example that we would like to calculate $y(5)$, i.e. the output at time $t=5$ seconds. Imagine breaking the input down into small``bins" in the range 0 to 5 seconds. We will calculate how input from each bin contributes to the output at $t=5$.
+
+Consider the bin centered at $\tau$ ($0 \leq \tau \leq t$). Since the bins are small, we can think of the input in each bin as instantaneous, and represent it by a multiple of the delta function centered a $\tau$: $x(\tau)\delta(t-\tau)$. The impulse response function tells us that the contribution from this bin to the output at time $t$ will be $x(\tau)h(t-\tau)$. If we sum up the contributions from all bins, 
+
+\[ y(t) = \int_0^t x(\tau) \, h(t - \tau) \, d\tau  = x(t) \ast h(t) \]
+
+This type of integral is a convolution of $x$ and $h$ (represented by the $\ast$ symbol here). Similarly, for our system with (unmodified) negative feedback:
+
+\[ y(t) = \int_0^t \left[ x(\tau) - y(\tau) \right] \, h(t - \tau) \, d\tau  = \left[ x(t) - y(t) \right] \ast h(t) \]
+
+Notice that $y(t)$ occurs on both sides of the equation -- it could be challenging to compute if not for a method we now introduce, called the Laplace transform.
+
+\section*{Laplace transforms}
+
+The Laplace transform of a real function $f(t)$ defined for $t > 0$ is:
+
+\[ \Lapl \left[ f(t) \right] \triangleq \hat{f}(s) = \int_0^{\infty} \exp \left(-st \right) \, f(t) \, dt\]
+
+The result of the transform is a function of $s$, a variable in frequency space (inverse time).  An inverse Laplace transform also exists, but is difficult to implement; usually we just look up $f(t)$ for $\hat{f}(s)$, and even $\hat{f}(s)$ for $f(t)$, in a reference table to save time However, here is one example of how the calculation is performed. Suppose the original function is:
+
+\[  f(t)=\begin{cases}
+    e^{- \alpha t}, & t \geq 0\\
+    0, & t < 0
+  \end{cases} \]
+
+In this case we can plug in to the definition and integrate:
+
+\begin{eqnarray*}
+\Lapl \left[ f(t) \right]  & = & \int_0^{\infty} e^{-s t} e^{- \alpha t}\, dt\\
+& = & - \frac{1}{s + \alpha} \left.  e^{-(s + \alpha)t} \right|_0^{\infty}\\
+& = &  \frac{1}{s + \alpha}
+\end{eqnarray*}
+
+This particular Laplace transform is worth memorizing because exponentially-decaying responses are commmon in systems analysis.\\
+
+Laplace transforms convert derivatives and integrals into algebraic expressions. For example, suppose we would like to calculate the Laplace transform of $df/dt$. We make use of integration by parts:
+
+\[ \int_0^{\infty} u \, dv = \left. uv \right|_0^{\infty} - \int_0^{\infty} v \, du \]
+
+Plugging in with  $dv = \frac{df}{dt} \, dt$ and $u = e^{-st}$,
+
+\begin{eqnarray*}
+\Lapl \left[ \frac{d\, f}{dt} \right]  & = & \int_0^{\infty} e^{-s t} \frac{d\, f}{dt} \, dt\\
+& = & \left. e^{-s t} f(t) \right|_0^{\infty} + s \int_0^{\infty} f(t) e^{-st} \, dt\\
+& = &  -f(0) + s \hat{f}(s)
+\end{eqnarray*}
+
+Likewise, it is easy to show that:
+
+\[ \Lapl \left[ \int_0^{\infty} f(t) \, dt \right] = \frac{\hat{f}(s)}{s} \]
+
+This makes it easy to find solutions to systems of differential equations, since we can ``eliminate" variables in frequency space through substitution. The Laplace transform also works miracles on convolutions:
+
+\[ \Lapl \left[x(t) \ast h(t) \right] = \hat{x}(s) \hat{h}(s) \]
+
+which will turn out to be very helpful when calculating the system's output. When we begin on Tuesday, we'll use these properties to examine how simple systems with negative feedback behave.
+
+%\section*{Application:analysis of open loop systems}
+%
+%Consider a signaling cascade where the abundance of an input signaling molecule, $a(t)$, influences the abundance of an output signaling molecule, $c(t)$, via an intermediate, $b(t)$. Specifically we assume
+%
+%\begin{eqnarray*}
+%\frac{db}{dt} & = & k_a a -  \gamma_b b\\
+%\frac{dc}{dt} & = & k_b b - \gamma_c c\\
+%\end{eqnarray*}
+%
+%This might be applicable if $b$ and $c$ are continuously subject to degradation and are produced enzymatically within the linear range of their respective enzymes. We would like to find an expression for $c(t)$ given an input $a(t)$. We begin by using the fact that the Laplace operator is linear, and the identity described above, to take the Laplace transform of both equaions:
+%
+%\begin{eqnarray*}
+%s \hat{b}(s) - b(0) & = & k_a \hat{a}(s)  - \gamma_b\hat{b}(s)\\
+%s \hat{c}(s) - c(0) & = & k_b \hat{b}(s) - \gamma_c \hat{c}(s)
+%\end{eqnarray*}
+%
+%Now, we simply solve for $\hat{c}(s)$ by rearrangement:
+%
+%\begin{eqnarray*}
+%\hat{c}(s) & = & \frac{1}{s+\gamma_c} \left[ k_b \hat{b}(s) + c(0) \right]\\
+%& = & \frac{1}{s+\gamma_c} \left[ \frac{k_b}{s+\gamma_b} \left( k_a \hat{a}(s) + b(0) \right) + c(0) \right]\\
+%& = & \frac{k_a k_b \hat{a}(s)}{\left( s + \gamma_b \right) \left( s + \gamma_c \right)} + \frac{k_b b(0)}{\left( s + \gamma_b \right) \left( s + \gamma_c \right)} + \frac{c(0)}{s + \gamma_c} = G(s) \hat{a}(s) + \textrm{ initial condition terms}
+%\end{eqnarray*}
+%
+%Notice that this expression has two parts: one is proportional to the input, and the other depends only on the initial conditions. We have introduced the notation $G(s)$ for the \textit{transfer function}, which is the ratio between the transforms of the output and input in the special case where initial values are zero. We are primarily interested in the input response, so will ignore the initial condition terms here to simply the algebra (a full solution would employ the same techniques used below.) Therefore we are interested in findining
+%
+%\[ c(t) \approx \Lapl^{-1} \left[ G(s) \hat{a}(s) \right] = \Lapl^{-1} \left[ \frac{k_a k_b \hat{a}(s)}{\left( s + \gamma_b \right) \left( s + \gamma_c \right)} \right]  \]
+%
+%Let's suppose that our input function $a(t)$ is a unit step function at time zero; then, according to a table of Laplace transforms, $\hat{a}(s) = 1/s$, so we need to calculate:
+% 
+% \[ c(t) =  k_a k_b \, \Lapl^{-1} \left[ \frac{1}{s \left( s + \gamma_b \right) \left( s + \gamma_c \right)} \right] =  \frac{x}{s} + \frac{y}{s + \gamma_b} + \frac{z}{s + \gamma_c} \]
+% 
+%for some constants $x, y, z$ (assuming the denominators are distinct). Once we find the constants, we can easily handle each term in the inverse Laplace transform because we already know that
+%
+%\[ \Lapl \left[ e^{-\alpha t} \right] = \frac{1}{s+\alpha} \implies \Lapl^{-1} \left[ \frac{1}{s+\alpha}\right] = e^{-\alpha t} \]
+%
+%Using partial fractions, we find that:
+%
+%\begin{eqnarray*}
+%c(t) & = & k_a k_b \, \Lapl^{-1} \left[ \frac{1}{s\gamma_b \gamma_c } - \frac{1}{\gamma_b (s + \gamma_b)(\gamma_c - \gamma_b)} - \frac{1}{\gamma_c(s + \gamma_c)(\gamma_b - \gamma_c)} \right]\\
+%& = & \frac{k_a k_b}{\gamma_b \gamma_c} \left( 1 - \frac{\gamma_c e^{-\gamma_b t}}{\gamma_c - \gamma_b} - \frac{\gamma_b e^{-\gamma_c t}}{\gamma_b - \gamma_c} \right)
+%\end{eqnarray*}
+%
+%This result may be underwhelming since we can see that at long times, $c(t) = k_ak_b/\gamma_b\gamma_c$, which is the same result we could have reached by just setting all of the derivatives equal to zero. We will see however that the same approach applied to control systems with feedback can give surprising results.
+
+\end{document}

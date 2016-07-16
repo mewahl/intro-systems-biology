@@ -1,0 +1,173 @@
+\documentclass{article}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, mathrsfs, mhchem, amsmath} % For centering of tabulars with text-wrapping columns
+\usepackage{hyper ref}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\begin{document}
+\large
+\section*{Introduction}
+Transition from discussion of diffusion to cooperativity. Reminder of the scale imposed by diffusion and the dependence of the rate of oxygen transfer on the concentration gradient.
+\[ c(x) = c(0) e^{-x\sqrt{k/D}} \]
+
+\[ J = -D \frac{\partial c}{\partial x} \]
+
+\section*{Heme and hemoglobin}
+
+See slides.
+
+\section*{Independent sites}
+If the binding sites on each subunit of hemoglobin are truly independent, then we can treat each hemoglobin subunit separately. Consider the single site on one hemoglobin molecule. We'll represent the protein with $P$ and the oxygen molecule, its ligand, with an $L$ to emphasize the generality of the finding:
+
+\begin{eqnarray*}
+\ce{P + L <=>[K_D] PL}
+\end{eqnarray*}
+
+The dissociation constant $K_D$ is the ratio of the bound complex to its constituent parts:
+\[ K_D = \frac{\left[ P \right]\left[ L \right]}{\left[ PL \right]} \]
+
+We expect that as more ligand (oxygen) is added, the balance of this reaction will shift to a higher concentration of $[PL]$ than $[P]$. Therefore the fraction of bound sites should increase with $[L]$, and we would like to know more precisely how they vary together.\\
+
+The total number of binding sites is equal to the total concentration of the protein, which is:
+
+\[ \left[ P \right]_{tot} = \left[ PL \right] + \left[ P \right] \]
+
+So the fraction of sites bound, which by convention is called $Y$, will be:
+
+\[ Y = \frac{\left[ PL \right]}{\left[ P \right]_{tot}} = \frac{\left[ PL \right]}{\left[ PL \right] + \left[ P \right]} \]
+
+We can rearrange the definition of the binding constant to find $[P] = K_D[PL]/[L]$ and plug in to eliminate $[P]$ from this expression:
+
+\[ Y = \frac{\left[ PL \right]}{\left[ PL \right] + K_D\left[ PL \right]/\left[ L \right]} = \frac{1}{1 + K_D/\left[ L \right]} = \frac{\left[ L \right]}{\left[ L \right] + K_D} \]
+
+This is a \textit{hyperbolic} curve. In this form the relationship to the familiar $y=c/x$ is probably not apparent. However, consider the asymptotes of this function: when the ligand concentration is large, $Y \to 1$; and although negative ligand concentrations are not physically meaningful, $Y \to - \infty$ as the ligand concentration goes to $-K_D$. Suppose that we shifted to the new coordinates $\left[ L' \right] = \left[ L \right] + K_D$ and $Y' = Y - 1$:
+
+\begin{eqnarray*}
+Y & = & \frac{\left[ L' \right] - K_D}{\left[ L' \right]}\\
+Y' & = & Y - 1 = \frac{\left[ L' \right] - K_D}{\left[ L' \right]} - \frac{\left[ L' \right]}{\left[ L' \right]} = \frac{- K_D}{\left[ L' \right]}
+\end{eqnarray*}
+
+$\ldots$ which hopefully clarifies why we called this a hyperbolic function.\\
+
+Point out that $K_D$ is equal to the concentration of ligand at half-saturation. Plot and point out how the approach to low binding fraction is quite slow, then suddenly abrupt at a ligand concentration very near zero.
+
+``How bad is it": show that you need an 81-fold change in concentration to go from 10\% bound to 90\% bound. Yeesh -- hopefully your tissues never come close to this!
+
+\section*{Cooperativity}
+Let's suppose that the rate of oxygen binding or dissociation at any given site depends on the status of the other three sites. For example, once one oxygen molecule has been bound, it may be easier to bind a second one. (Later we'll discuss mechanistically how this could occur; but for now, we'll focus on demonstrating that this assumption is enough to give us the desired binding properties.) The ``on" and ``off" rates for ligand at a single site ($k_i$ and $k_{-1}$, respectively) may differ depending on how many ligands are currently bound to the protein:
+
+\begin{eqnarray*}
+\ce{P + L <=>[4k_1][k_{-1}] PL}\\
+\ce{PL + X <=>[3k_2][2k_{-2}] PL_2}\\
+\ce{PL_2 + X <=>[2k_3][3k_{-3}] PL_3}\\
+\ce{PL_3 + X <=>[k_4][4k_{-4}] PL_4}
+\end{eqnarray*}
+
+Note that each rate $k_i$ is scaled by the number of equivalent sites on the protein at which binding or dissociation could take place. For example, the singly-bound complex PL has three sites at which a second ligand could bind and therefore a binding rate of $3k_2$; PL has only one bound ligand, so the dissociation rate is simply $k_{-1}$. With these rate constants, we can relate the concentrations of proteins in each state:
+
+\begin{eqnarray*}
+\left[ \textrm{PL} \right] & = & \frac{4k_1}{k_{-1}} \left[ \textrm{P} \right]\left[ \textrm{L} \right] = 4K_1 \left[ \textrm{P} \right]\left[ \textrm{L} \right]\\
+\left[ \textrm{PL}_2 \right] & = &  \frac{3k_2}{2k_{-2}} \left[ \textrm{PL} \right]\left[ \textrm{L} \right] = \frac{6k_1k_2}{k_{-1}k_{-2}} \left[ \textrm{P} \right]\left[ \textrm{L} \right]^2 = 6K_1K_2 \left[ \textrm{P} \right]\left[ \textrm{L} \right]^2\\
+\left[ \textrm{PL}_3 \right] & = &  \frac{2k_3}{3k_{-3}} \left[ \textrm{PL}_2 \right]\left[ \textrm{L} \right] = \frac{4k_1k_2k_3}{k_{-1}k_{-2}k_{-3}} \left[ \textrm{P} \right]\left[ \textrm{L} \right]^3 = 4K_1K_2K_3 \left[ \textrm{P} \right]\left[ \textrm{L} \right]^3\\
+\left[ \textrm{PL}_4 \right] & = &  \frac{k_4}{4k_{-4}} \left[ \textrm{PL}_3 \right]\left[ \textrm{L} \right] = \frac{k_1k_2k_3k_4}{k_{-1}k_{-2}k_{-3}k_{-4}} \left[ \textrm{P} \right]\left[ \textrm{L} \right]^4 = K_1K_2K_3K_4 \left[ \textrm{P} \right]\left[ \textrm{L} \right]^4
+\end{eqnarray*}
+
+where we have introduced the constants $K_i = k_i/k_{-i}$ to simplify notation. Recall that the fraction of bound sites is:
+
+\[ Y = \frac{\textrm{Number of sites bound by ligand}}{\textrm{Total number of binding sites}} = \frac{\sum_{i=1}^4 i \left[ \textrm{PL}_i \right]}{4 \sum_{i=0}^4 \left[ \textrm{PL}_i \right]} = \frac{\left[ \textrm{PL} \right] + 2 \left[ \textrm{PL}_2 \right] + 3 \left[ \textrm{PL}_3 \right] + 4 \left[ \textrm{PL}_4 \right]}{4 \left( \left[ \textrm{P} \right] + \left[ \textrm{PL} \right] + \left[ \textrm{PL}_2 \right] + \left[ \textrm{PL}_3 \right] + \left[ \textrm{PL}_4 \right] \right)}\]
+
+Plugging in our expressions for the relative concentrations of proteins in each state:
+
+\begin{eqnarray}
+Y & = & \frac{\left[ P \right] \left( 4 K_1 \left[ L \right] + 12K_1K_2 \left[ L \right]^2 + 12K_1K_2K_3 \left[ L \right]^3 + 4K_1K_2K_3K_4 \left[ L \right]^4 \right)}{4\left[ P \right] \left( 1 + 4K_1 \left[ L \right] + 6K_1K_2 \left[ L \right]^2 + 4K_1K_2K_3 \left[ L \right]^3 + K_1K_2K_3K_4 \left[ L \right]^4\right)} \nonumber\\
+Y & = & \frac{K_1 \left[ L \right] + 3K_1K_2 \left[ L \right]^2 + 3K_1K_2K_3 \left[ L \right]^3 + K_1K_2K_3K_4 \left[ L \right]^4}{1 + 4K_1 \left[ L \right] + 6K_1K_2 \left[ L \right]^2 + 4K_1K_2K_3 \left[ L \right]^3 + K_1K_2K_3K_4 \left[ L \right]^4 \label{adair}}
+\end{eqnarray}
+Equation \ref{adair} is the \textit{Adair equation} for a molecule with four binding sites. The relationship between $Y$ and $L$ will depend on the $K_i$ in a potentially complicated way. However, if we assume that the protein has a relatively high affinity for the final ligand (i.e. $K_4 \gg K_1, K_2, K_3$), this equation simplifies greatly to:
+\begin{eqnarray*}
+Y & \approx & \frac{K_1K_2K_3K_4 \left[ L \right]^4}{1 + K_1K_2K_3K_4 \left[ L \right]^4} = \frac{\left[ L \right]^4}{K + \left[ L \right]^4}
+\end{eqnarray*}
+where $K = 1/K_1K_2K_3K_4$ functions as an effective dissociation constant averaged over all of the binding events. This is a specific instance of the Hill equation:
+\begin{eqnarray}
+Y & = & \frac{\left[ X \right]^n}{K + \left[ X \right]^n\label{hill}}
+\end{eqnarray}
+where the exponent $n$ is called the \textit{Hill coefficient}. Notice that when $n=1$, the function is hyperbolic: this is equivalent to the non-cooperative case. For $n > 1$, the function is instead \textit{sigmoidal}, i.e. s-shaped.\footnote{The term refers to the lowercase Greek sigma glyph $\varsigma$, not $\sigma$.} This sigmoidal shape indicates that binding is more ``switch-like": it transitions from a low fractional saturation to a high fractional saturation at a ligand concentration potentially far from zero.\\
+
+Why is this reaction scheme suggested by the Hill approximation not realistic for oxygen binding to hemoglobin?
+\begin{eqnarray*}
+\ce{P + 4L <=>[K] PL_4}
+\end{eqnarray*}
+
+A good measure of how ``switch-like" the behavior is can be given by the maximum slope of the curve, which we can of course find through differentiation:
+
+\[ \frac{dY}{d\left[X\right]} = \frac{n[X]^{n-1}\left(K^n + [X]^n\right) - [X]^n \cdot -n [X]^{n-1}}{\left([X]^n + K^n\right)^2} = \frac{nK^n [X]^{n-1}}{\left([X]^n + K^n\right)^2} \]
+
+Taking a second derivative (or simply examining the original curve) informs us that the maximum slope occurs when $[X]=K$, at which point $dY/d[X] = n/4K$. In other words, the slope at the inflection point increases linearly with the Hill coefficient.\\
+
+Earlier we saw that for a hyperbolic curve, we would need an 81-fold difference in ligand concentration to go from 10\% to 90\% saturation. How much improvement have we bought with cooperativity? Let $A$ and $B$ be the concentrations of ligand at which $Y=0.1$ and $Y=0.9$, respectively, Then from the Hill equation:
+\begin{eqnarray*}
+0.1 = \frac{A^n}{K^n + A^n} & \implies & A = K\sqrt[n]{\frac{1}{9}}\\
+0.9 = \frac{B^n}{K^n + B^n} & \implies & B = K\sqrt[n]{9}\\
+\frac{B}{A} & = & \sqrt[n]{81}
+\end{eqnarray*}
+So for example if $n=4$, we need only a three-fold change in ligand concentration to move from 10\% to 90\% saturation, making it much easier to pick up and let go of, say, oxygen over a physiological range of partial pressures.\\
+
+Is the Hill function a good fit to the hemoglobin data. To address this we will want to fit both parameters, $n$ (to keep ourselves honest) and $K$. Remember that for oxygen/hemoglobin we do have experimental control over the partial pressure of oxygen ([$L$]) and we can measure the fraction of heme groups bound by oxygen ($Y$) by spectrophotometry. We'll use linear regression to fit the parameters, using an algebraic trick to transform the Hill equation:
+\begin{eqnarray*}
+Y = \frac{\left[ L \right]^n}{K^n + \left[ L \right]^n} & \implies & 1 - Y = \frac{K^n}{K^n + \left[ L \right]^n}\\
+\frac{Y}{1-Y} & = & \frac{\left[ L \right]^n}{K^n}\\
+\log \left( \frac{Y}{1-Y} \right) & = & n \log \left[ L \right] - n \log K
+\end{eqnarray*}
+
+Notice that this equation has the form of a line, with slope $n$ and y-intercept $-n\log K$. We simply use our measurements of [$L$] and $T$ to plot $\log (Y/1-Y)$ vs. $\log [L]$, then find $n$ and $K$\footnote{Of course, we will need to fit $n$ and $-n\log K$ first, then back out what the value of $K$ should be.} by linear regression.\\
+
+We see that the best-fit slope is $n=2.8$, which is lower than the $n=4$ we might have predicted naively. The reason is that our approximation ($K_4 \gg K_1, K_2, K_3$) was unrealistic: cooperative binding of the final ligand is not so large that the other terms of the Adair equation can be fully ignored while assuming $n=4$. Relaxing the constraint on $n$ allowed us to obtain a good fit to the Hill equation anyway, by choosing a smaller value of $n$. The best-fit value of $n$ is still useful, however: it provides a lower bound to the number of ligand binding sites.
+
+\section*{Monod-Wyman-Changeux Model}
+We have now seen that cooperativity provides the switch-like binding behavior we hoped for, as well as the Adair and Hill equations which fit the data well. We still lack a mechanistic insight: how does hemoglobin achieve the change in binding coefficients? Which of the binding coefficients in the Adair equation are likely to differ and why?\\
+
+We have a clue, of course: each heme group sits in a subunit of hemoglobin, and when oxygen binds, the surrounding subunit changes shape. (This change is at least partly mediated by the physical connection of an amino acid side chain to the heme group.) We have the structures for fully bound and unbound hemoglobin: this animation is just an inferred transition between them. But the concerted motion is a simplified model for what might be causing the transition from low to high affinity.
+
+Let's assume the ratio $K = [P_T]/[P_R]$ is relatively large: when no ligand is bound, the taut state is highly favored. However, the ratio $[P_TL_4]/[P_TL_4]$ for the fully bound complex is somewhat small, favoring the relaxed state. Each state has its own binding constant, $K_T$ or $K_R$, that does \textit{not} vary depending on the number of ligands bound (modulo the multiplicities in the rate constants). Choose $K_T < K_R$ so that most hemoglobins will have either none or all sites bound. We'll see that these three parameters -- $K$, $K_T$, and $K_R$ -- are all we need to get cooperativity.\\
+
+Let's start by relating all of our concentrations, as we did before for Adair equation:
+\begin{eqnarray*}
+\left[ P_RL \right] = 4K_R \left[ P_R \right] \left[ L \right] &  & \left[ P_TL \right] = 4K_T \left[ P_T \right] \left[ L \right] = 4\alpha K_R K \left[ P_R \right] \left[ L \right]\\
+\left[ P_RL_2 \right] = 6K_R^2 \left[ P_R \right] \left[ L \right]^2 &  & \left[ P_TL_2 \right] = 6\alpha^2 K_R^2 K \left[ P_R \right] \left[ L \right]^2\\
+\left[ P_RL_3 \right] = 4K_R^3 \left[ P_R \right] \left[ L \right]^3 &  & \left[ P_TL_3 \right] = 4 \alpha^3 K_R^3 K \left[ P_R \right] \left[ L \right]^3\\
+\left[ P_RL_4 \right] = K_R^4 \left[ P_R \right] \left[ L \right]^4 &  & \left[ P_TL_4 \right] = \alpha^4 K_R^4 K \left[ P_R \right] \left[ L \right]^4\\
+\end{eqnarray*}
+
+This is all of the information needed to find the fraction of all sites bound:
+
+\begin{eqnarray*}
+ Y & = & \frac{\textrm{Number of sites bound by ligand}}{\textrm{Total number of binding sites}} = \frac{\sum_{i=1}^4 i \left[ \textrm{P$_R$L}_i \right] \, + \, \sum_{i=1}^4 i  \left[ \textrm{P$_T$L}_i \right]}{4 \left(\sum_{i=0}^4 \left[ \textrm{P$_R$L}_i \right] \, + \, \sum_{i=0}^4 \left[ \textrm{P$_T$L}_i \right]\right)}\\
+& = & \frac{K_R \left[ L \right] \left( 1 + 3 K_R\left[ L \right] + 3 K_R^2\left[ L \right]^2 + K_R^3\left[ L \right]^3\right) + \alpha K_R K \left[ L \right] \left( 1 + 3 \alpha K_R\left[ L \right] + 3 \alpha^2 K_R^2\left[ L \right]^2 + \alpha^3 K_R^3\left[ L \right]^3\right)}{1 + 4 K_R\left[ L \right] + \ldots +  K_R^4\left[ L \right]^4 + K\left( 1 + 4 \alpha K_R\left[ L \right] + \ldots +  \alpha^4 K_R^4\left[ L \right]^4 \right)}\\
+& = & K_R \left[ L \right]  \frac{\left( 1 + K_R \left[ L \right]\right)^3 + \alpha K \left( 1 + \alpha K_R \left[ L \right]\right)^3}{\left( 1 + K_R \left[ L \right]\right)^4 + K \left( 1 + \alpha K_R \left[ L \right]\right)^4}
+\end{eqnarray*}
+More generally for $b$ binding sites:
+\begin{eqnarray}
+Y & = & K_R \left[ L \right]  \frac{\left( 1 + K_R \left[ L \right]\right)^{b-1} + \alpha K \left( 1 + \alpha K_R \left[ L \right]\right)^{b-1}}{\left( 1 + K_R \left[ L \right]\right)^b + K \left( 1 + \alpha K_R \left[ L \right]\right)^b}
+\end{eqnarray}
+Although probably not obvious, this corresponds to a sigmoidal binding curve. What was the trick?\\
+
+You can make a Hill plot this function (numerically or, with even more gnarly algebra, through rearrangement) to get [INSERT GRAPHIC]. As you can see the slope of the curve is one at both very large and very small concentrations of ligand. The y-intercepts are different for the two asymptotic lines, however: from before we know this must mean that the binding constants differ. In other words, the protein has sites that bind non-cooperatively (Hill coefficient $n=1$) but the protein's effective binding constant transitions from $K_T$ to $K_R$ as the concentration of ligand increases.\\
+
+This model does a very good job of fitting the data and we may now feel we have a plausible explanation for the transition in affinity.
+
+\section*{Koshland Model}
+...however we know that at least some of the conformational changes associated with oxygen binding really are induced by the presence of the ligand. For example, the histidine chain movement is caused by the change in coordination at the iron atom. It is not likely that all these changes really propagate from one subunit to all of the others or that the change is ``all-or-nothing." A more plausible model perhaps is that the nearest neighbors of a bound subunit change to a conformational state that is slightly more receptive to oxygen binding. The Koshland model -- which I'll introduce only philosophically here -- captures that intuition. The fit to the data is not, unfortunately, really any better upon accounting for differences in parameter number.
+
+\section*{Another Mechanism: Tethering}
+We have been trying to justify why the binding constants would be different using conformational changes in the protein. However sometimes the explanation is much simpler.\\
+
+Another case where switch-like behavior is desirable is gene regulation, as you saw in section 1's discussion of the Lac operon. As a reminder this is a set of genes which are only required when lactose is present and are therefore normally repressed by the transcription factor LacI. LacI is a dimer-of-dimers: each tetramer is capable of binding to two binding sites called lac operators or lacO sites. There are three twenty-something basepair Lac operators in the 6 Mbp \textit{E. coli} genome and they are all within a few hundred basepairs of each other. For a LacI protein scanning the genome, the hard part is unquestionably finding one of the three Lac operators. However, once that ``first" operator has been bound, the probability of binding a second operator substantially increases.\\
+
+The reason is not due to a conformational change, but rather tethering. You can think of it like the cup-and-ball game. The other operators cannot be very far away from the first one that LacI found, since they are connected by a relatively short stretch of DNA. Eventually the random coil of DNA will bend such that LacI's other end encounters that site and binds it. So we have effectively changed the ``on" rate at the second site by ensuring that other operators are close at hand.
+
+\end{document}

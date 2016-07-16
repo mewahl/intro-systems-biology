@@ -1,0 +1,139 @@
+\documentclass{article}
+\newsavebox{\oldepsilon}
+\savebox{\oldepsilon}{\ensuremath{\epsilon}}
+\usepackage[minionint,mathlf,textlf]{MinionPro} % To gussy up a bit
+\renewcommand*{\epsilon}{\usebox{\oldepsilon}}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx} % For .eps inclusion
+%\usepackage{indentfirst} % Controls indentation
+\usepackage[compact]{titlesec} % For regulating spacing before section titles
+\usepackage{adjustbox} % For vertically-aligned side-by-side minipages
+\usepackage{array, amsmath,  mhchem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{courier, subcaption}
+\usepackage{multirow, enumerate}
+
+\usepackage{float}
+\restylefloat{table}
+
+\pagenumbering{gobble} 
+\setlength\parindent{0 cm}
+\renewcommand{\arraystretch}{1.2}
+\begin{document}
+\large
+
+MCB 135 Problem Set 4 \hfill Due Monday, March 2, 2015 at 2:30 PM
+
+\section*{Problem 1: Positive Feedback (adapted from Alon 3.4, 15 points)}
+
+In last week's problem set, you showed that a gene $Z$ with simple regulation decribed by
+\begin{eqnarray*}
+\frac{dZ}{dt} = \beta_0 - \alpha Z, \hspace{2 cm} Z(0)=0
+\end{eqnarray*}
+has a response time (i.e., time required to reach half of its steady-state expression level) given by $\tau=\frac{\ln 2}{\alpha}$. Now consider a protein $X$ which positively regulates its own expression:
+\[ \frac{dX}{dt} = \beta_0 + \beta_1 X  - \alpha X, \hspace{1 cm} X(0)=0\]
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Identify any fixed points of this system and determine their stability. Consider the three cases (i) $\alpha < \beta_1$, (ii) $\alpha = \beta_1$, and (iii) $\alpha > \beta_1$.
+\item When the response time of $X$ is well-defined, how does it compare to the response time of $Z$?
+\item Describe a biological scenario where positive regulation of this type would be preferable to simple regulation. Explain your reasoning.
+\end{enumerate}
+
+%\section*{Problem 2: Transcription factor multimerization (adapted from Ingalls 7.8.3, 15 points)}
+%
+%Consider a gene $M$ which encodes monomers that dimerize to form a function transcription factor, $D$:
+%\[ \ce{ M + M <=>[k_1][k_2] D} \]
+%
+%$D$ binds non-cooperatively to a single site in the promoter of $M$: $M$ is produced at a rate proportional to the probability that $D$ is bound. The dynamics of the system are described by:
+%\begin{eqnarray*}
+%\frac{d\left[ M \right]}{dt} & = & \alpha \frac{\left[ D \right]}{K + \left[ D \right]} - 2 k_1 \left[ M \right]^2 + 2 k_2 \left[ D \right] - \beta_M \left[ M \right]\\
+%\frac{d\left[ D \right]}{dt} & = &  k_1 \left[ M \right]^2 - k_2 \left[ D \right] - \beta_D \left[ D \right]
+%\end{eqnarray*}
+%
+%where $\alpha$ is the maximum production rate of [M] and $\beta_i$ are the degradation/dilution rates. Verify that if $ \beta_D=0$, then applying a quasi-steady state assumption to [D] yields:
+%\[ \frac{d\left[ N \right]}{dt} = \alpha \frac{\left[ M \right]^2}{K' + \left[ M \right]^2} - \beta_M \left[ M \right] \]
+%
+%Thus, multimerization generates the same dynamics as cooperative DNA binding if multimers are protected from degradation.
+
+\section*{Problem 2: Global dynamics from local stability analysis (Ingalls 4.8.6, 35 points)}
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item Consider the chemical reaction network with mass-action kinetics:
+\begin{eqnarray*}
+\ce{A + X ->[k_1] 2 X} \hspace{2 cm} \ce{X + X ->[k_2] Y}  \hspace{2 cm} \ce{Y ->[k_3] B} 
+\end{eqnarray*}
+Assume that [A] and [B] are held constant.
+\begin{enumerate}[i)]
+\setlength{\itemsep}{0pt}
+\item Write a differential equation model describing the concentrations of $X$ and $Y$.
+\item Verify that the system has two steady states.
+\item Determine the system Jacobian at the steady states and characterize the local behavior of the system near these points.
+\item By referring to the network, provide an intuitive description of the system behavior from any initial condition for which [X] = 0.
+\item Sketch a phase portrait for the system that is consistent with your expectations from (iii) and (iv).
+\end{enumerate}
+\item Repeat for the related system
+\begin{eqnarray*}
+\ce{A + X ->[k_1] 2 X} \hspace{2 cm} \ce{X + Y ->[k_2] 2Y}  \hspace{2 cm} \ce{Y ->[k_3] B} 
+\end{eqnarray*}
+In this case, you'll find that the nonzero steady state is a center: it is surrounded by concentric periodic trajectories.
+\end{enumerate}
+
+\section*{Problem 3: Practice with Laplace transforms (adapted from Meister 2009, 50 points)}
+
+Absorption of a single photon by a photoreceptor neuron triggers a biochemical cascade that results in a change in current across the neuron's membrane called the ``single photon response," which lasts for a few hundred milliseconds before decaying away. The neuron's photon detection system is approximately linear and time-invariant: when several photons get absorbed, the resulting current is simply the sum of all their single photon responses.
+
+\begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\item  We will represent the single photon response for a photon absorbed at time $t=0$ by $h(t)$. What is the photoreceptor's response $O(t)$ to an arbitrary time-varying light stimulus, in which the rate of photon absorptions varies with time as $I(t)$, where
+\[ I(t) \, dt = \textrm{number of photons absorbed in short interval } dt \textrm{ ?} \]
+Write the answer as a convolution integral, then apply a Laplace transform to find $\tilde{O}(s)$ in terms of $\tilde{I}(s)$ and $\tilde{h}(s)$.
+\item One way to investigate a system's behavior is to apply a well-defined ``test" input and study the resulting output timecourse. Determine the Laplace transforms $\tilde{I}(s)$ for the two common types of test inputs given below, showing your work:
+\begin{enumerate}[i)]
+\setlength{\itemsep}{0pt}
+\item  $I(t) = \delta(t)= \left\{
+     \begin{array}{lr}
+       \infty, & t = 0 \\
+       0, & t \neq 0
+     \end{array}
+   \right.$ (Dirac delta/unit impulse)
+\item  $I(t) = \theta(t)= \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+       1, & t \geq 0
+     \end{array}
+   \right.$ (Heaviside step function)
+\end{enumerate}
+\end{enumerate}
+When a very brief flash of light consisting of $N$ photons is delivered to a photoreceptor, the photon detection system's output is:
+\[ O(t) = \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+       A \sin \left( \omega t \right) e^{-\alpha t}, & t \geq 0
+     \end{array}
+   \right. \]   
+   \begin{enumerate}[a)]
+\setlength{\itemsep}{0pt}
+\setcounter{enumi}{2}
+\item Write an expression for $I(t)$ in this case, and then apply a Laplace transform to find an expression for $\tilde{I}(s)$.
+\item Find an expression for $\tilde{O}(s)$ (for the rest of the problem, you may consult a table of Laplace transforms\footnote{A thorough table is available at \url{http://www.dartmouth.edu/\~sullivan/22files/New\%20Laplace\%20Transform\%20Table.pdf}.}). 
+\item Find the impulse response $h(t)$ by determining $\tilde{h}(s)$ and finding the inverse Laplace transform.
+\end{enumerate}
+An input of the form
+\[ I(t) = \left\{
+     \begin{array}{lr}
+       0, & t < 0 \\
+      M \textrm{ photons per second, } & t \geq 0
+     \end{array}
+   \right. \]      
+is then applied. Below you will determine what output $O(t)$ was expected under the assumption that the photon detection system is linear and time-invariant.
+\begin{enumerate}[a)]  
+\setlength{\itemsep}{0pt}
+\setcounter{enumi}{4}
+\item What is $\tilde{I}(s)$?
+\item Use $\tilde{h}(s)$, calculated in part (e), to express $\tilde{O}(s)$ as a rational function in $s$.
+\item Determine $O(t)$. What value does $O(t)$ approach as $t \to \infty$?
+\end{enumerate}
+
+\end{document}
